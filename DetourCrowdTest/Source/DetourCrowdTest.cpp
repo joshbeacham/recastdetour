@@ -57,56 +57,6 @@ TEST_CASE("DetourCrowdTest/UpdateAgentPosition", "We want to dynamically update 
 	CHECK_FALSE(crowd->updateAgentPosition(ag.id, wrongPosition));
 }
 
-TEST_CASE("DetourCrowdTest/HashTable", "Testing the hash table containing the pairs <agentID, AgentBehaviorData>")
-{
-	// Creation of the simulation
-	TestScene ts;
-	dtCrowd* crowd = ts.createSquareScene(10, 0.5f);
-
-	REQUIRE(crowd != 0);
-
-	// Using a behavior with an empty HT
-	dtAlignmentBehavior* align = dtAlignmentBehavior::allocate(0);
-
-	// Adding an element to the HT
-	dtAlignmentBehaviorParams* param = align->getBehaviorParams(crowd->getAgent(0)->id);
-	CHECK(param == 0);
-	
-	// Adding another element
-	param = align->getBehaviorParams(crowd->getAgent(1)->id);
-	CHECK(param == 0);
-	
-	// Adding another element (id is greater or equal to the size of the HT)
-	param = align->getBehaviorParams(crowd->getAgent(2)->id);
-	CHECK(param == 0);
-
-	// This time the HT is not empty
-	dtSeekBehavior* seek = dtSeekBehavior::allocate(2);
-
-	// Adding an element to the HT
-	dtSeekBehaviorParams* params = seek->getBehaviorParams(crowd->getAgent(0)->id);
-	CHECK(params != 0);
-
-	// Getting an already existing elements
-	params = seek->getBehaviorParams(crowd->getAgent(0)->id);
-	CHECK(params != 0);
-
-	// Adding another element
-	params = seek->getBehaviorParams(crowd->getAgent(1)->id);
-	CHECK(params != 0);
-
-	// Adding another element (id is greater or equal to the size of the HT)
-	params = seek->getBehaviorParams(crowd->getAgent(2)->id);
-	CHECK(params != 0);
-
-	// Adding another element (id greater than HT size)
-	params = seek->getBehaviorParams(crowd->getAgent(9)->id);
-	CHECK(params != 0);
-
-	dtSeekBehavior::free(seek);
-	dtAlignmentBehavior::free(align);
-}
-
 TEST_CASE("DetourCrowdTest/UpdateCrowd", "Test the different ways to update the agents inside a crowd")
 {
 	// Creation of the simulation
