@@ -73,7 +73,7 @@ TARGET_LINK_LIBRARIES(
 ADD_TEST(
   NAME DetourCrowd
   WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> DetourCrowdTest/*)
+  COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCrowd])
 
 ADD_TEST(
   NAME DetourBehavior
