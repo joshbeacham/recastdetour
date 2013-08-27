@@ -110,6 +110,8 @@ static const unsigned DT_MAX_PATTERN_RINGS = 4;	///< Max number of adaptive ring
 /// @ingroup behavior
 struct dtCollisionAvoidanceParams
 {
+    dtCollisionAvoidanceParams();
+    
 	float velBias;
 	float weightDesVel;
 	float weightCurVel;

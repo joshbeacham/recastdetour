@@ -32,7 +32,18 @@
 #include "DetourNavMeshQuery.h"
 #include "DetourPathFollowing.h"
 
-
+void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float maxSpeed, float perceptionDistance)
+{
+    memset(this, 0, sizeof(dtCrowdAgent));
+    this->id = UINT_MAX;
+    this->radius = radius;
+    this->height = height;
+    this->maxAcceleration = maxAcceleration;
+    this->maxSpeed = maxSpeed;
+    this->perceptionDistance = perceptionDistance;
+    dtVset(this->desiredVelocity, 0.f, 0.f, 0.f);
+	dtVset(this->velocity, 0.f, 0.f, 0.f);
+}
 
 dtCrowd* dtAllocCrowd()
 {
@@ -278,9 +289,6 @@ const dtCrowdAgentEnvironment* dtCrowd::getAgentEnvironment(unsigned id) const
 	return m_crowdQuery->getAgentEnvironment(id);
 }
 
-/// @par
-///
-/// The agent's position will be constrained to the surface of the navigation mesh.
 bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 {
 	// Find empty slot.
@@ -296,28 +304,26 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 
 	if (idx == -1)
 		return false;
-	
-	dtCrowdAgent* ag = &m_agents[idx];
-
+    
+    agent.init();
+    agent.id = idx;
+    
 	// Find nearest position on navmesh and place the agent there.
 	float nearest[3];
 	dtPolyRef ref;
 	m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos, m_crowdQuery->getQueryExtents(), 
 												 m_crowdQuery->getQueryFilter(), &ref, nearest);
 	
-	dtVset(ag->desiredVelocity, 0, 0, 0);
-	dtVset(ag->velocity, 0, 0, 0);
-	dtVcopy(ag->position, nearest);
+	dtVcopy(agent.position, nearest);
 	
 	if (ref)
-		ag->state = DT_CROWDAGENT_STATE_WALKING;
+		agent.state = DT_CROWDAGENT_STATE_WALKING;
 	else
-		ag->state = DT_CROWDAGENT_STATE_INVALID;
+		agent.state = DT_CROWDAGENT_STATE_INVALID;
 		
-	ag->active = 1;
+	agent.active = 1;
 
-	agent = *ag;
-	
+	m_agents[idx] = agent;
 
 	return true;
 }
