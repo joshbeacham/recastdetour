@@ -21,6 +21,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 SET(
   detourcrowdtest_SRCS
   Source/DetourBehaviorsTests.cpp
+  Source/DetourCollisionAvoidanceTest.cpp
   Source/DetourCrowdTest.cpp
   Source/DetourCrowdTestUtils.cpp
   Source/DetourOffMeshConnectionsTest.cpp
@@ -71,6 +72,11 @@ TARGET_LINK_LIBRARIES(
   Recast
   )
 
+ADD_TEST(
+  NAME DetourCollisionAvoidance
+  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+  COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCollisionAvoidance])
+  
 ADD_TEST(
   NAME DetourCrowd
   WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}

@@ -28,6 +28,21 @@
 #include <cmath>
 #include <cstring>
 
+dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
+    :velBias(0.4f)
+    ,weightDesVel(2.f)
+    ,weightCurVel(0.75f)
+    ,weightSide(0.75f)
+    ,weightToi(2.5f)
+    ,horizTime(2.5f)
+    ,gridSize(33)
+    ,adaptiveDivs(7)
+    ,adaptiveRings(2)
+    ,adaptiveDepth(5)
+    ,debug(0)
+{
+    // NOTHING
+}
 
 dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents) :
 	dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents),
