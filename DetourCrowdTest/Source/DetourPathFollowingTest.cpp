@@ -46,8 +46,11 @@ SCENARIO("DetourPathFollowingTest/TwoAgents", "[detourPathFollowing]")
     REQUIRE(crowd->addAgent(ag1, posAgt1));
     REQUIRE(crowd->addAgent(ag2, posAgt2));
     
-    ts.defaultInitializeAgent(*crowd, ag1.id);
-    ts.defaultInitializeAgent(*crowd, ag2.id);
+    ag1.maxSpeed = 2.f;
+    REQUIRE(crowd->applyAgent(ag1));
+    
+    ag2.maxSpeed = 3.f;
+    REQUIRE(crowd->applyAgent(ag2));
     
     dtPathFollowing* pf1 = dtPathFollowing::allocate(2);
     dtPathFollowingParams* pfParams = pf1->getBehaviorParams(crowd->getAgent(ag1.id)->id);
@@ -71,15 +74,36 @@ SCENARIO("DetourPathFollowingTest/TwoAgents", "[detourPathFollowing]")
 		REQUIRE(pf1->requestMoveTarget(ag1.id, pfParams->targetRef, destAgt1));
 		REQUIRE(pf1->requestMoveTarget(ag2.id, pfParams2->targetRef, destAgt2));
         
-        WHEN("Updated for 1s at 100 Hz")
+        WHEN("Updated for 3s at 10 Hz")
         {
-            for (int i = 0; i < 100; ++i)
-                crowd->update(1.0);
+            for (int i = 0; i < 30; ++i)
+                crowd->update(0.1f);
             
-            THEN("Agents have moved in straight line toward there destination")
+            THEN("Agents have moved at (roughly) their maximum speed")
             {
-                CHECK(crowd->getAgent(ag1.id)->position[0] < -10.f);
-                CHECK(crowd->getAgent(ag2.id)->position[0] > 10.f);
+                CHECK(fabs(dtVdist2D(crowd->getAgent(ag1.id)->position, posAgt1) - ag1.maxSpeed * 3.f) < 0.05f * ag1.maxSpeed * 3.f);
+                CHECK(fabs(dtVdist2D(crowd->getAgent(ag2.id)->position, posAgt1) - ag2.maxSpeed * 3.f) < 0.05f * ag2.maxSpeed * 3.f);
+            }
+            
+            THEN("Agents have moved in straight line toward their destination")
+            {
+                CHECK(fabs(crowd->getAgent(ag1.id)->position[0]-destAgt1[0]) < fabs(posAgt1[0]-destAgt1[0]));
+                CHECK(fabs(crowd->getAgent(ag1.id)->position[2]-destAgt1[2]) < 0.1f);
+                
+                CHECK(fabs(crowd->getAgent(ag2.id)->position[0]-destAgt2[0]) < fabs(posAgt2[0]-destAgt2[0]));
+                CHECK(fabs(crowd->getAgent(ag2.id)->position[2]-destAgt2[2]) < 0.1f);
+            }
+        }
+        
+        WHEN("Updated for 3s at 10000 Hz")
+        {
+            for (int i = 0; i < 30000; ++i)
+                crowd->update(0.0001f);
+            
+            THEN("Agents have moved at (roughly) their maximum speed")
+            {
+                CHECK(fabs(dtVdist2D(crowd->getAgent(ag1.id)->position, posAgt1) - ag1.maxSpeed * 3.f) < 0.05f * ag1.maxSpeed * 3.f);
+                CHECK(fabs(dtVdist2D(crowd->getAgent(ag2.id)->position, posAgt1) - ag2.maxSpeed * 3.f) < 0.05f * ag2.maxSpeed * 3.f);
             }
         }
 	}

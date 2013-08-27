@@ -338,6 +338,22 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
             }
         }
         
+        WHEN("Updating for 1 second at 1000Hz")
+        {
+            for (unsigned i(0) ; i < 1000 ; ++i)
+            {
+                crowd->update(1.f / 1000.f);
+            }
+            
+            THEN("ag1 and ag2 have moved")
+            {
+                CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
+                CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
+                CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
+                CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+            }
+        }
+        
         float velAgt1[3], velAgt2[3];
         dtVcopy(velAgt1, crowd->getAgent(ag1.id)->velocity);
         dtVcopy(velAgt2, crowd->getAgent(ag2.id)->velocity);
