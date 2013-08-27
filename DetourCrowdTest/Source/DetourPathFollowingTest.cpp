@@ -112,7 +112,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
     dtPathFollowing::free(pf1);
 }
 
-SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourPathFollowing][debug]")
+SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourPathFollowing]")
 {
     const float a1Position[] = {0, 0, 0};
     
@@ -163,6 +163,20 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
         {
             for (int i = 0; i < 30000; ++i)
                 crowd->update(0.0001f);
+            
+            THEN("Agent have moved at (roughly) its maximum speed")
+            {
+                CHECK(fabs(dtVdist2D(crowd->getAgent(a1.id)->position, a1Position) - a1.maxSpeed * 3.f) < 0.05f * a1.maxSpeed * 3.f);
+            }
+        }
+        
+        WHEN("Updated for 3s at 100 Hz, new request each tick")
+        {
+            for (int i = 0; i < 300; ++i)
+            {
+                CHECK(pathFollowing->requestMoveTarget(a1.id, pathFollowingParams->targetRef, a1Destination));
+                crowd->update(0.01f);
+            }
             
             THEN("Agent have moved at (roughly) its maximum speed")
             {
