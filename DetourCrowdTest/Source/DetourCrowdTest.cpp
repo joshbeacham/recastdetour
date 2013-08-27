@@ -46,6 +46,45 @@ SCENARIO("DetourCrowdTest/DefaultCrowd", "[detourCrowd]")
     }
 }
 
+SCENARIO("DetourCrowdTest/DefaultCrowdAgent", "[detourCrowd]")
+{
+    dtCrowdAgent ag;
+    
+    WHEN("Initialized to default")
+    {
+        ag.init();
+        
+        THEN("Radius is 0.2")
+        {
+            CHECK(ag.radius == 0.2f);
+        }
+        
+        THEN("Height is 1.7")
+        {
+            CHECK(ag.height == 1.7f);
+        }
+        
+        THEN("Maximum Acceleration is 10")
+        {
+            CHECK(ag.maxAcceleration == 10.f);
+        }
+        
+        THEN("Maximum Speed is 2")
+        {
+            CHECK(ag.maxSpeed == 2.f);
+        }
+        THEN("Perception distance is 4")
+        {
+            CHECK(ag.perceptionDistance == 4.f);
+        }
+        
+        THEN("ID is invalid")
+        {
+            CHECK(ag.id == UINT_MAX);
+        }
+    }
+}
+
 SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 {
     TestScene ts;
@@ -57,8 +96,23 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
     
     // Adding the agent to the crowd
     REQUIRE(crowd->addAgent(ag, initialPosition));
-    ts.defaultInitializeAgent(*crowd, ag.id);
-    crowd->fetchAgent(ag, ag.id);
+    
+    WHEN("The agent has just been added")
+    {
+        THEN("It has its default values")
+        {
+            CHECK(ag.radius == 0.2f);
+            CHECK(ag.height == 1.7f);
+            CHECK(ag.maxAcceleration == 10.f);
+            CHECK(ag.maxSpeed == 2.f);
+            CHECK(ag.perceptionDistance == 4.f);
+        }
+        
+        THEN("It has a valid ID")
+        {
+            CHECK(ag.id != UINT_MAX);
+        }
+    }
     
     WHEN("The position is updated to valid coordinates")
     {

@@ -47,7 +47,7 @@ struct dtCrowdNeighbour
 /// @ingroup crowd
 enum CrowdAgentState
 {
-	DT_CROWDAGENT_STATE_INVALID,		///< The agent is not in a valid state.
+	DT_CROWDAGENT_STATE_INVALID = 0,		///< The agent is not in a valid state.
 	DT_CROWDAGENT_STATE_WALKING,		///< The agent is traversing a normal navigation mesh polygon.
 	DT_CROWDAGENT_STATE_OFFMESH,		///< The agent is traversing an off-mesh connection.
 };
@@ -83,11 +83,11 @@ struct dtCrowdAgent
 			
 	dtBehavior* behavior;			///< The behavior used by the agent
 
-	float radius;				///< Agent radius. [Limit: >= 0]
-	float height;				///< Agent height. [Limit: > 0]
-	float maxAcceleration;		///< Maximum allowed acceleration. [Limit: >= 0]
-	float maxSpeed;				///< Maximum allowed speed. [Limit: >= 0]
-	float perceptionDistance;	///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
+	float radius;                   ///< Agent radius. [Limit: >= 0]
+	float height;                   ///< Agent height. [Limit: > 0]
+	float maxAcceleration;          ///< Maximum allowed acceleration. [Limit: >= 0]
+	float maxSpeed;                 ///< Maximum allowed speed. [Limit: >= 0]
+	float perceptionDistance;       ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
 
 	unsigned char updateFlags;		///< Flags that impact steering behavior. (See: #UpdateFlags)
 
@@ -99,6 +99,13 @@ struct dtCrowdAgent
 	float offmeshStartToEndTime;	///< How long to cross the connection?
 
 	void* userData;					///< User defined data attached to the agent.
+    
+    /// Initialize the value of the agent.
+    ///
+    /// Set all the attributes to valid 'nil' values except the given ones.
+    ///
+    /// @remark No memory allocation is performed.
+    void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float perceptionDistance = 4.f);
 };
 
 /// Crowd agent update flags.
@@ -289,11 +296,10 @@ public:
 	bool setAgentBehavior(unsigned id, dtBehavior* behavior);
 
 	/// Adds a new agent to the crowd.
-	/// The data of the given agent will be copied into the crowd's pool.
-	/// The position of the agent in the pool will be determined according to its id.
-	///  @param[out]	agent	The agent whose data should be copied.
-	///  @param[in]		pos		The requested position of the agent. [(x, y, z)]
-	/// @return False if the id of the agent is incorrect, True otherwise.
+	///
+	/// @param[out]	agent Where the created agent data will be copied, if the addition is successful.
+	/// @param[in] pos The desired position for the agent. [(x, y, z)]
+	/// @return True if the addition is succesful, it might fail if the crowd is full (i.e. if the current agent count is equal to the given maximum).
 	bool addAgent(dtCrowdAgent& agent, const float* pos);
 
 	/// Removes the agent of the given id from the crowd.
