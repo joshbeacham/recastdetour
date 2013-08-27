@@ -19,6 +19,7 @@
 #include "DetourCrowdTestUtils.h"
 
 #include "DetourPathFollowing.h"
+#include "DetourCollisionAvoidance.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)
@@ -33,7 +34,7 @@
 
 #include <cstring>
 
-SCENARIO("DetourPathFollowingTest/TwoAgents", "[detourPathFollowing]")
+SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
 {
     const float posAgt1[] = {0, 0, 0};
     const float posAgt2[] = {0, 0, 1};
@@ -107,4 +108,70 @@ SCENARIO("DetourPathFollowingTest/TwoAgents", "[detourPathFollowing]")
             }
         }
 	}
+    
+    dtPathFollowing::free(pf1);
+}
+
+SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourPathFollowing][debug]")
+{
+    const float a1Position[] = {0, 0, 0};
+    
+	TestScene ts;
+	dtCrowd* crowd = ts.createSquareScene(20, 0.5f);
+	REQUIRE(crowd != 0);
+    
+    dtCrowdAgent a1;
+    REQUIRE(crowd->addAgent(a1, a1Position));
+    
+    a1.maxSpeed = 2.f;
+    REQUIRE(crowd->applyAgent(a1));
+    
+    dtPipelineBehavior* pipeline = dtPipelineBehavior::allocate();
+    dtPathFollowing* pathFollowing = dtPathFollowing::allocate(12);
+    dtCollisionAvoidance* collisionAvoidance = dtCollisionAvoidance::allocate(12);
+    dtBehavior* pipelineBehaviors[] = {pathFollowing, collisionAvoidance};
+    pipeline->setBehaviors(pipelineBehaviors, 2);
+    
+    dtPathFollowingParams* pathFollowingParams = pathFollowing->getBehaviorParams(crowd->getAgent(a1.id)->id);
+    
+    crowd->setAgentBehavior(a1.id, pipeline);
+    
+    pathFollowing->init(*crowd->getCrowdQuery());
+    collisionAvoidance->init();
+    
+    GIVEN("A valid destination")
+	{
+        const float a1Destination[] = {-18, 0, 0};
+        
+		// Set the destination
+		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(a1Destination, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pathFollowingParams->targetRef, 0);
+
+		REQUIRE(pathFollowing->requestMoveTarget(a1.id, pathFollowingParams->targetRef, a1Destination));
+        
+        WHEN("Updated for 3s at 10 Hz")
+        {
+            for (int i = 0; i < 30; ++i)
+                crowd->update(0.1f);
+            
+            THEN("Agent have moved at (roughly) its maximum speed")
+            {
+                CHECK(fabs(dtVdist2D(crowd->getAgent(a1.id)->position, a1Position) - a1.maxSpeed * 3.f) < 0.05f * a1.maxSpeed * 3.f);
+            }
+        }
+        
+        WHEN("Updated for 3s at 10000 Hz")
+        {
+            for (int i = 0; i < 30000; ++i)
+                crowd->update(0.0001f);
+            
+            THEN("Agent have moved at (roughly) its maximum speed")
+            {
+                CHECK(fabs(dtVdist2D(crowd->getAgent(a1.id)->position, a1Position) - a1.maxSpeed * 3.f) < 0.05f * a1.maxSpeed * 3.f);
+            }
+        }
+	}
+    
+    dtPipelineBehavior::free(pipeline);
+    dtPathFollowing::free(pathFollowing);
+    dtCollisionAvoidance::free(collisionAvoidance);
 }
