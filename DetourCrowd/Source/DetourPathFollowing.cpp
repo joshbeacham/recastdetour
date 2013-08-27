@@ -31,6 +31,7 @@
 
 dtPathFollowing::dtPathFollowing(unsigned nbMaxAgents) :
 	dtParametrizedBehavior<dtPathFollowingParams>(nbMaxAgents),
+    initialPathfindIterCount(20),
 	m_pathResult(0),
 	m_maxAgents(0),
 	m_maxPathRes(0),
@@ -483,7 +484,6 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 	int nqueue = 0;
 
 	// Fire off new requests.
-
 	if (oldAgent.state != DT_CROWDAGENT_STATE_INVALID && newParams.targetState != DT_CROWDAGENT_TARGET_NONE && 
 		newParams.targetState != DT_CROWDAGENT_TARGET_VELOCITY)
 	{
@@ -499,10 +499,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 			int reqPathCount = 0;
 
 			// Quick search towards the goal.
-			static const int MAX_ITER = 20;
 			const_cast<dtNavMeshQuery*>(crowdQuery.getNavMeshQuery())->initSlicedFindPath(path[0], newParams.targetRef, oldAgent.position, 
 				newParams.targetPos, crowdQuery.getQueryFilter());
-			const_cast<dtNavMeshQuery*>(crowdQuery.getNavMeshQuery())->updateSlicedFindPath(MAX_ITER, 0);
+			const_cast<dtNavMeshQuery*>(crowdQuery.getNavMeshQuery())->updateSlicedFindPath(initialPathfindIterCount, 0);
 			dtStatus status = 0;
 			if (newParams.targetReplan) // && npath > 10)
 			{
@@ -547,6 +546,7 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 
 			if (reqPath[reqPathCount-1] == newParams.targetRef)
 			{
+                // The path has been completely computed during the initial pathfind.
 				newParams.targetState = DT_CROWDAGENT_TARGET_VALID;
 				newParams.targetReplanTime = 0.0;
 			}

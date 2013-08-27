@@ -159,12 +159,20 @@ public:
 	const dtPolyRef* getPathRes() const { return m_pathResult; }
 	dtPolyRef* getPathRes() { return m_pathResult; }
 	/// @}
-
+    
+    /// @name Parameters
+    //@{
+    /// During the first update after a request move target, the path starts to be computed
+    /// for this given number of iterations (that way this path is not added to the queue if
+    /// it is a short one).
+    ///
+    /// @remark Default value is 20.
+    unsigned initialPathfindIterCount;
+    //@}
+    
 private:
     dtPathFollowing(const dtPathFollowing&);
     dtPathFollowing& operator=(const dtPathFollowing&);
-
-	
 
 	/// Checks that the given agents still have valid paths.
 	/// 

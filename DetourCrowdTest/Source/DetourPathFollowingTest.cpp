@@ -34,6 +34,21 @@
 
 #include <cstring>
 
+SCENARIO("DetourPathFollowingTest/Default", "[detourPathFollowing]")
+{
+    GIVEN("A default constructed dtPathFollowing")
+    {
+        dtPathFollowing* pf = dtPathFollowing::allocate(2);
+        
+        THEN("The default initial pathfind iterations count is 20")
+        {
+            CHECK(pf->initialPathfindIterCount == 20);
+        }
+        
+        dtPathFollowing::free(pf);
+    }
+}
+
 SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
 {
     const float posAgt1[] = {0, 0, 0};
