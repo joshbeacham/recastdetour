@@ -59,20 +59,7 @@ IF(BUILD_DETOURCROWD_DEMO)
 
     SET(sdl_DIR Contrib/SDL)
 
-    IF(APPLE)
-        SET(sdlmain_HDRS 
-            Include/SDLMain.h
-        )
-
-        SET(sdlmain_SRCS 
-            Source/SDLMain.m
-        )
-    ENDIF()
-
     SOURCE_GROUP(sources FILES ${detourcrowddemo_HDRS} ${detourcrowddemo_SRCS})
-    IF(XCODE)
-        SOURCE_GROUP(externals\\SDLMain FILES ${sdlmain_HDRS} ${sdlmain_SRCS})
-    ENDIF()
     SOURCE_GROUP(externals\\fastlz FILES ${fastlz_SRCS})
     SOURCE_GROUP(cmake FILES CMakeLists.txt)
 
@@ -93,12 +80,10 @@ IF(BUILD_DETOURCROWD_DEMO)
         Contrib
     )
 
-    IF(APPLE)
-        ADD_EXECUTABLE(DetourCrowdDemo MACOSX_BUNDLE ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${sdlmain_HDRS} ${sdlmain_SRCS} ${fastlz_SRCS})
-    ELSEIF(MSVC)
+    IF(MSVC)
         ADD_EXECUTABLE(DetourCrowdDemo WIN32 ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS})
     ELSE()
-        ADD_EXECUTABLE(DetourCrowdDemo ${recastdemo_SRCS} ${recastdemo_HDRS})
+        ADD_EXECUTABLE(DetourCrowdDemo ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS})
     ENDIF()
 
     SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY DEBUG_POSTFIX -gd)
