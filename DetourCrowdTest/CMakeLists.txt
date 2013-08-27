@@ -20,11 +20,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(
   detourcrowdtest_SRCS
+  Source/DetourBehaviorsTests.cpp
   Source/DetourCrowdTest.cpp
   Source/DetourCrowdTestUtils.cpp
-  Source/DetourPipelineTest.cpp
-  Source/DetourBehaviorsTests.cpp
   Source/DetourOffMeshConnectionsTest.cpp
+  Source/DetourPathFollowingTest.cpp
+  Source/DetourPipelineTest.cpp
   )
   
 SET(
@@ -85,6 +86,11 @@ ADD_TEST(
   WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
   COMMAND $<TARGET_FILE:DetourCrowdTest> DetourPipelineTest/*)
 
+ADD_TEST(
+  NAME DetourPathFollowing
+  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+  COMMAND $<TARGET_FILE:DetourCrowdTest> [detourPathFollowing])
+    
 ADD_TEST(
   NAME OffMeshConnections
   WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}

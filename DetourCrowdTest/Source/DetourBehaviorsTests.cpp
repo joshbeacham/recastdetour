@@ -254,55 +254,6 @@ TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behavi
 		dtSeparationBehavior::free(separation);
 	}
 
-	SECTION("PathFollowing Behavior", "Tests whether the agent can follow a path to reach its destination")
-	{
-		float posAgt1[] = {0, 0, 0};
-		float destAgt1[] = {-18, 0, 0};
-
-		float posAgt2[] = {0, 0, 1};
-		float destAgt2[] = {18, 0, 1};
-
-		dtCrowdAgent ag1, ag2;
-
-		// Adding the agents to the crowd
-		REQUIRE(crowd->addAgent(ag1, posAgt1));
-		REQUIRE(crowd->addAgent(ag2, posAgt2));
-
-		ts.defaultInitializeAgent(*crowd, ag1.id);
-		ts.defaultInitializeAgent(*crowd, ag2.id);
-
-		dtPathFollowing* pf1 = dtPathFollowing::allocate(2);
-		dtPathFollowingParams* pfParams = pf1->getBehaviorParams(crowd->getAgent(ag1.id)->id);
-		dtPathFollowingParams* pfParams2 = pf1->getBehaviorParams(crowd->getAgent(ag2.id)->id);
-
-		// Initializing the path with an incorrect position
-		float wrongPosition[] = {-99, -99, -99};
-
-		crowd->setAgentBehavior(ag1.id, pf1);
-		crowd->setAgentBehavior(ag2.id, pf1);
-
-		pf1->init(*crowd->getCrowdQuery());
-		
-		// Set the destinations
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
-			&pfParams->targetRef, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
-			&pfParams2->targetRef, 0);
-		REQUIRE(pf1->requestMoveTarget(ag1.id, pfParams->targetRef, destAgt1));
-		REQUIRE(pf1->requestMoveTarget(ag2.id, pfParams2->targetRef, destAgt2));
-
-		for (int i = 0; i < 100; ++i)
-			crowd->update(1.0);
-
-		float newPos[3];
-		float newPos2[3];
-		dtVcopy(newPos, crowd->getAgent(ag1.id)->position);
-		dtVcopy(newPos2, crowd->getAgent(ag2.id)->position);
-
-		CHECK(newPos[0] < -10.f);
-		CHECK(newPos2[0] > 10.f);
-	}
-
 	SECTION("Alignment Behavior", "With the alignment behavior, an agent will align its velocity to its target")
 	{
 		float posAgt1[] = {0, 0, 0};
