@@ -24,7 +24,7 @@ INCLUDE(CMakeDependentOption)
 
 # Options
 CMAKE_DEPENDENT_OPTION(BUILD_RECAST_DEMO "Build Recast graphical demo application" 
-    ON "OPENGL_FOUND;SDL_FOUND"
+    ON "OPENGL_FOUND;OPENGL_GLU_FOUND;SDL_FOUND"
     OFF)
 
 IF(BUILD_RECAST_DEMO)
@@ -114,7 +114,7 @@ IF(BUILD_RECAST_DEMO)
 		SET_PROPERTY(TARGET RecastDemo PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
 	ENDIF()
 
-	TARGET_LINK_LIBRARIES(RecastDemo RecastDetourDebugUtils Detour DetourCrowd DetourTileCache Recast ${SDL_LIBRARY} ${OPENGL_LIBRARIES})
+	TARGET_LINK_LIBRARIES(RecastDemo RecastDetourDebugUtils Detour DetourCrowd DetourTileCache Recast ${SDL_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
 	INSTALL(DIRECTORY Bin/Meshes Bin/Tests
 		DESTINATION bin/${PLATFORM_STR}

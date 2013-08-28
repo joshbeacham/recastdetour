@@ -24,7 +24,7 @@ INCLUDE(CMakeDependentOption)
 
 # Options
 CMAKE_DEPENDENT_OPTION(BUILD_DETOURCROWD_DEMO "Build DetourCrowd graphical demo applications" 
-    ON "OPENGL_FOUND;SDL_FOUND"
+    ON "OPENGL_FOUND;OPENGL_GLU_FOUND;SDL_FOUND"
     OFF)
 
 IF(BUILD_DETOURCROWD_DEMO)
@@ -97,7 +97,7 @@ IF(BUILD_DETOURCROWD_DEMO)
     	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
     ENDIF()
 
-    TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_LIBRARIES})
+    TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
     INSTALL(DIRECTORY Bin/Meshes Bin/Samples
         DESTINATION bin/${PLATFORM_STR}
