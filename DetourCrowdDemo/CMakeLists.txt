@@ -100,7 +100,7 @@ IF(BUILD_DETOURCROWD_DEMO)
     TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
     INSTALL(DIRECTORY Bin/Meshes Bin/Samples
-        DESTINATION bin/${PLATFORM_STR}
+        DESTINATION run/${PLATFORM_STR}
     )
 
     IF(MSVC)
@@ -108,18 +108,18 @@ IF(BUILD_DETOURCROWD_DEMO)
         GET_FILENAME_COMPONENT(SDL_LIB_DIR ${SDLMAIN_LIBRARY} PATH)
         INSTALL(
             FILES Bin/DroidSans.ttf ${SDL_LIB_DIR}/SDL.dll
-            DESTINATION bin/${PLATFORM_STR}
+            DESTINATION run/${PLATFORM_STR}
         )
     ELSE()
         INSTALL(
             FILES Bin/DroidSans.ttf
-            DESTINATION bin/${PLATFORM_STR}
+            DESTINATION run/${PLATFORM_STR}
         )
     ENDIF()
 
     INSTALL(TARGETS DetourCrowdDemo 
-        RUNTIME DESTINATION bin/${PLATFORM_STR}
-        BUNDLE DESTINATION bin/${PLATFORM_STR}
+        RUNTIME DESTINATION run/${PLATFORM_STR}
+        BUNDLE DESTINATION run/${PLATFORM_STR}
         LIBRARY DESTINATION lib/${PLATFORM_STR}
         ARCHIVE DESTINATION lib/${PLATFORM_STR}
     )
