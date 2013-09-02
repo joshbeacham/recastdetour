@@ -171,6 +171,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
     }
     
     dtCrowdAgent toApply;
+    toApply.init();
     toApply.radius = 9.f;
     REQUIRE(toApply.radius != ag.radius);
     
