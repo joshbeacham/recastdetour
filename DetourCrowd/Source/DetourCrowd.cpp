@@ -350,9 +350,9 @@ unsigned dtCrowd::getActiveAgents(const dtCrowdAgent** agents, const unsigned ma
 	return n;
 }
 
-bool dtCrowd::getActiveAgent(dtCrowdAgent** ag, int id)
+bool dtCrowd::getActiveAgent(dtCrowdAgent** ag, unsigned id)
 {
-	if (id >= 0 && id < static_cast<unsigned>(m_maxAgents))
+	if (id < m_maxAgents)
 	{
 		if (m_agents[id].active)
 		{

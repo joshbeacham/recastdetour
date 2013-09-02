@@ -98,7 +98,7 @@ IF(BUILD_DETOURCROWD_DEMO)
     ELSEIF(MSVC)
         ADD_EXECUTABLE(DetourCrowdDemo WIN32 ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS})
     ELSE()
-        ADD_EXECUTABLE(DetourCrowdDemo ${recastdemo_SRCS} ${recastdemo_HDRS})
+        ADD_EXECUTABLE(DetourCrowdDemo ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS})
     ENDIF()
 
     SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY DEBUG_POSTFIX -gd)
