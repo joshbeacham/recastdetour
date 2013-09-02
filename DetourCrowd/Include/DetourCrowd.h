@@ -211,7 +211,7 @@ class dtCrowd
 	/// param[out]	ag	The agent corresponding to the given id
 	/// param[in]	id	the id of the agent we want to fetch
 	/// @return	False if the agent is not active or if the id is out of bound. True otherwise
-	bool getActiveAgent(dtCrowdAgent** ag, int id);
+	bool getActiveAgent(dtCrowdAgent** ag, unsigned id);
 
 	/// Gets the neighbors of  the given agent.
 	/// Uses the field of view of the agent for that.
