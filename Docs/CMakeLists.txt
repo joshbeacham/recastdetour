@@ -42,7 +42,7 @@ IF(BUILD_RECASTDETOUR_DOC)
 					  WORKING_DIRECTORY ${DOXYGEN_INPUT_DIR})
 					  
 	# setup install rules
-	INSTALL(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/html
-			DESTINATION doc
+	INSTALL(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/html/
+			DESTINATION "doc/recastdetour"
 			COMPONENT recast_detour_doc)
 ENDIF()
