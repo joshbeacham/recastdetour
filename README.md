@@ -1,5 +1,7 @@
 *currently [![Build status](https://travis-ci.org/masagroup/recastdetour.png?branch=master)](https://travis-ci.org/masagroup/recastdetour)*
 
+*contributions are welcome, using pull requests to the [integration](https://github.com/masagroup/recastdetour/tree/integration) branch*
+
 # About #
 
 This repository is a fork of [recastnavigation](http://code.google.com/p/recastnavigation/) whose original author is [Mikko Mononen](memon@inside.org).
