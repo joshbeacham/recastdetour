@@ -5,6 +5,9 @@
 # About #
 
 This repository is a fork of [recastnavigation](http://code.google.com/p/recastnavigation/) whose original author is [Mikko Mononen](memon@inside.org).
+The fork is maintainted by MASA Group´s product team of [MASA LIFE](http://masalife.net).
+To see our latest news in artificial intelligence you can follow our tweet - [@masalife_ai](https://twitter.com/masalife_ai).
+
 
 This library is releaed under the terms of the open souce [Zlib license](http://opensource.org/licenses/Zlib).
 
