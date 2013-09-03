@@ -1,8 +1,13 @@
 *currently [![Build status](https://travis-ci.org/masagroup/recastdetour.png?branch=master)](https://travis-ci.org/masagroup/recastdetour)*
 
+*contributions are welcome, using pull requests to the [integration](https://github.com/masagroup/recastdetour/tree/integration) branch*
+
 # About #
 
 This repository is a fork of [recastnavigation](http://code.google.com/p/recastnavigation/) whose original author is [Mikko Mononen](memon@inside.org).
+The fork is maintainted by MASA Group´s product team of [MASA LIFE](http://masalife.net).
+To see our latest news in artificial intelligence you can follow our tweet - [@masalife_ai](https://twitter.com/masalife_ai).
+
 
 This library is releaed under the terms of the open souce [Zlib license](http://opensource.org/licenses/Zlib).
 
@@ -71,8 +76,8 @@ The Detour Crowd module provides you with features for agents handling and behav
 # Support #
 
 - A Google Group is available [here](https://groups.google.com/forum/?fromgroups#!forum/recastnavigation)
-- There is a doxygen documentation as a project, just build and open Docs/index.html
-- If no notice a bug or something strange, please let us know about it on the Github repository, issues section
+- The online documentation of the latest stable version is available at [masagroup.github.io/recastdetour](http://masagroup.github.io/recastdetour/)
+- If you notice a bug or something strange, please let us know about it, create an [issue](https://github.com/masagroup/recastdetour/issues)
 
 # Contributors #
 
@@ -91,15 +96,15 @@ The Detour Crowd module provides you with features for agents handling and behav
 
 # Release Notes #
 
-## Recast 2.0.1 ##
+## Recast/Detour 2.0.1 ##
 **Released August 22nd, 2013**
 
-- Removing the proximity grid (doesn't handle overlapping agents and 3D levels)
-- Bug fixing on path following
-- Features to controle the offMesh connections
-- Path Following parameters no longer have to be initialized manually
+- Removing the proximity grid (doesn't handle overlapping agents and 3D levels).
+- Bug fixing on path following.
+- Features to control the offMesh connections.
+- Path Following parameters no longer have to be initialized manually.
 
-## Recast 2.0 ##
+## Recast/Detour 2.0 ##
 **Released July 15th, 2013**
 
 - The interface for the dtCrowd class has been completely rebuild.
