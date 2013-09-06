@@ -164,13 +164,15 @@ public:
 	
 	/// Returns the number of velocity samples.
 	int getVelocitySamplesCount() const { return m_velocitySamplesCount; }
-
+    
+    /// @see dtParametrizedBehavior::doUpdate 
+    virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float dt);
+    
 private:
     dtCollisionAvoidance(const dtCollisionAvoidance&);
     dtCollisionAvoidance& operator=(const dtCollisionAvoidance&);
 
-	virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
-		const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float dt);
+
 
 	/// Registers all the neighbors of the given agent as obstacles.
 	///

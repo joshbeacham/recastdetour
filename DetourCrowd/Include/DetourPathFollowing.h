@@ -170,6 +170,8 @@ public:
     unsigned initialPathfindIterCount;
     //@}
     
+    /// @see dtParametrizedBehavior::doUpdate
+    virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, const dtPathFollowingParams& currentParams, dtPathFollowingParams& newParams, float dt);
 private:
     dtPathFollowing(const dtPathFollowing&);
     dtPathFollowing& operator=(const dtPathFollowing&);
@@ -184,8 +186,7 @@ private:
 	void updateMoveRequest(const dtCrowdQuery& crowdQuery, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
 		dtPathFollowingParams& newParams);
 
-	virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
-		const dtPathFollowingParams& currentParams, dtPathFollowingParams& newParams, float dt);
+	
 
 	/// Optimize path topology.
 	/// 
