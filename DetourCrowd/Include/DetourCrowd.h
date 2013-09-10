@@ -283,18 +283,6 @@ public:
 
 	/// @name Data modifiers
 	/// @{
-
-	/// Copies the data of the given agent into its equivalent in the crowd
-	/// In order to know which agent must receive the data, we refer to the id of the given agent
-	/// @return False if the id of the agent could not be matched or if there are some inconsistencies 
-	/// with the data of the given agent. False otherwise.
-	bool applyAgent(const dtCrowdAgent& ag);
-
-	/// Sets the behavior of the agent referenced by the given id
-	/// @param[in]	behavior	The behavior to affect
-	/// @param[in]	id			the agent of the agent to edit
-	bool setAgentBehavior(unsigned id, dtBehavior* behavior);
-
 	/// Adds a new agent to the crowd.
 	///
 	/// @param[out]	agent Where the created agent data will be copied, if the addition is successful.
@@ -306,12 +294,25 @@ public:
 	///  @param[in]		id		The agent id.
 	void removeAgent(unsigned id);
 
+    /// Copies the data of the given agent into its equivalent in the crowd.
+    ///
+	/// In order to know which agent must receive the data, we refer to the id of the given agent
+	/// @return False if the id of the agent could not be matched or if there are some inconsistencies
+	/// with the data of the given agent. False otherwise.
+	bool pushAgent(const dtCrowdAgent& ag);
+    
+	/// Sets the behavior of the agent referenced by the given id
+    ///
+	/// @param[in]	behavior	The behavior to affect
+	/// @param[in]	id			the agent of the agent to edit
+	bool pushAgentBehavior(unsigned id, dtBehavior* behavior);
+    
 	/// Moves the agent to the given position if possible.
 	/// 
 	/// @param[in]	id			The id of the agent.
 	/// @param[in]	position	The new desired position.
 	/// @return		False if the position is outside the navigation mesh or if the index is out of bound. True otherwise.
-	bool updateAgentPosition(unsigned id, const float* position);
+	bool pushAgentPosition(unsigned id, const float* position);
 	/// @}
 
 	/// Indicates whether the agent is moving or not.
@@ -489,7 +490,7 @@ ag.height = 500;
 // ...
 
 // You can now send the changes to the crowd
-crowd.applyAgent(ag);
+crowd.pushAgent(ag);
 @endcode
 
 @warning `dtCrowd` uses the id when looking for and editing an agent, therefore be careful not the change the id property of an agent, 
@@ -556,12 +557,12 @@ You can individually call these updates using the following methods:
 
 Of course the position of an agent will be updated trough its behavior(s), but sometimes you might want to 
 set your agent at a given position instantly, without the constraints of a behavior (for instance your agent 
-have walked on a teleporter). This can be done using the `dtCrowd::updateAgentPosition()` method:
+have walked on a teleporter). This can be done using the `dtCrowd::pushAgentPosition()` method:
 
 @code
 float newPosition[] = {10, 0, 0};
 
-if (crowd.updateAgentPosition(agentId, newPosition))
+if (crowd.pushAgentPosition(agentId, newPosition))
 	// Done, your agent has moved
 else
 	// Something went wrong, either the position is invalid or the given id was out of bounds

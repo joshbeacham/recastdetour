@@ -75,7 +75,7 @@ bool TestScene::defaultInitializeAgent(dtCrowd& crowd, int index) const
 	ag.behavior = 0;
 	ag.perceptionDistance = 4.f;
 
-	crowd.applyAgent(ag);
+	crowd.pushAgent(ag);
 
 	return true;
 }

@@ -653,33 +653,6 @@ void dtCrowd::update(const float dt, unsigned* indexList, unsigned nbIndex)
 	updatePosition(dt, indexList, nbIndex);
 }
 
-bool dtCrowd::updateAgentPosition(unsigned id, const float* position)
-{
-	if (id < m_maxAgents)
-	{
-		dtCrowdAgent& ag = m_agents[id];
-		dtPolyRef ref = 0;
-		float nearestPosition[] = {0, 0, 0};
-
-		if (dtStatusFailed(m_crowdQuery->getNavMeshQuery()->findNearestPoly(position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), &ref, nearestPosition)))
-			return false;
-
-		// If no polygons have been found, it's a failure
-		if (ref == 0)
-			return false;
-		
-		dtVset(ag.desiredVelocity, 0, 0, 0);
-		dtVset(ag.velocity, 0, 0, 0);
-		dtVcopy(ag.position, nearestPosition);
-
-		ag.state = DT_CROWDAGENT_STATE_WALKING;
-		
-		return true;
-	}
-
-	return false;
-}
-
 bool dtCrowd::agentIsMoving(const dtCrowdAgent& ag) const
 {
 	if (ag.id >= m_maxAgents)
@@ -688,7 +661,7 @@ bool dtCrowd::agentIsMoving(const dtCrowdAgent& ag) const
 	return (dtVlen(m_agents[ag.id].velocity) > EPSILON);
 }
 
-bool dtCrowd::applyAgent(const dtCrowdAgent& ag)
+bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 {
 	if (ag.id >= m_maxAgents)
 		return false;
@@ -714,7 +687,7 @@ bool dtCrowd::applyAgent(const dtCrowdAgent& ag)
 	return true;
 }
 
-bool dtCrowd::setAgentBehavior(unsigned id, dtBehavior* behavior)
+bool dtCrowd::pushAgentBehavior(unsigned id, dtBehavior* behavior)
 {
 	if (id < m_maxAgents)
 	{
@@ -722,6 +695,33 @@ bool dtCrowd::setAgentBehavior(unsigned id, dtBehavior* behavior)
 		return true;
 	}
 
+	return false;
+}
+
+bool dtCrowd::pushAgentPosition(unsigned id, const float* position)
+{
+	if (id < m_maxAgents)
+	{
+		dtCrowdAgent& ag = m_agents[id];
+		dtPolyRef ref = 0;
+		float nearestPosition[] = {0, 0, 0};
+        
+		if (dtStatusFailed(m_crowdQuery->getNavMeshQuery()->findNearestPoly(position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), &ref, nearestPosition)))
+			return false;
+        
+		// If no polygons have been found, it's a failure
+		if (ref == 0)
+			return false;
+		
+		dtVset(ag.desiredVelocity, 0, 0, 0);
+		dtVset(ag.velocity, 0, 0, 0);
+		dtVcopy(ag.position, nearestPosition);
+        
+		ag.state = DT_CROWDAGENT_STATE_WALKING;
+		
+		return true;
+	}
+    
 	return false;
 }
 

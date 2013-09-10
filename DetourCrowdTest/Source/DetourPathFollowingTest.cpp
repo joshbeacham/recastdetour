@@ -63,17 +63,17 @@ SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
     REQUIRE(crowd->addAgent(ag2, posAgt2));
     
     ag1.maxSpeed = 2.f;
-    REQUIRE(crowd->applyAgent(ag1));
+    REQUIRE(crowd->pushAgent(ag1));
     
     ag2.maxSpeed = 3.f;
-    REQUIRE(crowd->applyAgent(ag2));
+    REQUIRE(crowd->pushAgent(ag2));
     
     dtPathFollowing* pf1 = dtPathFollowing::allocate(2);
     dtPathFollowingParams* pfParams = pf1->getBehaviorParams(crowd->getAgent(ag1.id)->id);
     dtPathFollowingParams* pfParams2 = pf1->getBehaviorParams(crowd->getAgent(ag2.id)->id);
     
-    crowd->setAgentBehavior(ag1.id, pf1);
-    crowd->setAgentBehavior(ag2.id, pf1);
+    REQUIRE(crowd->pushAgentBehavior(ag1.id, pf1));
+    REQUIRE(crowd->pushAgentBehavior(ag2.id, pf1));
     
     pf1->init(*crowd->getCrowdQuery());
     
@@ -139,7 +139,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
     REQUIRE(crowd->addAgent(a1, a1Position));
     
     a1.maxSpeed = 2.f;
-    REQUIRE(crowd->applyAgent(a1));
+    REQUIRE(crowd->pushAgent(a1));
     
     dtPipelineBehavior* pipeline = dtPipelineBehavior::allocate();
     dtPathFollowing* pathFollowing = dtPathFollowing::allocate(12);
@@ -149,7 +149,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
     
     dtPathFollowingParams* pathFollowingParams = pathFollowing->getBehaviorParams(crowd->getAgent(a1.id)->id);
     
-    crowd->setAgentBehavior(a1.id, pipeline);
+    crowd->pushAgentBehavior(a1.id, pipeline);
     
     pathFollowing->init(*crowd->getCrowdQuery());
     collisionAvoidance->init();

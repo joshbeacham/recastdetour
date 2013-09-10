@@ -117,7 +117,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
     WHEN("The position is updated to valid coordinates")
     {
         float correctPosition[] = {19, 0, 0};
-        CHECK(crowd->updateAgentPosition(ag.id, correctPosition));
+        CHECK(crowd->pushAgentPosition(ag.id, correctPosition));
         
         THEN("The fetched agent's position is updated")
         {
@@ -136,7 +136,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
     WHEN("The position is updated to invalid coordinates")
     {
         float wrongPosition[] = {100, 0, 10};
-        CHECK_FALSE(crowd->updateAgentPosition(ag.id, wrongPosition));
+        CHECK_FALSE(crowd->pushAgentPosition(ag.id, wrongPosition));
         
         THEN("The fetched agent's position is not updated")
         {
@@ -179,7 +179,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
     {
         toApply.id = UINT_MAX;
         
-        CHECK_FALSE(crowd->applyAgent(toApply));
+        CHECK_FALSE(crowd->pushAgent(toApply));
         
         THEN("The existing agent's data structure is not updated")
         {
@@ -191,7 +191,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
     {
         toApply.id = ag.id;
         
-        CHECK(crowd->applyAgent(toApply));
+        CHECK(crowd->pushAgent(toApply));
         
         THEN("The existing agent's data structure is updated")
         {
@@ -231,8 +231,8 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
         
         pf1->init(*crowd->getCrowdQuery());
         
-        crowd->setAgentBehavior(ag1.id, pf1);
-        crowd->setAgentBehavior(ag2.id, pf1);
+        crowd->pushAgentBehavior(ag1.id, pf1);
+        crowd->pushAgentBehavior(ag2.id, pf1);
 		
         // Set the destination
         dtPolyRef dest1, dest2;
@@ -388,7 +388,7 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
             REQUIRE(crowd->addAgent(ag3, posAgt3));
             
             ts.defaultInitializeAgent(*crowd, ag3.id);
-            crowd->setAgentBehavior(ag3.id, pf1);
+            crowd->pushAgentBehavior(ag3.id, pf1);
             
             THEN("The new agent can 'see' agent 1")
             {
@@ -405,7 +405,7 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
             {
                 crowd->fetchAgent(ag3, ag3.id);
                 ag3.perceptionDistance = 0.f;
-                crowd->applyAgent(ag3);
+                crowd->pushAgent(ag3);
                 
                 crowd->updateEnvironment(&ag3.id, 1);
                 
@@ -480,10 +480,10 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
         
         pf1->init(*crowd->getCrowdQuery());
         
-        crowd->setAgentBehavior(ag1.id, pf1);
-        crowd->setAgentBehavior(ag2.id, pf1);
-        crowd->setAgentBehavior(ag3.id, pf1);
-        crowd->setAgentBehavior(ag4.id, pf1);
+        crowd->pushAgentBehavior(ag1.id, pf1);
+        crowd->pushAgentBehavior(ag2.id, pf1);
+        crowd->pushAgentBehavior(ag3.id, pf1);
+        crowd->pushAgentBehavior(ag4.id, pf1);
 		
         // Set the destination
         dtPolyRef dest1, dest2, dest3, dest4;

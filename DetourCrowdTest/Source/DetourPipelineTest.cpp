@@ -52,7 +52,7 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 	REQUIRE(crowd->addAgent(ag, posAgt1));
 	ts.defaultInitializeAgent(*crowd, ag.id);
 
-	crowd->setAgentBehavior(ag.id, pipeline);
+	crowd->pushAgentBehavior(ag.id, pipeline);
 
 	crowd->update(0.5, 0);
 

@@ -522,7 +522,7 @@ void CrowdToolState::addAgent(const float* p)
 		if (m_toolParams.m_separation)
 			ag.updateFlags |= DT_CROWD_SEPARATION;
 		
-		crowd->applyAgent(ag);
+		crowd->pushAgent(ag);
 
 		// Init trail
 		AgentTrail* trail = &m_trails[ag.id];
@@ -654,7 +654,7 @@ void CrowdToolState::updateAgentParams()
 			continue;
 
 		ag.updateFlags = updateFlags;
-		crowd->applyAgent(ag);
+		crowd->pushAgent(ag);
 	}	
 }
 

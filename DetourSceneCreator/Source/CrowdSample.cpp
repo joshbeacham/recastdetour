@@ -602,7 +602,7 @@ bool CrowdSample::initializeCrowd(dtCrowd* crowd)
 		ag.updateFlags = m_agentCfgs[i].updateFlags;
 		ag.perceptionDistance = m_agentCfgs[i].collisionQueryRange;
 
-		crowd->applyAgent(ag);
+		crowd->pushAgent(ag);
     }
 	
     return true; 
