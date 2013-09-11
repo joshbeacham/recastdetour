@@ -87,8 +87,8 @@ SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
 			&pfParams->targetRef, 0);
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
 			&pfParams2->targetRef, 0);
-		REQUIRE(pf1->requestMoveTarget(ag1.id, pfParams->targetRef, destAgt1));
-		REQUIRE(pf1->requestMoveTarget(ag2.id, pfParams2->targetRef, destAgt2));
+		REQUIRE(pf1->getBehaviorParams(ag1.id)->submitTarget(destAgt1,pfParams->targetRef));
+        REQUIRE(pf1->getBehaviorParams(ag2.id)->submitTarget(destAgt2,pfParams2->targetRef));
         
         WHEN("Updated for 3s at 10 Hz")
         {
@@ -161,7 +161,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
 		// Set the destination
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(a1Destination, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pathFollowingParams->targetRef, 0);
 
-		REQUIRE(pathFollowing->requestMoveTarget(a1.id, pathFollowingParams->targetRef, a1Destination));
+		REQUIRE(pathFollowingParams->submitTarget(a1Destination, pathFollowingParams->targetRef));
         
         WHEN("Updated for 3s at 10 Hz")
         {
@@ -189,7 +189,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
         {
             for (int i = 0; i < 300; ++i)
             {
-                CHECK(pathFollowing->requestMoveTarget(a1.id, pathFollowingParams->targetRef, a1Destination));
+                CHECK(pathFollowingParams->submitTarget(a1Destination, pathFollowingParams->targetRef));
                 crowd->update(0.01f);
             }
             

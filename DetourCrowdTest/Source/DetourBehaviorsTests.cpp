@@ -149,7 +149,7 @@ TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behavi
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destLeader, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
 																&pfParams->targetRef, 0);
 		REQUIRE(pfParams->targetRef != 0);
-		REQUIRE(pf->requestMoveTarget(ag5.id, pfParams->targetRef, destLeader));
+		REQUIRE(pfParams->submitTarget(destLeader, pfParams->targetRef));
 
 		// We perform several update on the flocking group.
 		for (int i = 0; i < 100; ++i)
@@ -285,8 +285,8 @@ TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behavi
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pfParams->targetRef, 0);
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt3, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pfParams2->targetRef, 0);
 
-		REQUIRE(pf1->requestMoveTarget(ag2.id, pfParams->targetRef, destAgt2));
-		REQUIRE(pf1->requestMoveTarget(ag3.id, pfParams2->targetRef, destAgt3));
+		REQUIRE(pfParams->submitTarget(destAgt2, pfParams->targetRef));
+        REQUIRE(pfParams2->submitTarget(destAgt3, pfParams2->targetRef));
 
 		unsigned targets[] = {1, 2};
 		dtAlignmentBehavior* align = dtAlignmentBehavior::allocate(1);

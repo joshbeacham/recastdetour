@@ -239,8 +239,8 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
         crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest1, 0);
         crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest2, 0);
         
-        pf1->requestMoveTarget(ag1.id, dest1, destAgt1);
-        pf1->requestMoveTarget(ag2.id, dest2, destAgt2);
+        pf1->getBehaviorParams(ag1.id)->submitTarget(destAgt1, dest1);
+        pf1->getBehaviorParams(ag2.id)->submitTarget(destAgt2, dest2);
         
         WHEN("The given dt is nil")
         {
@@ -492,10 +492,10 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
         crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest3, 0);
         crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest4, 0);
         
-        pf1->requestMoveTarget(ag1.id, dest1, destAgt1);
-        pf1->requestMoveTarget(ag2.id, dest2, destAgt2);
-        pf1->requestMoveTarget(ag3.id, dest3, destAgt3);
-        pf1->requestMoveTarget(ag4.id, dest4, destAgt4);
+        pf1->getBehaviorParams(ag1.id)->submitTarget(destAgt1, dest1);
+        pf1->getBehaviorParams(ag2.id)->submitTarget(destAgt2, dest2);
+        pf1->getBehaviorParams(ag3.id)->submitTarget(destAgt3, dest3);
+        pf1->getBehaviorParams(ag4.id)->submitTarget(destAgt4, dest4);
         
         WHEN("The first agent is removed and then the crowd updated")
         {

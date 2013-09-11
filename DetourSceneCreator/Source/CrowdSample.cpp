@@ -296,7 +296,7 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 				crowd->getCrowdQuery()->getQueryFilter(), 
 				&m_agentCfgs[iAgent].destinationPoly, 0);
 
-			pf->requestMoveTarget(iAgent, m_agentCfgs[iAgent].destinationPoly, m_agentCfgs[iAgent].destination);
+			pf->getBehaviorParams(iAgent)->submitTarget(m_agentCfgs[iAgent].destination, m_agentCfgs[iAgent].destinationPoly);
 		}
 	}
 

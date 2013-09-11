@@ -86,32 +86,25 @@ void dtPathFollowing::getVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& ne
 {
 	if (oldAgent.state != DT_CROWDAGENT_STATE_WALKING)
 		return;
-	if (agParams.targetState == DT_CROWDAGENT_TARGET_NONE)
+	if (agParams.state == dtPathFollowingParams::NO_TARGET)
 		return;
 
 	float dvel[] = {0, 0, 0};
 
-	if (agParams.targetState == DT_CROWDAGENT_TARGET_VELOCITY)
-	{
-		dtVcopy(dvel, agParams.targetPos);
-	}
-	else
-	{
-		// Calculate steering direction.
-		if (oldAgent.updateFlags & DT_CROWD_ANTICIPATE_TURNS)
-			calcSmoothSteerDirection(oldAgent, dvel, &agParams);
-		else
-			calcStraightSteerDirection(oldAgent, dvel, &agParams);
+    // Calculate steering direction.
+    if (oldAgent.updateFlags & DT_CROWD_ANTICIPATE_TURNS)
+        calcSmoothSteerDirection(oldAgent, dvel, &agParams);
+    else
+        calcStraightSteerDirection(oldAgent, dvel, &agParams);
 
-		// Calculate speed scale, which tells the agent to slowdown at the end of the path.
-		const float slowDownRadius = oldAgent.radius * 2;	// TODO: make less hacky.
-		float speedScale = 0.f;
+    // Calculate speed scale, which tells the agent to slowdown at the end of the path.
+    const float slowDownRadius = oldAgent.radius * 2;	// TODO: make less hacky.
+    float speedScale = 0.f;
 
-		if (slowDownRadius > EPSILON)
-			speedScale = getDistanceToGoal(oldAgent, slowDownRadius, &agParams) / slowDownRadius;
+    if (slowDownRadius > EPSILON)
+        speedScale = getDistanceToGoal(oldAgent, slowDownRadius, &agParams) / slowDownRadius;
 
-		dtVscale(dvel, dvel, oldAgent.maxSpeed * speedScale);
-	}
+    dtVscale(dvel, dvel, oldAgent.maxSpeed * speedScale);
 	
 	dvel[1] = 0;
 	dtVcopy(newAgent.desiredVelocity, dvel);
@@ -177,7 +170,7 @@ void dtPathFollowing::triggerOffMeshConnections(const dtCrowdQuery& query, const
 {
 	if (oldAgent.state != DT_CROWDAGENT_STATE_WALKING)
 		return;
-	if (agParams->targetState == DT_CROWDAGENT_TARGET_NONE || agParams->targetState == DT_CROWDAGENT_TARGET_VELOCITY)
+	if (agParams->state == dtPathFollowingParams::NO_TARGET)
 		return;
 
 	// Check 
@@ -210,13 +203,13 @@ void dtPathFollowing::getNextCorner(const dtCrowdQuery& crowdQuery, const dtCrow
 
 	if (ag.state != DT_CROWDAGENT_STATE_WALKING)
 		return;
-	if (agParams.targetState == DT_CROWDAGENT_TARGET_NONE || agParams.targetState == DT_CROWDAGENT_TARGET_VELOCITY)
+	if (agParams.state == dtPathFollowingParams::NO_TARGET)
 		return;
 
 
 	// Find corners for steering
 	agParams.ncorners = agParams.corridor.findCorners(agParams.cornerVerts, agParams.cornerFlags, agParams.cornerPolys,
-		dtPathFollowingParams::DT_CROWDAGENT_MAX_CORNERS, crowdQuery.getNavMeshQuery(), crowdQuery.getQueryFilter());
+		dtPathFollowingParams::MAX_NCORNERS, crowdQuery.getNavMeshQuery(), crowdQuery.getQueryFilter());
 
 	// Check to see if the corner after the next corner is directly visible,
 	// and short cut to there.
@@ -255,7 +248,7 @@ void dtPathFollowing::updateTopologyOptimization(const dtCrowdQuery& crowdQuery,
 
 	if (ag.state != DT_CROWDAGENT_STATE_WALKING)
 		return;
-	if (agParams->targetState == DT_CROWDAGENT_TARGET_NONE || agParams->targetState == DT_CROWDAGENT_TARGET_VELOCITY)
+	if (agParams->state == dtPathFollowingParams::NO_TARGET)
 		return;
 	if ((ag.updateFlags & DT_CROWD_OPTIMIZE_TOPO) == 0)
 		return;
@@ -326,7 +319,7 @@ void dtPathFollowing::checkPathValidity(const dtCrowdQuery& crowdQuery, const dt
 	if (oldAgent.state != DT_CROWDAGENT_STATE_WALKING)
 		return;
 
-	if (agParams->targetState == DT_CROWDAGENT_TARGET_NONE || agParams->targetState == DT_CROWDAGENT_TARGET_VELOCITY)
+	if (agParams->state == dtPathFollowingParams::NO_TARGET)
 		return;
 
 
@@ -365,7 +358,7 @@ void dtPathFollowing::checkPathValidity(const dtCrowdQuery& crowdQuery, const dt
 	}
 		
 	// Try to recover move request position.
-	if (agParams->targetState != DT_CROWDAGENT_TARGET_NONE && agParams->targetState != DT_CROWDAGENT_TARGET_FAILED)
+	if (agParams->state != dtPathFollowingParams::NO_TARGET && agParams->state != dtPathFollowingParams::INVALID_TARGET)
 	{
 		if (!crowdQuery.getNavMeshQuery()->isValidPolyRef(agParams->targetRef, crowdQuery.getQueryFilter()))
 		{
@@ -379,7 +372,7 @@ void dtPathFollowing::checkPathValidity(const dtCrowdQuery& crowdQuery, const dt
 		{
 			// Failed to reposition target, fail moverequest.
 			agParams->corridor.reset(agentRef, agentPos);
-			agParams->targetState = DT_CROWDAGENT_TARGET_NONE;
+			agParams->state = dtPathFollowingParams::NO_TARGET;
 		}
 	}
 
@@ -393,7 +386,7 @@ void dtPathFollowing::checkPathValidity(const dtCrowdQuery& crowdQuery, const dt
 	}
 
 	// If the end of the path is near and it is not the requested location, replan.
-	if (agParams->targetState == DT_CROWDAGENT_TARGET_VALID)
+	if (agParams->state == dtPathFollowingParams::FOLLOWING_PATH)
 	{
 		if (agParams->targetReplanTime > TARGET_REPLAN_DELAY &&
 			agParams->corridor.getPathCount() < CHECK_LOOKAHEAD &&
@@ -404,56 +397,11 @@ void dtPathFollowing::checkPathValidity(const dtCrowdQuery& crowdQuery, const dt
 	// Try to replan path to goal.
 	if (replan)
 	{
-		if (agParams->targetState != DT_CROWDAGENT_TARGET_NONE)
+		if (agParams->state != dtPathFollowingParams::NO_TARGET)
 		{
 			requestMoveTargetReplan(idx, agParams->targetRef, agParams->targetPos);
 		}
 	}
-}
-
-/// @par
-/// 
-/// This method is used when a new target is set.
-/// 
-/// The position will be constrained to the surface of the navigation mesh.
-///
-/// The request will be processed during the next update.
-bool dtPathFollowing::requestMoveTarget(const unsigned idx, dtPolyRef ref, const float* pos)
-{
-	if (!ref)
-		return false;
-	
-	dtPathFollowingParams* agParams = getBehaviorParams(idx);
-	if (!agParams)
-		return false;
-
-	// Initialize request.
-	agParams->targetRef = ref;
-	dtVcopy(agParams->targetPos, pos);
-	agParams->targetPathqRef = DT_PATHQ_INVALID;
-	agParams->targetReplan = false;
-	if (agParams->targetRef)
-		agParams->targetState = DT_CROWDAGENT_TARGET_REQUESTING;
-	else
-		agParams->targetState = DT_CROWDAGENT_TARGET_FAILED;
-
-	return true;
-}
-
-bool dtPathFollowing::resetMoveTarget(const unsigned idx)
-{
-	dtPathFollowingParams* agParams = getBehaviorParams(idx);
-	if (!agParams)
-		return false;
-
-	// Initialize request.
-	agParams->targetRef = 0;
-	dtVset(agParams->targetPos, 0,0,0);
-	agParams->targetPathqRef = DT_PATHQ_INVALID;
-	agParams->targetReplan = false;
-	agParams->targetState = DT_CROWDAGENT_TARGET_NONE;
-
-	return true;
 }
 
 bool dtPathFollowing::requestMoveTargetReplan(const unsigned idx, dtPolyRef ref, const float* pos)
@@ -469,9 +417,9 @@ bool dtPathFollowing::requestMoveTargetReplan(const unsigned idx, dtPolyRef ref,
 	agParams->targetReplan = true;
 
 	if (agParams->targetRef)
-		agParams->targetState = DT_CROWDAGENT_TARGET_REQUESTING;
+		agParams->state = dtPathFollowingParams::TARGET_SUBMITTED;
 	else
-		agParams->targetState = DT_CROWDAGENT_TARGET_FAILED;
+		agParams->state = dtPathFollowingParams::INVALID_TARGET;
 
 	return true;
 }
@@ -484,10 +432,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 	int nqueue = 0;
 
 	// Fire off new requests.
-	if (oldAgent.state != DT_CROWDAGENT_STATE_INVALID && newParams.targetState != DT_CROWDAGENT_TARGET_NONE && 
-		newParams.targetState != DT_CROWDAGENT_TARGET_VELOCITY)
+	if (oldAgent.state != DT_CROWDAGENT_STATE_INVALID && newParams.state != dtPathFollowingParams::NO_TARGET)
 	{
-		if (newParams.targetState == DT_CROWDAGENT_TARGET_REQUESTING)
+		if (newParams.state == dtPathFollowingParams::TARGET_SUBMITTED)
 		{
 			const dtPolyRef* path = newParams.corridor.getPath();
 			const int npath = newParams.corridor.getPathCount();
@@ -547,17 +494,17 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 			if (reqPath[reqPathCount-1] == newParams.targetRef)
 			{
                 // The path has been completely computed during the initial pathfind.
-				newParams.targetState = DT_CROWDAGENT_TARGET_VALID;
+				newParams.state = dtPathFollowingParams::FOLLOWING_PATH;
 				newParams.targetReplanTime = 0.0;
 			}
 			else
 			{
 				// The path is longer or potentially unreachable, full plan.
-				newParams.targetState = DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE;
+				newParams.state = dtPathFollowingParams::WAITING_FOR_QUEUE;
 			}
 		}
 
-		if (newParams.targetState == DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+		if (newParams.state == dtPathFollowingParams::WAITING_FOR_QUEUE)
 		{
 			nqueue = addToPathQueue(oldAgent, queue, nqueue, PATH_MAX_AGENTS);
 		}
@@ -576,7 +523,7 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 		pfParams->targetPathqRef = m_pathQueue.request(pfParams->corridor.getLastPoly(), pfParams->targetRef,
 			pfParams->corridor.getTarget(), pfParams->targetPos, crowdQuery.getQueryFilter());
 		if (pfParams->targetPathqRef != DT_PATHQ_INVALID)
-			pfParams->targetState = DT_CROWDAGENT_TARGET_WAITING_FOR_PATH;
+			pfParams->state = dtPathFollowingParams::WAITING_FOR_PATH;
 	}
 
 
@@ -587,12 +534,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 
 	// Process path results.
 
-	if (oldAgent.active && newParams.targetState != DT_CROWDAGENT_TARGET_NONE && newParams.targetState != DT_CROWDAGENT_TARGET_VELOCITY)
+	if (oldAgent.active && newParams.state != dtPathFollowingParams::NO_TARGET)
 	{
-		/*if (newParams.targetState == DT_CROWDAGENT_TARGET_NONE || newParams.targetState == DT_CROWDAGENT_TARGET_VELOCITY)
-			continue;*/
-
-		if (newParams.targetState == DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+		if (newParams.state == dtPathFollowingParams::WAITING_FOR_PATH)
 		{
 			// Poll path queue.
 			status = m_pathQueue.getRequestStatus(newParams.targetPathqRef);
@@ -602,9 +546,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 				newParams.targetPathqRef = DT_PATHQ_INVALID;
 
 				if (newParams.targetRef)
-					newParams.targetState = DT_CROWDAGENT_TARGET_REQUESTING;
+					newParams.state = dtPathFollowingParams::TARGET_SUBMITTED;
 				else
-					newParams.targetState = DT_CROWDAGENT_TARGET_FAILED;
+					newParams.state = dtPathFollowingParams::INVALID_TARGET;
 
 				newParams.targetReplanTime = 0.0;
 			}
@@ -618,10 +562,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 				float targetPos[3];
 				dtVcopy(targetPos, newParams.targetPos);
 
-				dtPolyRef* res = m_pathResult;
 				bool valid = true;
 				int nres = 0;
-				status = m_pathQueue.getPathResult(newParams.targetPathqRef, res, &nres, m_maxPathRes);
+				status = m_pathQueue.getPathResult(newParams.targetPathqRef, m_pathResult, &nres, m_maxPathRes);
 				if (dtStatusFailed(status) || !nres)
 					valid = false;
 
@@ -633,7 +576,7 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 
 				// The last ref in the old path should be the same as
 				// the location where the request was issued..
-				if (valid && path[npath-1] != res[0])
+				if (valid && path[npath-1] != m_pathResult[0])
 					valid = false;
 
 				if (valid)
@@ -645,9 +588,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 						if ((npath-1)+nres > static_cast<int>(m_maxPathRes))
 							nres = m_maxPathRes - (npath-1);
 
-						memmove(res+npath-1, res, sizeof(dtPolyRef)*nres);
+						memmove(m_pathResult+npath-1, m_pathResult, sizeof(dtPolyRef)*nres);
 						// Copy old path in the beginning.
-						memcpy(res, path, sizeof(dtPolyRef)*(npath-1));
+						memcpy(m_pathResult, path, sizeof(dtPolyRef)*(npath-1));
 						nres += npath-1;
 
 						// Remove trackbacks
@@ -655,9 +598,9 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 						{
 							if (j-1 >= 0 && j+1 < nres)
 							{
-								if (res[j-1] == res[j+1])
+								if (m_pathResult[j-1] == m_pathResult[j+1])
 								{
-									memmove(res+(j-1), res+(j+1), sizeof(dtPolyRef)*(nres-(j+1)));
+									memmove(m_pathResult+(j-1), m_pathResult+(j+1), sizeof(dtPolyRef)*(nres-(j+1)));
 									nres -= 2;
 									j -= 2;
 								}
@@ -667,11 +610,11 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 					}
 
 					// Check for partial path.
-					if (res[nres-1] != newParams.targetRef)
+					if (m_pathResult[nres-1] != newParams.targetRef)
 					{
 						// Partial path, constrain target position inside the last polygon.
 						float nearest[3];
-						status = crowdQuery.getNavMeshQuery()->closestPointOnPoly(res[nres-1], targetPos, nearest);
+						status = crowdQuery.getNavMeshQuery()->closestPointOnPoly(m_pathResult[nres-1], targetPos, nearest);
 						if (dtStatusSucceed(status))
 							dtVcopy(targetPos, nearest);
 						else
@@ -682,14 +625,14 @@ void dtPathFollowing::updateMoveRequest(const dtCrowdQuery& crowdQuery, const dt
 				if (valid)
 				{
 					// Set current corridor.
-					newParams.corridor.setCorridor(targetPos, res, nres);
+					newParams.corridor.setCorridor(targetPos, m_pathResult, nres);
 
-					newParams.targetState = DT_CROWDAGENT_TARGET_VALID;
+					newParams.state = dtPathFollowingParams::FOLLOWING_PATH;
 				}
 				else
 				{
 					// Something went wrong.
-					newParams.targetState = DT_CROWDAGENT_TARGET_FAILED;
+					newParams.state = dtPathFollowingParams::INVALID_TARGET;
 				}
 
 				newParams.targetReplanTime = 0.0;
@@ -789,6 +732,8 @@ void dtPathFollowing::free(dtPathFollowing* ptr)
 	ptr = 0;
 }
 
+//// dtPathFollowingParams ////
+
 dtPathFollowingParams::dtPathFollowingParams() 
 	: debugInfos(0)
 	, debugIndex(0)
@@ -814,4 +759,32 @@ bool dtPathFollowingParams::init( unsigned maxPathResults, const float* position
 	corridor.reset(dest, nearest);
 
 	return true;
+}
+
+bool dtPathFollowingParams::submitTarget(const float* pos, dtPolyRef polyRef)
+{
+	if (!polyRef)
+		return false;
+    
+	// Initialize request.
+	targetRef = polyRef;
+	dtVcopy(targetPos, pos);
+	targetPathqRef = DT_PATHQ_INVALID;
+	targetReplan = false;
+	if (targetRef)
+		state = dtPathFollowingParams::TARGET_SUBMITTED;
+	else
+		state = dtPathFollowingParams::INVALID_TARGET;
+    
+	return true;
+}
+
+void dtPathFollowingParams::clearTarget()
+{
+	// Initialize request.
+	targetRef = 0;
+	dtVset(targetPos, 0,0,0);
+	targetPathqRef = DT_PATHQ_INVALID;
+	targetReplan = false;
+	state = dtPathFollowingParams::NO_TARGET;
 }
