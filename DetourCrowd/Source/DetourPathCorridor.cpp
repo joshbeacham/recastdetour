@@ -348,24 +348,7 @@ int dtPathCorridor::findCorners(float* cornerVerts, unsigned char* cornerFlags,
 	return ncorners;
 }
 
-/** 
-@par
-
-Inaccurate locomotion or dynamic obstacle avoidance can force the argent position significantly outside the 
-original corridor. Over time this can result in the formation of a non-optimal corridor. Non-optimal paths can 
-also form near the corners of tiles.
-
-This function uses an efficient local visibility search to try to optimize the corridor 
-between the current position and @p next.
-
-The corridor will change only if @p next is visible from the current position and moving directly toward the point 
-is better than following the existing path.
-
-The more inaccurate the agent movement, the more beneficial this function becomes. Simply adjust the frequency 
-of the call to match the needs to the agent.
-
-This function is not suitable for long distance searches.
-*/
+// @see dtPathFollowing::visibilityPathOptimizationRange
 void dtPathCorridor::optimizePathVisibility(const float* next, const float pathOptimizationRange,
 										  const dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
@@ -399,16 +382,7 @@ void dtPathCorridor::optimizePathVisibility(const float* next, const float pathO
 	}
 }
 
-/**
-@par
-
-Inaccurate locomotion or dynamic obstacle avoidance can force the agent position significantly outside the 
-original corridor. Over time this can result in the formation of a non-optimal corridor. This function will use a 
-local area path search to try to re-optimize the corridor.
-
-The more inaccurate the agent movement, the more beneficial this function becomes. Simply adjust the frequency of 
-the call to match the needs to the agent.
-*/
+// @see dtPathFollowing::localPathReplanningInterval
 bool dtPathCorridor::optimizePathTopology(dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
 	dtAssert(navquery);

@@ -21,7 +21,7 @@
                         {
                             "type": "pathFollowing",
                             "destination": [10, 0, 10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
                     {                       
@@ -49,7 +49,7 @@
                         {
                             "type": "pathFollowing",
                             "destination": [-10, 0, -10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
                     {                       
@@ -77,7 +77,7 @@
                         {
                             "type": "pathFollowing",
                             "destination": [10, 0, -10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
                     {                       
@@ -105,7 +105,7 @@
                         {
                             "type": "pathFollowing",
                             "destination": [-10, 0, 10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
                     {                       

@@ -21,7 +21,10 @@
                         {
                             "type": "pathFollowing",
                             "destination": [1, 0, -25],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6,
+                            "initialPathfindIterCount": 0,
+                            "anticipateTurns": true,
+                            "localPathReplanningInterval": 0.5
                         }
                     },
                     {                       

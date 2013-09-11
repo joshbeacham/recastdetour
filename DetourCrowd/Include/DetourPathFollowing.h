@@ -64,11 +64,6 @@ struct dtPathFollowingParams
     
     unsigned char state;			///< State of the movement request.
 
-    /** @name Parameters */
-    //@{
-	float pathOptimizationRange;    ///< The path visibility optimization range. [Limit: > 0]
-    //@}
-
 	/// Initializes the parameters.
 	/// The corridor will be initialized according to the given position
 	/// @param[in]	maxPathResult	The maximum number of polygons that can be stored in a corridor.
@@ -166,6 +161,36 @@ public:
     ///
     /// @remark Default value is 20.
     unsigned initialPathfindIterCount;
+    
+    /// Visibility-based path optimization distance.
+    ///
+    /// Inaccurate locomotion or dynamic obstacle avoidance can force the agent position
+    /// significantly outside the original path corridor. Over time this can result in the
+    /// formation of a non-optimal corridor.
+    /// Non-optimal paths can also form near the corners of tiles.
+    ///
+    /// Setting this parameter to a positive distance will perform, during the update, an
+    /// efficient local visibility search to try to optimize the corridor, finding
+    /// shortcuts.
+    ///
+    /// @remark Default value is -1 (the optimization is disabled).
+    float visibilityPathOptimizationRange;
+    
+    /// Local replanning time interval.
+    ///
+    /// Setting this parameter to a positive time will perform, at the specified frequency
+    /// a local area path find to try to re-optimize the corridor.
+    ///
+    /// This method compliment the one controlled by
+    /// dtPathFollowing::visibilityPathOptimizationRange
+    ////
+    /// @remark Default value is -1 (the replanning is disabled).
+    float localPathReplanningInterval;
+    
+    /// Enable the turn anticipations.
+    ///
+    /// @remark Default value is false.
+    bool anticipateTurns;
     //@}
     
     /// @see dtParametrizedBehavior::doUpdate

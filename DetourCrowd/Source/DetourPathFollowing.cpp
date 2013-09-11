@@ -29,15 +29,18 @@
 #include <cstring>
 
 
-dtPathFollowing::dtPathFollowing(unsigned nbMaxAgents) :
-	dtParametrizedBehavior<dtPathFollowingParams>(nbMaxAgents),
-    initialPathfindIterCount(20),
-	m_pathResult(0),
-	m_maxAgents(0),
-	m_maxPathRes(0),
-	m_maxCommonNodes(512),
-	m_maxPathQueueNodes(4096),
-	m_maxIterPerUpdate(100)
+dtPathFollowing::dtPathFollowing(unsigned nbMaxAgents)
+: dtParametrizedBehavior<dtPathFollowingParams>(nbMaxAgents)
+, initialPathfindIterCount(20)
+, visibilityPathOptimizationRange(-1.)
+, localPathReplanningInterval(-1.)
+, anticipateTurns(false)
+, m_pathResult(0)
+, m_maxAgents(0)
+, m_maxPathRes(0)
+, m_maxCommonNodes(512)
+, m_maxPathQueueNodes(4096)
+, m_maxIterPerUpdate(100)
 {
 }
 
@@ -92,7 +95,7 @@ void dtPathFollowing::getVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& ne
 	float dvel[] = {0, 0, 0};
 
     // Calculate steering direction.
-    if (oldAgent.updateFlags & DT_CROWD_ANTICIPATE_TURNS)
+    if (anticipateTurns)
         calcSmoothSteerDirection(oldAgent, dvel, &agParams);
     else
         calcStraightSteerDirection(oldAgent, dvel, &agParams);
@@ -213,13 +216,10 @@ void dtPathFollowing::getNextCorner(const dtCrowdQuery& crowdQuery, const dtCrow
 
 	// Check to see if the corner after the next corner is directly visible,
 	// and short cut to there.
-	if ((ag.updateFlags & DT_CROWD_OPTIMIZE_VIS) && agParams.ncorners > 0)
+	if (visibilityPathOptimizationRange > 0. && agParams.ncorners > 0)
 	{
-		dtPathFollowingParams* params = this->getBehaviorParams(ag.id);
-		float pathOptRange = (params) ? params->pathOptimizationRange : 0.f;
-
 		const float* target = &agParams.cornerVerts[dtMin<unsigned>(1,agParams.ncorners-1)*3];
-		agParams.corridor.optimizePathVisibility(target, pathOptRange, crowdQuery.getNavMeshQuery(), crowdQuery.getQueryFilter());
+		agParams.corridor.optimizePathVisibility(target, visibilityPathOptimizationRange, crowdQuery.getNavMeshQuery(), crowdQuery.getQueryFilter());
 
 		// Copy data for debug purposes.
 		if (debugIdx == static_cast<int>(this->getBehaviorParams(ag.id)->debugIndex))
@@ -241,20 +241,15 @@ void dtPathFollowing::getNextCorner(const dtCrowdQuery& crowdQuery, const dtCrow
 
 void dtPathFollowing::updateTopologyOptimization(const dtCrowdQuery& crowdQuery, const dtCrowdAgent& ag, const float dt, dtPathFollowingParams* agParams)
 {
-	const float OPT_TIME_THR = 0.5f; // seconds
-	//const int OPT_MAX_AGENTS = 1;
-	//dtCrowdAgent* queue[OPT_MAX_AGENTS];
-	//int nqueue = 0;
-
 	if (ag.state != DT_CROWDAGENT_STATE_WALKING)
 		return;
 	if (agParams->state == dtPathFollowingParams::NO_TARGET)
 		return;
-	if ((ag.updateFlags & DT_CROWD_OPTIMIZE_TOPO) == 0)
+	if (localPathReplanningInterval < 0.)
 		return;
 	agParams->topologyOptTime += dt;
 
-	if (agParams->topologyOptTime >= OPT_TIME_THR)
+	if (agParams->topologyOptTime >= localPathReplanningInterval)
     {
         agParams->corridor.optimizePathTopology(const_cast<dtNavMeshQuery*>(crowdQuery.getNavMeshQuery()), crowdQuery.getQueryFilter());
 		agParams->topologyOptTime = 0;
@@ -735,11 +730,20 @@ void dtPathFollowing::free(dtPathFollowing* ptr)
 //// dtPathFollowingParams ////
 
 dtPathFollowingParams::dtPathFollowingParams() 
-	: debugInfos(0)
+	: state(NO_TARGET)
+    , targetPos()
+    , targetRef(0)
+    , targetReplanTime(0.f)
+    , targetReplan()
+    , targetPathqRef()
+    , corridor()
+    , ncorners(0)
+    , cornerVerts()
+    , cornerFlags()
+    , cornerPolys()
+    , topologyOptTime(0)
+    , debugInfos(0)
 	, debugIndex(0)
-	, pathOptimizationRange(6.f)
-	, ncorners(0)
-	, topologyOptTime(0)
 {
 }
 

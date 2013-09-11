@@ -89,8 +89,6 @@ struct dtCrowdAgent
 	float maxSpeed;                 ///< Maximum allowed speed. [Limit: >= 0]
 	float perceptionDistance;       ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
 
-	unsigned char updateFlags;		///< Flags that impact steering behavior. (See: #UpdateFlags)
-
 	float offmeshInitPos[3];
 	float offmeshStartPos[3];
 	float offmeshEndPos[3];			///< initial, starting and ending position of the animation
@@ -106,18 +104,6 @@ struct dtCrowdAgent
     ///
     /// @remark No memory allocation is performed.
     void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float perceptionDistance = 4.f);
-};
-
-/// Crowd agent update flags.
-/// @ingroup crowd
-/// @see dtCrowdAgent::updateFlags
-enum UpdateFlags
-{
-	DT_CROWD_ANTICIPATE_TURNS = 1,
-	DT_CROWD_OBSTACLE_AVOIDANCE = 2,
-	DT_CROWD_SEPARATION = 4,
-	DT_CROWD_OPTIMIZE_VIS = 8,			///< Use #dtPathCorridor::optimizePathVisibility() to optimize the agent path.
-	DT_CROWD_OPTIMIZE_TOPO = 16,		///< Use dtPathCorridor::optimizePathTopology() to optimize the agent path.
 };
 
 /// Utility class used to get access to some useful elements of the crowd
