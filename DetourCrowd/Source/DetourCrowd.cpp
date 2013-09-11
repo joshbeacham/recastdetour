@@ -388,6 +388,9 @@ void dtCrowd::updateVelocity(const float dt, unsigned* agentsIdx, unsigned nbIdx
 		if (!getActiveAgent(&ag, agentsIdx[i]))
 			continue;
 		
+        // Reinitialize the desired velocity to 0. as it needs to be set by the behaviors.
+        dtVset(ag->desiredVelocity, 0.f, 0.f, 0.f);
+        
 		if (ag->behavior)
 			ag->behavior->update(*m_crowdQuery, *ag, *ag, dt);
 	}

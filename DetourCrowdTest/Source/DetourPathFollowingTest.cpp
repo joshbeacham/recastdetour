@@ -69,7 +69,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
     REQUIRE(crowd->pushAgent(ag2));
     
     dtPathFollowing* pf1 = dtPathFollowing::allocate(2);
-    dtPathFollowingParams* pfParams = pf1->getBehaviorParams(crowd->getAgent(ag1.id)->id);
+    dtPathFollowingParams* pfParams1 = pf1->getBehaviorParams(crowd->getAgent(ag1.id)->id);
     dtPathFollowingParams* pfParams2 = pf1->getBehaviorParams(crowd->getAgent(ag2.id)->id);
     
     REQUIRE(crowd->pushAgentBehavior(ag1.id, pf1));
@@ -84,30 +84,54 @@ SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
         
 		// Set the destinations
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
-			&pfParams->targetRef, 0);
+			&pfParams1->targetRef, 0);
 		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
 			&pfParams2->targetRef, 0);
-		REQUIRE(pf1->getBehaviorParams(ag1.id)->submitTarget(destAgt1,pfParams->targetRef));
-        REQUIRE(pf1->getBehaviorParams(ag2.id)->submitTarget(destAgt2,pfParams2->targetRef));
+		REQUIRE(pfParams1->submitTarget(destAgt1,pfParams1->targetRef));
+        REQUIRE(pfParams2->submitTarget(destAgt2,pfParams2->targetRef));
         
         WHEN("Updated for 3s at 10 Hz")
         {
             for (int i = 0; i < 30; ++i)
                 crowd->update(0.1f);
             
+            dtCrowdAgent ag1_step1, ag2_step1;
+            crowd->fetchAgent(ag1_step1, ag1.id);
+            crowd->fetchAgent(ag2_step1, ag2.id);
+            
             THEN("Agents have moved at (roughly) their maximum speed")
             {
-                CHECK(fabs(dtVdist2D(crowd->getAgent(ag1.id)->position, posAgt1) - ag1.maxSpeed * 3.f) < 0.05f * ag1.maxSpeed * 3.f);
-                CHECK(fabs(dtVdist2D(crowd->getAgent(ag2.id)->position, posAgt1) - ag2.maxSpeed * 3.f) < 0.05f * ag2.maxSpeed * 3.f);
+                CHECK(fabs(dtVdist2D(ag1_step1.position, posAgt1) - ag1.maxSpeed * 3.f) < 0.05f * ag1.maxSpeed * 3.f);
+                CHECK(fabs(dtVdist2D(ag2_step1.position, posAgt1) - ag2.maxSpeed * 3.f) < 0.05f * ag2.maxSpeed * 3.f);
             }
             
             THEN("Agents have moved in straight line toward their destination")
             {
-                CHECK(fabs(crowd->getAgent(ag1.id)->position[0]-destAgt1[0]) < fabs(posAgt1[0]-destAgt1[0]));
-                CHECK(fabs(crowd->getAgent(ag1.id)->position[2]-destAgt1[2]) < 0.1f);
+                CHECK(fabs(ag1_step1.position[0]-destAgt1[0]) < fabs(ag1.position[0]-destAgt1[0]));
+                CHECK(fabs(ag1_step1.position[2]-destAgt1[2]) < 0.1f);
                 
-                CHECK(fabs(crowd->getAgent(ag2.id)->position[0]-destAgt2[0]) < fabs(posAgt2[0]-destAgt2[0]));
-                CHECK(fabs(crowd->getAgent(ag2.id)->position[2]-destAgt2[2]) < 0.1f);
+                CHECK(fabs(ag2_step1.position[0]-destAgt2[0]) < fabs(ag2.position[0]-destAgt2[0]));
+                CHECK(fabs(ag2_step1.position[2]-destAgt2[2]) < 0.1f);
+                
+                AND_WHEN("The second agent's target is cleared")
+                {
+                    pfParams2->clearTarget();
+                    
+                    for (int i = 0; i < 30; ++i)
+                        crowd->update(0.1f);
+                    
+                    dtCrowdAgent ag1_step2, ag2_step2;
+                    crowd->fetchAgent(ag1_step2, ag1.id);
+                    crowd->fetchAgent(ag2_step2, ag2.id);
+                    
+                    THEN("The first agent have continued to move in straight line, the second is standing still")
+                    {
+                        CHECK(fabs(ag1_step1.position[0]-destAgt1[0]) < fabs(ag1.position[0]-destAgt1[0]));
+                        CHECK(fabs(ag1_step1.position[2]-destAgt1[2]) < 0.1f);
+                        
+                        CHECK(dtVdist2D(ag2_step2.position, ag2_step1.position) < 0.5f); // Larger threshold to take into account the non-instant stop
+                    }
+                }
             }
         }
         

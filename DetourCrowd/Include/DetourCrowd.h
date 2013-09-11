@@ -78,7 +78,7 @@ struct dtCrowdAgent
 	unsigned char state;			///< The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
 	
 	float position[3];				///< The current agent position. [(x, y, z)]
-	float desiredVelocity[3];		///< The desired velocity of the agent. [(x, y, z)]
+	float desiredVelocity[3];		///< The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update. [(x, y, z)]
 	float velocity[3];				///< The actual velocity of the agent. [(x, y, z)]
 			
 	dtBehavior* behavior;			///< The behavior used by the agent
