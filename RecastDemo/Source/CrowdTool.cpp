@@ -588,7 +588,7 @@ void CrowdToolState::setMoveTarget(const float* p, bool adjust)
 		{
 			const dtCrowdAgent* ag = crowd->getAgent(i);
 			if (!ag->active) continue;
-			m_pf->requestMoveTarget(ag->id, m_targetRef, m_targetPos);
+			m_pf->getBehaviorParams(ag->id)->submitTarget(m_targetPos, m_targetRef);
 		}
 	}
 }
