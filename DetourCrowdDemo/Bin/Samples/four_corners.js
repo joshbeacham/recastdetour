@@ -24,7 +24,7 @@
                             "visibilityPathOptimizationRange": 6
                         }
                     },
-                    {                       
+                    {
                         "behavior":
                         {
                             "type": "collisionAvoidance"

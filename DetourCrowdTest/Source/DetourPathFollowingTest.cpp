@@ -83,12 +83,8 @@ SCENARIO("DetourPathFollowingTest/PathFollowingOnly", "[detourPathFollowing]")
         const float destAgt2[] = {18, 0, 1};
         
 		// Set the destinations
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
-			&pfParams1->targetRef, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
-			&pfParams2->targetRef, 0);
-		REQUIRE(pfParams1->submitTarget(destAgt1,pfParams1->targetRef));
-        REQUIRE(pfParams2->submitTarget(destAgt2,pfParams2->targetRef));
+		pfParams1->submitTarget(destAgt1,0);
+        pfParams2->submitTarget(destAgt2,0);
         
         WHEN("Updated for 3s at 10 Hz")
         {
@@ -171,7 +167,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
     dtBehavior* pipelineBehaviors[] = {pathFollowing, collisionAvoidance};
     pipeline->setBehaviors(pipelineBehaviors, 2);
     
-    dtPathFollowingParams* pathFollowingParams = pathFollowing->getBehaviorParams(crowd->getAgent(a1.id)->id);
+    dtPathFollowingParams* pathFollowingParams = pathFollowing->getBehaviorParams(a1.id);
     
     crowd->pushAgentBehavior(a1.id, pipeline);
     
@@ -181,11 +177,25 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
     GIVEN("A valid destination")
 	{
         const float a1Destination[] = {-18, 0, 0};
+		pathFollowingParams->submitTarget(a1Destination, 0);
         
-		// Set the destination
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(a1Destination, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pathFollowingParams->targetRef, 0);
-
-		REQUIRE(pathFollowingParams->submitTarget(a1Destination, pathFollowingParams->targetRef));
+        WHEN("Updated once")
+        {
+            crowd->update(0.1f);
+            
+            THEN("The target polygon has been computed")
+            {
+                CHECK(crowd->getCrowdQuery()->getNavMeshQuery()->isValidPolyRef(pathFollowingParams->targetRef, crowd->getCrowdQuery()->getQueryFilter()));
+                dtPolyRef poly;
+                CHECK(dtStatusSucceed(crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(
+                                                                                                 a1Destination,
+                                                                                                 crowd->getCrowdQuery()->getQueryExtents(),
+                                                                                                 crowd->getCrowdQuery()->getQueryFilter(),
+                                                                                                 &poly,
+                                                                                                 0)));
+                CHECK(poly == pathFollowingParams->targetRef);
+            }
+        }
         
         WHEN("Updated for 3s at 10 Hz")
         {
@@ -213,7 +223,7 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
         {
             for (int i = 0; i < 300; ++i)
             {
-                CHECK(pathFollowingParams->submitTarget(a1Destination, pathFollowingParams->targetRef));
+                pathFollowingParams->submitTarget(pathFollowingParams->targetPos, pathFollowingParams->targetRef);
                 crowd->update(0.01f);
             }
             
@@ -223,6 +233,22 @@ SCENARIO("DetourPathFollowingTest/PathFollowingAndCollisionAvoidance", "[detourP
             }
         }
 	}
+    
+    GIVEN("An invalid destination")
+	{
+        const float invalidTarget[] = {-1000, 0, 0};
+        pathFollowing->getBehaviorParams(a1.id)->submitTarget(invalidTarget, 0);
+        WHEN("Updated once")
+        {
+            crowd->update(0.1f);
+            
+            THEN("The target is invalid")
+            {
+                CHECK(pathFollowing->getBehaviorParams(a1.id)->targetRef == 0);
+                CHECK(pathFollowing->getBehaviorParams(a1.id)->state == pathFollowingParams->INVALID_TARGET);
+            }
+        }
+    }
     
     dtPipelineBehavior::free(pipeline);
     dtPathFollowing::free(pathFollowing);

@@ -146,10 +146,7 @@ TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behavi
 		crowd->pushAgentBehavior(ag5.id, pf);
 
 		// Set the destination
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destLeader, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), 
-																&pfParams->targetRef, 0);
-		REQUIRE(pfParams->targetRef != 0);
-		REQUIRE(pfParams->submitTarget(destLeader, pfParams->targetRef));
+		pfParams->submitTarget(destLeader, 0);
 
 		// We perform several update on the flocking group.
 		for (int i = 0; i < 100; ++i)
@@ -161,7 +158,8 @@ TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behavi
 			float vel[3];
 			dtVcopy(vel, crowd->getAgent(i)->velocity);
 
-			CHECK((vel[0] < 0 && vel[2] < 0));
+			CHECK(vel[0] < 0);
+            CHECK(vel[2] < 0);
 		}
 
 		// We perform several update in order to reach the point where the agents aren't moving anymore
@@ -282,11 +280,8 @@ TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behavi
 		crowd->pushAgentBehavior(ag3.id, pf1);
 
 		// Set the destination
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pfParams->targetRef, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt3, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &pfParams2->targetRef, 0);
-
-		REQUIRE(pfParams->submitTarget(destAgt2, pfParams->targetRef));
-        REQUIRE(pfParams2->submitTarget(destAgt3, pfParams2->targetRef));
+		pfParams->submitTarget(destAgt2);
+        pfParams2->submitTarget(destAgt3);
 
 		unsigned targets[] = {1, 2};
 		dtAlignmentBehavior* align = dtAlignmentBehavior::allocate(1);

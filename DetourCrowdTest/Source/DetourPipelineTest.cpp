@@ -72,7 +72,7 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 
 	REQUIRE(dest != 0);		
 	REQUIRE(pf->init(*crowd->getCrowdQuery()));
-	REQUIRE(pf->getBehaviorParams(ag.id)->submitTarget(destAgt1, dest));
+	pf->getBehaviorParams(ag.id)->submitTarget(destAgt1, dest);
 
 	SECTION("Adding and Removing behaviors to the pipeline", "Trying to add and remove behaviors into the pipeline, should not crash")
 	{

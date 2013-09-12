@@ -76,9 +76,9 @@ struct dtPathFollowingParams
     //@{
     /// Submits a new target.
     /// @param[in] pos The position of the target [(x, y, z)].
-	/// @param[in] ref The navmesh polygon reference to which the target belong.
+	/// @param[in] ref The navmesh polygon reference to which the target belong, used as a hint to locate the target, default value is no hint.
 	/// @return True if the request was successfully submitted.
-	bool submitTarget(const float* pos, dtPolyRef polyRef);
+	void submitTarget(const float* pos, dtPolyRef polyRef = 0);
     
     /// Clear the current target.
 	/// @return True if the request was successfully clear.
@@ -242,16 +242,6 @@ private:
 	/// @param[out]		newAgent		The agent storing the new parameters.
 	/// @param[in]		agParams		The parameters of the agent for this behavior
 	void triggerOffMeshConnections(const dtCrowdQuery& crowdQuery, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, dtPathFollowingParams* agParams);
-
-	/// Submits a new move request for the specified agent.
-	/// Sets a flag indicate that the path of the agent is being replanned.
-	///
-	/// @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
-	/// @param[in]		ref		A reference to the destination polygon
-	/// @param[in]		pos		The destination
-	///
-	/// @return True if the request was successfully submitted.
-	bool requestMoveTargetReplan(const unsigned idx, dtPolyRef ref, const float* pos);
 
 	/// Moves an agent into a list according to the last time since its target was replanned.
 	///
