@@ -151,16 +151,33 @@ public:
 
 	/// Initializes the behavior.
 	///
-	/// Must be called before using the behavior.
-	/// @param[in]		maxCircles	Maximal number of circles supported by the obstacle avoidance query.
-	/// @param[in]		maxSegments	Maximal number of segments supported by the obstacle avoidance query.
-	///
 	/// @return True if the initialization succeeded.
-	bool init(unsigned maxCircles = 6, unsigned maxSegments = 8);
+	bool init();
 
 	/// Cleans the behavior.
 	void purge();
 	
+    /// @name Number of considered obstacles parameters
+    ///
+    /// @remark Changes to these require a call to @ref resizeObstaclesContainer to be
+    /// taken into account.
+    //@{
+    /// The maximum number of circle obstacles (i.e. only agents at the moment) that
+    /// can be taken into account by the avoidance algorithm
+    ///
+    /// @remark Default value is 6.
+    unsigned maximumCircleObstaclesCount;
+    
+    /// The maximum number of segment obstacles (i.e. walls) that can be taken
+    /// into account by the avoidance algorithm
+    ///
+    /// @remark Default value is 8.
+    unsigned maximumSegmentObstaclesCount;
+    
+    /// Resize the container for obstacles according to the set sizes.
+    bool resizeObstaclesContainer();
+    //@}
+    
 	/// Returns the number of velocity samples.
 	int getVelocitySamplesCount() const { return m_velocitySamplesCount; }
     
@@ -170,8 +187,6 @@ public:
 private:
     dtCollisionAvoidance(const dtCollisionAvoidance&);
     dtCollisionAvoidance& operator=(const dtCollisionAvoidance&);
-
-
 
 	/// Registers all the neighbors of the given agent as obstacles.
 	///
@@ -188,23 +203,7 @@ private:
 	void updateVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
 		const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams);
 
-	/// Resets the number of circles and segments.
-	void reset();
-
-	/// Adds a circle to the obstacles list.
-	///
-	/// @param[in]		pos		The position of the circle.
-	/// @param[in]		rad		The radius of the circle.
-	/// @param[in]		vel		The current velocity of the obstacle.
-	/// @param[in]		dvel	The desired velocity of the obstacle.
-	void addCircle(const float* pos, const float rad,
-		const float* vel, const float* dvel);
 	
-	/// Adds a segment to the obstacles list.
-	///
-	/// @param[in]	p	The position of the segment.
-	/// @param[in]	q	The radius of the segment.
-	void addSegment(const float* p, const float* q);
 	
 	/// Computes the desired velocity of an agent.
 	///
@@ -219,15 +218,6 @@ private:
 	int sampleVelocityAdaptive(const float* pos, const float rad, const float vmax,
 							   const float* vel, const float* dvel, float* nvel,
 							   const dtCollisionAvoidanceParams& oldParams, dtCollisionAvoidanceParams& newParams);
-
-	/// Access to the obstacles (other agents for instance)
-	/// @{
-	inline unsigned getObstacleCircleCount() const { return m_ncircles; }
-	const dtObstacleCircle* getObstacleCircle(const int i) { return &m_circles[i]; }
-
-	inline unsigned getObstacleSegmentCount() const { return m_nsegments; }
-	const dtObstacleSegment* getObstacleSegment(const int i) { return &m_segments[i]; }
-	/// @}
 
 	/// Checks if the agent is in conflict with the registered obstacles.
 	///
@@ -256,13 +246,25 @@ private:
 	float m_invHorizTime;              
 	float m_invVmax;						///< The inverse of the maximal speed.
 
-	int m_maxCircles;						///< Maximum number of circles.
-	dtObstacleCircle* m_circles;			///< The obstacles as circles.
-	int m_ncircles;							///< Number of registered circles.
-
-	int m_maxSegments;						///< Maximum number of segments.
-	dtObstacleSegment* m_segments;			///< The obstacles as segments.
-	int m_nsegments;						///< Number of registered segments.
+    /// Adds a circle to the obstacles list.
+	///
+	/// @param[in]		pos		The position of the circle.
+	/// @param[in]		rad		The radius of the circle.
+	/// @param[in]		vel		The current velocity of the obstacle.
+	/// @param[in]		dvel	The desired velocity of the obstacle.
+	void addCircle(const float* pos, const float rad,
+                   const float* vel, const float* dvel);
+	
+	/// Adds a segment to the obstacles list.
+	///
+	/// @param[in]	p	The position of the segment.
+	/// @param[in]	q	The radius of the segment.
+	void addSegment(const float* p, const float* q);
+    
+	dtObstacleCircle* m_circles;    ///< The circle obstacles.
+	unsigned m_circlesCount;		///< Circle obstacles count.
+	dtObstacleSegment* m_segments;	///< The segment obstacles.
+	unsigned m_segmentsCount;		///< Segment obstacles count.
 };
 
 #endif

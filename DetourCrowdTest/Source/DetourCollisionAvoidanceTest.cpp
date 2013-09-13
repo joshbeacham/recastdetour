@@ -53,4 +53,15 @@ SCENARIO("DetourCollisionAvoidanceTest/DefaultParams", "[detourCollisionAvoidanc
             CHECK(p.debug == 0);
         }
     }
+    
+    GIVEN("A default constructed collision avoidance")
+    {
+        dtCollisionAvoidance b(34);
+        
+        THEN("The parameters have the expected default values")
+        {
+            CHECK(b.maximumSegmentObstaclesCount == 8);
+            CHECK(b.maximumCircleObstaclesCount == 6);
+        }
+    }
 }

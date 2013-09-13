@@ -45,13 +45,13 @@ dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
 
 dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
 : dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents)
+, maximumCircleObstaclesCount(6)
+, maximumSegmentObstaclesCount(8)
 , m_velocitySamplesCount(0)
-, m_maxCircles(0)
 , m_circles(0)
-, m_ncircles(0)
-, m_maxSegments(0)
+, m_circlesCount(0)
 , m_segments(0)
-, m_nsegments(0)
+, m_segmentsCount(0)
 {
 }
 
@@ -80,29 +80,10 @@ void dtCollisionAvoidance::free(dtCollisionAvoidance* ptr)
 	ptr = 0;
 }
 
-bool dtCollisionAvoidance::init(unsigned maxCircles, unsigned maxSegments)
+bool dtCollisionAvoidance::init()
 {
 	purge();
-
-	m_maxCircles = maxCircles;
-	m_ncircles = 0;
-	m_circles = (dtObstacleCircle*)dtAlloc(sizeof(dtObstacleCircle)*m_maxCircles, DT_ALLOC_PERM);
-
-	if (!m_circles)
-		return false;
-
-	memset(m_circles, 0, sizeof(dtObstacleCircle)*m_maxCircles);
-
-	m_maxSegments = maxSegments;
-	m_nsegments = 0;
-	m_segments = (dtObstacleSegment*)dtAlloc(sizeof(dtObstacleSegment)*m_maxSegments, DT_ALLOC_PERM);
-
-	if (!m_segments)
-		return false;
-
-	memset(m_segments, 0, sizeof(dtObstacleSegment)*m_maxSegments);
-
-	return true;
+	return resizeObstaclesContainer();
 }
 
 void dtCollisionAvoidance::purge()
@@ -114,7 +95,36 @@ void dtCollisionAvoidance::purge()
 	m_segments = 0;
 }
 
-void dtCollisionAvoidance::doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
+bool dtCollisionAvoidance::resizeObstaclesContainer()
+{
+	m_circlesCount = 0;
+    
+    if (m_circles)
+        dtFree(m_circles);
+    
+	m_circles = (dtObstacleCircle*)dtAlloc(sizeof(dtObstacleCircle)*maximumCircleObstaclesCount, DT_ALLOC_PERM);
+    
+	if (!m_circles)
+		return false;
+    
+	memset(m_circles, 0, sizeof(dtObstacleCircle)*maximumCircleObstaclesCount);
+    
+	m_segmentsCount = 0;
+    
+    if (m_segments)
+        dtFree(m_segments);
+    
+	m_segments = (dtObstacleSegment*)dtAlloc(sizeof(dtObstacleSegment)*maximumSegmentObstaclesCount, DT_ALLOC_PERM);
+    
+	if (!m_segments)
+		return false;
+    
+	memset(m_segments, 0, sizeof(dtObstacleSegment)*m_segmentsCount);
+    
+    return true;
+}
+
+void dtCollisionAvoidance::doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent,
 	const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float /*dt*/)
 {
 	m_velocitySamplesCount = 0;
@@ -125,7 +135,7 @@ void dtCollisionAvoidance::doUpdate(const dtCrowdQuery& query, const dtCrowdAgen
 
 void dtCollisionAvoidance::addObtacles(const dtCrowdAgent& ag, const dtCrowdQuery& query)
 {
-	reset();
+	m_segmentsCount = m_circlesCount = 0;
 	const dtCrowdAgentEnvironment* agEnv = query.getAgentEnvironment(ag.id);
 
 	// Add neighbours as obstacles.
@@ -321,19 +331,13 @@ void dtObstacleAvoidanceDebugData::normalizeSamples()
 	normalizeArray(m_tpen, m_nsamples);
 }
 
-void dtCollisionAvoidance::reset()
-{
-	m_ncircles = 0;
-	m_nsegments = 0;
-}
-
 void dtCollisionAvoidance::addCircle(const float* pos, const float rad,
 									 const float* vel, const float* dvel)
 {
-	if (m_ncircles >= m_maxCircles)
+	if (m_circlesCount >= maximumCircleObstaclesCount)
 		return;
 
-	dtObstacleCircle* cir = &m_circles[m_ncircles++];
+	dtObstacleCircle* cir = &m_circles[m_circlesCount++];
 	dtVcopy(cir->position, pos);
 	cir->radius = rad;
 	dtVcopy(cir->velocity, vel);
@@ -342,10 +346,10 @@ void dtCollisionAvoidance::addCircle(const float* pos, const float rad,
 
 void dtCollisionAvoidance::addSegment(const float* p, const float* q)
 {
-	if (m_nsegments > m_maxSegments)
+	if (m_segmentsCount > maximumSegmentObstaclesCount)
 		return;
 
-	dtObstacleSegment* seg = &m_segments[m_nsegments++];
+	dtObstacleSegment* seg = &m_segments[m_segmentsCount++];
 	dtVcopy(seg->p, p);
 	dtVcopy(seg->q, q);
 }
@@ -353,7 +357,7 @@ void dtCollisionAvoidance::addSegment(const float* p, const float* q)
 void dtCollisionAvoidance::prepare(const float* pos, const float* dvel)
 {
 	// Prepare obstacles
-	for (int i = 0; i < m_ncircles; ++i)
+	for (int i = 0; i < m_circlesCount; ++i)
 	{
 		dtObstacleCircle* cir = &m_circles[i];
 
@@ -380,7 +384,7 @@ void dtCollisionAvoidance::prepare(const float* pos, const float* dvel)
 		}
 	}	
 
-	for (int i = 0; i < m_nsegments; ++i)
+	for (int i = 0; i < m_segmentsCount; ++i)
 	{
 		dtObstacleSegment* seg = &m_segments[i];
 
@@ -402,7 +406,7 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 	float side = 0;
 	int nside = 0;
 
-	for (int i = 0; i < m_ncircles; ++i)
+	for (int i = 0; i < m_circlesCount; ++i)
 	{
 		const dtObstacleCircle* cir = &m_circles[i];
 
@@ -435,7 +439,7 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 		}
 	}
 
-	for (int i = 0; i < m_nsegments; ++i)
+	for (int i = 0; i < m_segmentsCount; ++i)
 	{
 		const dtObstacleSegment* seg = &m_segments[i];
 		float htmin = 0;
@@ -496,7 +500,7 @@ int dtCollisionAvoidance::sampleVelocityAdaptive(const float* pos, const float r
 
 	dtVset(nvel, 0,0,0);
 
-	if (oldParams.debug)
+	if (newParams.debug)
 		newParams.debug->reset();
 
 	// Build sampling pattern aligned to desired velocity.
