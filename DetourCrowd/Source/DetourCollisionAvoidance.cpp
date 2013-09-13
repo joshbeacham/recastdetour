@@ -35,7 +35,6 @@ dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
     ,weightSide(0.75f)
     ,weightToi(2.5f)
     ,horizTime(2.5f)
-    ,gridSize(33)
     ,adaptiveDivs(7)
     ,adaptiveRings(2)
     ,adaptiveDepth(5)
@@ -44,16 +43,15 @@ dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
     // NOTHING
 }
 
-dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents) :
-	dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents),
-	m_velocitySamplesCount(0),
-	m_maxAvoidanceParams(4),
-	m_maxCircles(0),
-	m_circles(0),
-	m_ncircles(0),
-	m_maxSegments(0),
-	m_segments(0),
-	m_nsegments(0)
+dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
+: dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents)
+, m_velocitySamplesCount(0)
+, m_maxCircles(0)
+, m_circles(0)
+, m_ncircles(0)
+, m_maxSegments(0)
+, m_segments(0)
+, m_nsegments(0)
 {
 }
 
@@ -494,7 +492,6 @@ int dtCollisionAvoidance::sampleVelocityAdaptive(const float* pos, const float r
 	prepare(pos, dvel);
 
 	m_invHorizTime = 1.0f / oldParams.horizTime;
-	m_vmax = vmax;
 	m_invVmax = 1.0f / vmax;
 
 	dtVset(nvel, 0,0,0);

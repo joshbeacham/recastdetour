@@ -125,7 +125,6 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 			params->weightSide = 0.75f;
 			params->weightToi = 2.5f;
 			params->horizTime = 2.5f;
-			params->gridSize = 33;
 			params->adaptiveDivs = 7;
 			params->adaptiveRings = 2;
 			params->adaptiveDepth = 5;

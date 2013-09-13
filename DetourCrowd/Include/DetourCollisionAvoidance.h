@@ -118,7 +118,6 @@ struct dtCollisionAvoidanceParams
 	float weightSide;
 	float weightToi;
 	float horizTime;
-	unsigned char gridSize;			///< grid
 	unsigned char adaptiveDivs;		///< adaptive
 	unsigned char adaptiveRings;	///< adaptive
 	unsigned char adaptiveDepth;	///< adaptive
@@ -253,10 +252,8 @@ private:
 		dtCollisionAvoidanceParams& newParams);
 
 	int m_velocitySamplesCount;				///< The number of velocity samples generate on the last frame.
-	const int m_maxAvoidanceParams;			///< The maximum number of crowd avoidance configurations supported by the collision avoidance.
 
-	float m_invHorizTime;		
-	float m_vmax;							///< The maximal speed.
+	float m_invHorizTime;              
 	float m_invVmax;						///< The inverse of the maximal speed.
 
 	int m_maxCircles;						///< Maximum number of circles.
@@ -266,8 +263,6 @@ private:
 	int m_maxSegments;						///< Maximum number of segments.
 	dtObstacleSegment* m_segments;			///< The obstacles as segments.
 	int m_nsegments;						///< Number of registered segments.
-
-	const dtCrowdAgentEnvironment* m_env;	///< The environment of the agents (neighborhood, etc.)
 };
 
 #endif

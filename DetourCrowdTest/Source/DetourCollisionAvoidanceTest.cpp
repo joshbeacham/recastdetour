@@ -47,7 +47,6 @@ SCENARIO("DetourCollisionAvoidanceTest/DefaultParams", "[detourCollisionAvoidanc
             CHECK(p.weightSide == 0.75f);
             CHECK(p.weightToi == 2.5f);
             CHECK(p.horizTime == 2.5f);
-            CHECK(p.gridSize == 33);
             CHECK(p.adaptiveDivs == 7);
             CHECK(p.adaptiveRings == 2);
             CHECK(p.adaptiveDepth == 5);
