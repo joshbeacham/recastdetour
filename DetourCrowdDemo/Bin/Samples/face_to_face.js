@@ -31,7 +31,8 @@
                             "weightDesiredVelocity": 2.0,
                             "weightCurrentVelocity": 0.75,
                             "weightCurrentAvoidanceSide": 0.75,
-                            "weightTimeToCollision": 2.5
+                            "weightTimeToCollision": 2.5,
+                            "sampleOriginScale": 0.4
                         }
                     }
                 ]
@@ -63,7 +64,8 @@
                             "weightDesiredVelocity": 2.0,
                             "weightCurrentVelocity": 0.75,
                             "weightCurrentAvoidanceSide": 0.75,
-                            "weightTimeToCollision": 2.5
+                            "weightTimeToCollision": 2.5,
+                            "sampleOriginScale": 0.4
                         }
                     }
                 ]

@@ -163,28 +163,28 @@ void CrowdToolState::init(class Sample* sample)
 		//memcpy(&params, crowd->getObstacleAvoidanceParams(0), sizeof(dtObstacleAvoidanceParams));
 		//
 		//// Low (11)
-		//params.velBias = 0.5f;
+		//params.sampleOriginScale = 0.5f;
 		//params.sampleSectorsCount = 5;
 		//params.sampleRingsCount = 2;
 		//params.sampleLevelsCount = 1;
 		//crowd->setObstacleAvoidanceParams(0, &params);
 		//
 		//// Medium (22)
-		//params.velBias = 0.5f;
+		//params.sampleOriginScale = 0.5f;
 		//params.sampleSectorsCount = 5; 
 		//params.sampleRingsCount = 2;
 		//params.sampleLevelsCount = 2;
 		//crowd->setObstacleAvoidanceParams(1, &params);
 		//
 		//// Good (45)
-		//params.velBias = 0.5f;
+		//params.sampleOriginScale = 0.5f;
 		//params.sampleSectorsCount = 7;
 		//params.sampleRingsCount = 2;
 		//params.sampleLevelsCount = 3;
 		//crowd->setObstacleAvoidanceParams(2, &params);
 		//
 		//// High (66)
-		//params.velBias = 0.5f;
+		//params.sampleOriginScale = 0.5f;
 		//params.sampleSectorsCount = 7;
 		//params.sampleRingsCount = 3;
 		//params.sampleLevelsCount = 3;

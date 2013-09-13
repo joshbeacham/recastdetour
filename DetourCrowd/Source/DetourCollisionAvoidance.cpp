@@ -29,8 +29,7 @@
 #include <cstring>
 
 dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
-    :velBias(0.4f)
-    ,debug(0)
+    : debug(0)
 {
     // NOTHING
 }
@@ -39,6 +38,7 @@ dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
 : dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents)
 , maximumCircleObstaclesCount(6)
 , maximumSegmentObstaclesCount(8)
+, sampleOriginScale(0.4f)
 , sampleLevelsCount(5)
 , sampleSectorsCount(7)
 , sampleRingsCount(2)
@@ -47,7 +47,6 @@ dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
 , weightCurrentAvoidanceSide(0.75f)
 , weightTimeToCollision(2.5f)
 , horizonTime(2.5f)
-, m_velocitySamplesCount(0)
 , m_circles(0)
 , m_circlesCount(0)
 , m_segments(0)
@@ -127,8 +126,6 @@ bool dtCollisionAvoidance::resizeObstaclesContainer()
 void dtCollisionAvoidance::doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent,
 	const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float /*dt*/)
 {
-	m_velocitySamplesCount = 0;
-
 	addObtacles(oldAgent, query);
 	updateVelocity(oldAgent, newAgent, currentParams, newParams);
 }
@@ -161,7 +158,7 @@ void dtCollisionAvoidance::updateVelocity(const dtCrowdAgent& oldAgent, dtCrowdA
 	const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams)
 {
 	float newVelocity[] = {0, 0, 0};
-	m_velocitySamplesCount += sampleVelocityAdaptive(oldAgent.position, oldAgent.radius, oldAgent.maxSpeed,
+	sampleVelocityAdaptive(oldAgent.position, oldAgent.radius, oldAgent.maxSpeed,
 													 oldAgent.velocity, oldAgent.desiredVelocity, newVelocity, 
 													 currentParams, newParams);
 	dtVcopy(newAgent.desiredVelocity, newVelocity);
@@ -541,41 +538,41 @@ int dtCollisionAvoidance::sampleVelocityAdaptive(
 	}
 
 	// Start sampling.
-	float cr = vmax * (1.0f - oldParams.velBias);
-	float res[3];
-	dtVset(res, dvel[0] * oldParams.velBias, 0, dvel[2] * oldParams.velBias);
+	float patternRadius = vmax * (1.0f - sampleOriginScale);
+	float patternCenter[3];
+	dtVset(patternCenter, dvel[0] * sampleOriginScale, 0, dvel[2] * sampleOriginScale);
+    
+    float bestCandidate[3];
 	int ns = 0;
 
 	for (int k = 0; k < depth; ++k)
 	{
 		float minPenalty = FLT_MAX;
-		float bvel[3];
-		dtVset(bvel, 0,0,0);
-
+		dtVset(bestCandidate, 0,0,0);
 		for (int i = 0; i < npat; ++i)
 		{
 			float vcand[3];
-			vcand[0] = res[0] + pat[i * 2 + 0] * cr;
+			vcand[0] = patternCenter[0] + pat[i * 2 + 0] * patternRadius;
 			vcand[1] = 0;
-			vcand[2] = res[2] + pat[i * 2 + 1] * cr;
+			vcand[2] = patternCenter[2] + pat[i * 2 + 1] * patternRadius;
 
 			if (dtSqr(vcand[0])+dtSqr(vcand[2]) > dtSqr(vmax + EPSILON)) continue;
 
-			const float penalty = processSample(vcand,cr / 10, agentPosition,rad,vel,dvel, oldParams, newParams);
+			const float penalty = processSample(vcand, patternRadius / 10, agentPosition,rad,vel,dvel, oldParams, newParams);
 			++ns;
 			if (penalty < minPenalty)
 			{
 				minPenalty = penalty;
-				dtVcopy(bvel, vcand);
+				dtVcopy(bestCandidate, vcand);
 			}
 		}
 
-		dtVcopy(res, bvel);
+		dtVcopy(patternCenter, bestCandidate);
 
-		cr *= 0.5f;
+		patternRadius *= 0.5f;
 	}	
 
-	dtVcopy(nvel, res);
+	dtVcopy(nvel, patternCenter);
 
 	return ns;
 }

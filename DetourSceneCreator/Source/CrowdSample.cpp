@@ -224,7 +224,6 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 		if (params)
 		{
 			params->debug = 0;
-			params->velBias = 0.4f;
 		}
         
         JSONValue* weightDesiredVelocity = behavior->Child(L"weightDesiredVelocity");
@@ -242,6 +241,10 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
         JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
 		if (weightTimeToCollision && weightTimeToCollision->IsNumber())
 			ca->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
+        
+        JSONValue* sampleOriginScale = behavior->Child(L"sampleOriginScale");
+		if (sampleOriginScale && sampleOriginScale->IsNumber())
+			ca->sampleOriginScale = (float)sampleOriginScale->AsNumber();
         
         JSONValue* sampleSectorsCount = behavior->Child(L"sampleSectorsCount");
 		if (sampleSectorsCount && sampleSectorsCount->IsNumber())

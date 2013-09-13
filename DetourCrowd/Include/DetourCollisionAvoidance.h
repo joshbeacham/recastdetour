@@ -112,9 +112,6 @@ static const unsigned DT_MAX_PATTERN_RINGS = 4;	///< Max number of adaptive ring
 struct dtCollisionAvoidanceParams
 {
     dtCollisionAvoidanceParams();
-    
-	float velBias;
-
 	dtObstacleAvoidanceDebugData* debug;	///< A debug object to load with debug information. [Opt]
 };
 
@@ -176,6 +173,15 @@ public:
     /// The collision avoidance algorithm generate an adaptive pattern
     /// of velocity candidate then choses the "cheapest" candidate.
     //@{
+    /// Samples origin scale.
+    ///
+    /// The center of the first-level pattern is chosen to be the desired velocity
+    /// scaled by this value. The larger it is, the more the agent will accelerate
+    /// to avoid collisions.
+    ///
+    /// @remark Default value is 0.4.
+    float sampleOriginScale;
+    
     /// The number of samples levels.
     ///
     /// @remark Default value is 5.
@@ -248,10 +254,6 @@ public:
     float horizonTime;
     //@}
     
-    
-	/// Returns the number of velocity samples.
-	int getVelocitySamplesCount() const { return m_velocitySamplesCount; }
-    
     /// @see dtParametrizedBehavior::doUpdate 
     virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float dt);
     
@@ -311,8 +313,6 @@ private:
 		const float* vel, const float* dvel,
 		const dtCollisionAvoidanceParams& oldParams, 
 		dtCollisionAvoidanceParams& newParams);
-
-	int m_velocitySamplesCount;				///< The number of velocity samples generate on the last frame.
 
 	float m_invHorizonTime; ///< Inverse of 'horizonTime', used to speed up some processes
 	float m_invVmax;						///< The inverse of the maximal speed.
