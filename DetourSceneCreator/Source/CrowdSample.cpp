@@ -225,16 +225,28 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 		{
 			params->debug = 0;
 			params->velBias = 0.4f;
-			params->weightDesVel = 2.0f;
-			params->weightCurVel = 0.75f;
-			params->weightSide = 0.75f;
-			params->weightToi = 2.5f;
 			params->horizTime = 2.5f;
 			params->adaptiveDivs = 7;
 			params->adaptiveRings = 2;
 			params->adaptiveDepth = 5;
 		}
-
+        
+        JSONValue* weightDesiredVelocity = behavior->Child(L"weightDesiredVelocity");
+		if (weightDesiredVelocity && weightDesiredVelocity->IsNumber())
+			ca->weightDesiredVelocity = (float)weightDesiredVelocity->AsNumber();
+        
+        JSONValue* weightCurrentVelocity = behavior->Child(L"weightCurrentVelocity");
+		if (weightCurrentVelocity && weightCurrentVelocity->IsNumber())
+			ca->weightCurrentVelocity = (float)weightCurrentVelocity->AsNumber();
+        
+        JSONValue* weightCurrentAvoidanceSide = behavior->Child(L"weightCurrentAvoidanceSide");
+		if (weightCurrentAvoidanceSide && weightCurrentAvoidanceSide->IsNumber())
+			ca->weightCurrentAvoidanceSide = (float)weightCurrentAvoidanceSide->AsNumber();
+        
+        JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
+		if (weightTimeToCollision && weightTimeToCollision->IsNumber())
+			ca->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
+        
 		m_agentCfgs[iAgent].steeringBehavior = ca;
 	}
 

@@ -27,7 +27,11 @@
                     {                       
                         "behavior":
                         {
-                            "type": "collisionAvoidance"
+                            "type": "collisionAvoidance",
+                            "weightDesiredVelocity": 2.0,
+                            "weightCurrentVelocity": 0.75,
+                            "weightCurrentAvoidanceSide": 0.75,
+                            "weightTimeToCollision": 2.5
                         }
                     }
                 ]
@@ -55,7 +59,11 @@
                     {                       
                         "behavior":
                         {
-                            "type": "collisionAvoidance"
+                            "type": "collisionAvoidance",
+                            "weightDesiredVelocity": 2.0,
+                            "weightCurrentVelocity": 0.75,
+                            "weightCurrentAvoidanceSide": 0.75,
+                            "weightTimeToCollision": 2.5
                         }
                     }
                 ]

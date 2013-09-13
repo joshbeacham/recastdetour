@@ -32,7 +32,8 @@ struct dtObstacleCircle
 	float velocity[3];			
 	float desiredVelocity[3];	
 	float radius;
-	float dp[3], np[3];		///< Use for side selection during sampling.
+	float direction[3];         ///< Normalized vector from the agent to the obstacle
+    float directionNormal[3];   ///< Vector normal to 'direction'
 };
 
 /// Obstacle represented as a segment
@@ -113,10 +114,6 @@ struct dtCollisionAvoidanceParams
     dtCollisionAvoidanceParams();
     
 	float velBias;
-	float weightDesVel;
-	float weightCurVel;
-	float weightSide;
-	float weightToi;
 	float horizTime;
 	unsigned char adaptiveDivs;		///< adaptive
 	unsigned char adaptiveRings;	///< adaptive
@@ -176,6 +173,50 @@ public:
     
     /// Resize the container for obstacles according to the set sizes.
     bool resizeObstaclesContainer();
+    //@}
+    
+    /// @name Velocity sample weight factors
+    ///
+    /// The cost of any given candidate velocity is the **sum** of 4 costs that each
+    // depends on:
+    ///     - the distance to the desired velocity;
+    ///     - the distance to the current velocity;
+    ///     - the current avoidance side;
+    ///     - the time to the first collision.
+    ///
+    /// Each of this cost is first normalized between 0 and 1 and then weighted by
+    /// its matching factor.
+    //@{
+    
+    /// The weight of the desired velocity
+    ///
+    /// Increase to prefer candidates close to the current desired velocity.
+    ///
+    /// @remark Default value is 2.
+    float weightDesiredVelocity;
+    
+    /// The weight of the current velocity
+    ///
+    /// Increase to prefer candidates close to the current velocity.
+    ///
+    /// @remark Default value is 0.75.
+	float weightCurrentVelocity;
+    
+    /// The weight of the current avoidance side.
+    ///
+    /// Increase to prefer candidates that will keep the currently chosen avoidance side.
+    /// In practice, if the agent is already passing to the left of its neighbors this
+    /// weight will favor candidates that keeps this side of avoidance.
+    ///
+    /// @remark Default value is 0.75.
+	float weightCurrentAvoidanceSide;
+    
+    /// The weight of the time to collision.
+    ///
+    /// Increase to prefer "safer" candidates.
+    ///
+    /// @remark Default value is 2.5.
+	float weightTimeToCollision;
     //@}
     
 	/// Returns the number of velocity samples.

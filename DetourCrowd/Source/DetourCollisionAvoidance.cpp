@@ -30,10 +30,6 @@
 
 dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
     :velBias(0.4f)
-    ,weightDesVel(2.f)
-    ,weightCurVel(0.75f)
-    ,weightSide(0.75f)
-    ,weightToi(2.5f)
     ,horizTime(2.5f)
     ,adaptiveDivs(7)
     ,adaptiveRings(2)
@@ -47,6 +43,10 @@ dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
 : dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents)
 , maximumCircleObstaclesCount(6)
 , maximumSegmentObstaclesCount(8)
+, weightDesiredVelocity(2.f)
+, weightCurrentVelocity(0.75f)
+, weightCurrentAvoidanceSide(0.75f)
+, weightTimeToCollision(2.5f)
 , m_velocitySamplesCount(0)
 , m_circles(0)
 , m_circlesCount(0)
@@ -354,7 +354,7 @@ void dtCollisionAvoidance::addSegment(const float* p, const float* q)
 	dtVcopy(seg->q, q);
 }
 
-void dtCollisionAvoidance::prepare(const float* pos, const float* dvel)
+void dtCollisionAvoidance::prepare(const float* agentPosition, const float* desiredVelocity)
 {
 	// Prepare obstacles
 	for (int i = 0; i < m_circlesCount; ++i)
@@ -362,25 +362,24 @@ void dtCollisionAvoidance::prepare(const float* pos, const float* dvel)
 		dtObstacleCircle* cir = &m_circles[i];
 
 		// Side
-		const float* pa = pos;
-		const float* pb = cir->position;
+		dtVsub(cir->direction, cir->position, agentPosition); 
+		dtVnormalize(cir->direction);
+        
+        float relativeVelocity[3];
+		dtVsub(relativeVelocity, cir->desiredVelocity, desiredVelocity);
 
-		const float orig[3] = {0,0};
-		float dv[3];
-		dtVsub(cir->dp,pb,pa);
-		dtVnormalize(cir->dp);
-		dtVsub(dv, cir->desiredVelocity, dvel);
-
-		const float a = dtTriArea2D(orig, cir->dp,dv);
-		if (a < 0.01f)
+		const float a = dtVcross2D(cir->direction, relativeVelocity);
+		if (a < 0.)
 		{
-			cir->np[0] = -cir->dp[2];
-			cir->np[2] = cir->dp[0];
+            // The obstacle moves toward the right side of the agent
+			cir->directionNormal[0] = -cir->direction[2];
+			cir->directionNormal[2] = cir->direction[0];
 		}
 		else
 		{
-			cir->np[0] = cir->dp[2];
-			cir->np[2] = -cir->dp[0];
+            // The obstacle moves toward the left side of the agent, the normal is oriented toward it.
+			cir->directionNormal[0] = cir->direction[2];
+			cir->directionNormal[2] = -cir->direction[0];
 		}
 	}	
 
@@ -391,7 +390,7 @@ void dtCollisionAvoidance::prepare(const float* pos, const float* dvel)
 		// Precalc if the agent is really close to the segment.
 		const float r = 0.01f;
 		float t;
-		seg->touch = dtDistancePtSegSqr2D(pos, seg->p, seg->q, t) < dtSqr(r);
+		seg->touch = dtDistancePtSegSqr2D(agentPosition, seg->p, seg->q, t) < dtSqr(r);
 	}	
 }
 
@@ -417,7 +416,10 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 		dtVsub(vab, vab, cir->velocity);
 
 		// Side
-		side += dtClamp(dtMin(dtVdot2D(cir->dp,vab)*0.5f+0.5f, dtVdot2D(cir->np,vab)*2), 0.0f, 1.0f);
+		side += dtClamp(dtMin(
+                              dtVdot2D(cir->direction,vab)*0.5f+0.5f,
+                              dtVdot2D(cir->directionNormal,vab)*2.f)
+                        , 0.0f, 1.0f);
 		nside++;
 
 		float htmin = 0, htmax = 0;
@@ -475,10 +477,10 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 	if (nside)
 		side /= nside;
 
-	const float vpen = oldParams.weightDesVel * (dtVdist2D(vcand, dvel) * m_invVmax);
-	const float vcpen = oldParams.weightCurVel * (dtVdist2D(vcand, vel) * m_invVmax);
-	const float spen = oldParams.weightSide * side;
-	const float tpen = oldParams.weightToi * (1.0f/(0.1f+tmin*m_invHorizTime));
+	const float vpen = weightDesiredVelocity * (dtVdist2D(vcand, dvel) * m_invVmax);
+	const float vcpen = weightCurrentVelocity * (dtVdist2D(vcand, vel) * m_invVmax);
+	const float spen = weightCurrentAvoidanceSide * side;
+	const float tpen = weightTimeToCollision * (1.0f/(0.1f+tmin*m_invHorizTime));
 
 	const float penalty = vpen + vcpen + spen + tpen;
 
@@ -489,11 +491,17 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 	return penalty;
 }
 
-int dtCollisionAvoidance::sampleVelocityAdaptive(const float* pos, const float rad, const float vmax,
-												 const float* vel, const float* dvel, float* nvel,
-												 const dtCollisionAvoidanceParams& oldParams, dtCollisionAvoidanceParams& newParams)
+int dtCollisionAvoidance::sampleVelocityAdaptive(
+                                                 const float* agentPosition,
+                                                 const float rad,
+                                                 const float vmax,
+												 const float* vel,
+                                                 const float* dvel,
+                                                 float* nvel,
+												 const dtCollisionAvoidanceParams& oldParams,
+                                                 dtCollisionAvoidanceParams& newParams)
 {
-	prepare(pos, dvel);
+	prepare(agentPosition, dvel);
 
 	m_invHorizTime = 1.0f / oldParams.horizTime;
 	m_invVmax = 1.0f / vmax;
@@ -555,7 +563,7 @@ int dtCollisionAvoidance::sampleVelocityAdaptive(const float* pos, const float r
 
 			if (dtSqr(vcand[0])+dtSqr(vcand[2]) > dtSqr(vmax + EPSILON)) continue;
 
-			const float penalty = processSample(vcand,cr / 10, pos,rad,vel,dvel, oldParams, newParams);
+			const float penalty = processSample(vcand,cr / 10, agentPosition,rad,vel,dvel, oldParams, newParams);
 			++ns;
 			if (penalty < minPenalty)
 			{

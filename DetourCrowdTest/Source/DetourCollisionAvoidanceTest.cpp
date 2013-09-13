@@ -42,10 +42,6 @@ SCENARIO("DetourCollisionAvoidanceTest/DefaultParams", "[detourCollisionAvoidanc
         THEN("The parameters have the expected default values")
         {
             CHECK(p.velBias == 0.4f);
-            CHECK(p.weightDesVel == 2.f);
-            CHECK(p.weightCurVel == 0.75f);
-            CHECK(p.weightSide == 0.75f);
-            CHECK(p.weightToi == 2.5f);
             CHECK(p.horizTime == 2.5f);
             CHECK(p.adaptiveDivs == 7);
             CHECK(p.adaptiveRings == 2);
@@ -62,6 +58,10 @@ SCENARIO("DetourCollisionAvoidanceTest/DefaultParams", "[detourCollisionAvoidanc
         {
             CHECK(b.maximumSegmentObstaclesCount == 8);
             CHECK(b.maximumCircleObstaclesCount == 6);
+            CHECK(b.weightDesiredVelocity == 2.f);
+            CHECK(b.weightCurrentVelocity == 0.75f);
+            CHECK(b.weightCurrentAvoidanceSide == 0.75f);
+            CHECK(b.weightTimeToCollision == 2.5f);
         }
     }
 }
