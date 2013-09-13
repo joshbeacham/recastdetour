@@ -30,7 +30,6 @@
 
 dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
     :velBias(0.4f)
-    ,horizTime(2.5f)
     ,adaptiveDivs(7)
     ,adaptiveRings(2)
     ,adaptiveDepth(5)
@@ -47,6 +46,7 @@ dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
 , weightCurrentVelocity(0.75f)
 , weightCurrentAvoidanceSide(0.75f)
 , weightTimeToCollision(2.5f)
+, horizonTime(2.5f)
 , m_velocitySamplesCount(0)
 , m_circles(0)
 , m_circlesCount(0)
@@ -401,7 +401,7 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 										  dtCollisionAvoidanceParams& newParams)
 {
 	// Find min time of impact and exit amongst all obstacles.
-	float tmin = oldParams.horizTime;
+	float tmin = horizonTime;
 	float side = 0;
 	int nside = 0;
 
@@ -480,7 +480,7 @@ float dtCollisionAvoidance::processSample(const float* vcand, const float cs,
 	const float vpen = weightDesiredVelocity * (dtVdist2D(vcand, dvel) * m_invVmax);
 	const float vcpen = weightCurrentVelocity * (dtVdist2D(vcand, vel) * m_invVmax);
 	const float spen = weightCurrentAvoidanceSide * side;
-	const float tpen = weightTimeToCollision * (1.0f/(0.1f+tmin*m_invHorizTime));
+	const float tpen = weightTimeToCollision * (1.0f/(0.1f+tmin*m_invHorizonTime));
 
 	const float penalty = vpen + vcpen + spen + tpen;
 
@@ -503,7 +503,7 @@ int dtCollisionAvoidance::sampleVelocityAdaptive(
 {
 	prepare(agentPosition, dvel);
 
-	m_invHorizTime = 1.0f / oldParams.horizTime;
+	m_invHorizonTime = 1.0f / horizonTime;
 	m_invVmax = 1.0f / vmax;
 
 	dtVset(nvel, 0,0,0);

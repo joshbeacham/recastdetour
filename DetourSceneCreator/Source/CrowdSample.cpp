@@ -225,7 +225,6 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 		{
 			params->debug = 0;
 			params->velBias = 0.4f;
-			params->horizTime = 2.5f;
 			params->adaptiveDivs = 7;
 			params->adaptiveRings = 2;
 			params->adaptiveDepth = 5;
@@ -246,6 +245,10 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
         JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
 		if (weightTimeToCollision && weightTimeToCollision->IsNumber())
 			ca->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
+        
+        JSONValue* horizonTime = behavior->Child(L"horizonTime");
+		if (horizonTime && horizonTime->IsNumber())
+			ca->horizonTime = (float)horizonTime->AsNumber();
         
 		m_agentCfgs[iAgent].steeringBehavior = ca;
 	}

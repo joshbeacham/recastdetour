@@ -114,7 +114,6 @@ struct dtCollisionAvoidanceParams
     dtCollisionAvoidanceParams();
     
 	float velBias;
-	float horizTime;
 	unsigned char adaptiveDivs;		///< adaptive
 	unsigned char adaptiveRings;	///< adaptive
 	unsigned char adaptiveDepth;	///< adaptive
@@ -219,6 +218,14 @@ public:
 	float weightTimeToCollision;
     //@}
     
+    
+    /// @name Other paramters
+    //@{
+    /// The time under which incoming collision are taken into account.
+    ///
+    /// @remark Default value is 2.5s.
+    float horizonTime;
+    //@}
 	/// Returns the number of velocity samples.
 	int getVelocitySamplesCount() const { return m_velocitySamplesCount; }
     
@@ -284,7 +291,7 @@ private:
 
 	int m_velocitySamplesCount;				///< The number of velocity samples generate on the last frame.
 
-	float m_invHorizTime;              
+	float m_invHorizonTime; ///< Inverse of 'horizonTime', used to speed up some processes
 	float m_invVmax;						///< The inverse of the maximal speed.
 
     /// Adds a circle to the obstacles list.
