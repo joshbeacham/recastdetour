@@ -106,6 +106,22 @@ inline void dtVcross(float* dest, const float* v1, const float* v2)
 	dest[2] = v1[0]*v2[1] - v1[1]*v2[0]; 
 }
 
+/// Computes the xz-plane 2D dot product of the two vectors. (uz*vx - ux*vz)
+///
+/// This operation is also called perpendicular dot product or determinant.
+///
+/// @param[in]		u		A vector [(x, y, z)]
+/// @param[in]		v		A vector [(x, y, z)]
+/// @return The cross product on the xz-plane,
+///     - if positive, the angle from u to v is positive, v is on the left side.
+///     - if negative, the andle from u to v is negative, v is on the right side.
+///
+/// The vectors are projected onto the xz-plane, so the y-values are ignored.
+inline float dtVcross2D(const float* u, const float* v)
+{
+	return u[2]*v[0] - u[0]*v[2];
+}
+
 /// Derives the dot product of two vectors. (@p v1 . @p v2)
 ///  @param[in]		v1	A Vector [(x, y, z)]
 ///  @param[in]		v2	A vector [(x, y, z)]
@@ -113,6 +129,17 @@ inline void dtVcross(float* dest, const float* v1, const float* v2)
 inline float dtVdot(const float* v1, const float* v2)
 {
 	return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
+}
+
+/// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
+///  @param[in]		u		A vector [(x, y, z)]
+///  @param[in]		v		A vector [(x, y, z)]
+/// @return The dot product on the xz-plane.
+///
+/// The vectors are projected onto the xz-plane, so the y-values are ignored.
+inline float dtVdot2D(const float* u, const float* v)
+{
+	return u[0]*v[0] + u[2]*v[2];
 }
 
 /// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
@@ -309,28 +336,6 @@ inline bool dtVequal(const float* p0, const float* p1)
 	static const float thr = dtSqr(1.0f/16384.0f);
 	const float d = dtVdistSqr(p0, p1);
 	return d < thr;
-}
-
-/// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
-///  @param[in]		u		A vector [(x, y, z)]
-///  @param[in]		v		A vector [(x, y, z)]
-/// @return The dot product on the xz-plane.
-///
-/// The vectors are projected onto the xz-plane, so the y-values are ignored.
-inline float dtVdot2D(const float* u, const float* v)
-{
-	return u[0]*v[0] + u[2]*v[2];
-}
-
-/// Derives the xz-plane 2D perp product of the two vectors. (uz*vx - ux*vz)
-///  @param[in]		u		The LHV vector [(x, y, z)]
-///  @param[in]		v		The RHV vector [(x, y, z)]
-/// @return The dot product on the xz-plane.
-///
-/// The vectors are projected onto the xz-plane, so the y-values are ignored.
-inline float dtVperp2D(const float* u, const float* v)
-{
-	return u[2]*v[0] - u[0]*v[2];
 }
 
 /// The length of v will be clamped to the given values;
