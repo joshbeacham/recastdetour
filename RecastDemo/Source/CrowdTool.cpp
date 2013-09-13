@@ -164,30 +164,30 @@ void CrowdToolState::init(class Sample* sample)
 		//
 		//// Low (11)
 		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 5;
-		//params.adaptiveRings = 2;
-		//params.adaptiveDepth = 1;
+		//params.sampleSectorsCount = 5;
+		//params.sampleRingsCount = 2;
+		//params.sampleLevelsCount = 1;
 		//crowd->setObstacleAvoidanceParams(0, &params);
 		//
 		//// Medium (22)
 		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 5; 
-		//params.adaptiveRings = 2;
-		//params.adaptiveDepth = 2;
+		//params.sampleSectorsCount = 5; 
+		//params.sampleRingsCount = 2;
+		//params.sampleLevelsCount = 2;
 		//crowd->setObstacleAvoidanceParams(1, &params);
 		//
 		//// Good (45)
 		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 7;
-		//params.adaptiveRings = 2;
-		//params.adaptiveDepth = 3;
+		//params.sampleSectorsCount = 7;
+		//params.sampleRingsCount = 2;
+		//params.sampleLevelsCount = 3;
 		//crowd->setObstacleAvoidanceParams(2, &params);
 		//
 		//// High (66)
 		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 7;
-		//params.adaptiveRings = 3;
-		//params.adaptiveDepth = 3;
+		//params.sampleSectorsCount = 7;
+		//params.sampleRingsCount = 3;
+		//params.sampleLevelsCount = 3;
 		//
 		//crowd->setObstacleAvoidanceParams(3, &params);
 	}

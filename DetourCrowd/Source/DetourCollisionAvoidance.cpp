@@ -30,9 +30,6 @@
 
 dtCollisionAvoidanceParams::dtCollisionAvoidanceParams()
     :velBias(0.4f)
-    ,adaptiveDivs(7)
-    ,adaptiveRings(2)
-    ,adaptiveDepth(5)
     ,debug(0)
 {
     // NOTHING
@@ -42,6 +39,9 @@ dtCollisionAvoidance::dtCollisionAvoidance(unsigned nbMaxAgents)
 : dtParametrizedBehavior<dtCollisionAvoidanceParams>(nbMaxAgents)
 , maximumCircleObstaclesCount(6)
 , maximumSegmentObstaclesCount(8)
+, sampleLevelsCount(5)
+, sampleSectorsCount(7)
+, sampleRingsCount(2)
 , weightDesiredVelocity(2.f)
 , weightCurrentVelocity(0.75f)
 , weightCurrentAvoidanceSide(0.75f)
@@ -515,12 +515,10 @@ int dtCollisionAvoidance::sampleVelocityAdaptive(
 	float pat[(DT_MAX_PATTERN_DIVS*DT_MAX_PATTERN_RINGS+1)*2];
 	int npat = 0;
 
-	const int ndivs = (int)oldParams.adaptiveDivs;
-	const int nrings= (int)oldParams.adaptiveRings;
-	const int depth = (int)oldParams.adaptiveDepth;
+	const int depth = (int)sampleLevelsCount;
 
-	const int nd = dtClamp<unsigned>(ndivs, 1, DT_MAX_PATTERN_DIVS);
-	const int nr = dtClamp<unsigned>(nrings, 1, DT_MAX_PATTERN_RINGS);
+	const int nd = dtClamp<unsigned>((unsigned)sampleSectorsCount, 1, DT_MAX_PATTERN_DIVS);
+	const int nr = dtClamp<unsigned>((unsigned)sampleRingsCount, 1, DT_MAX_PATTERN_RINGS);
 	const float da = (1.0f / nd) * DT_PI * 2;
 	const float dang = atan2f(dvel[2], dvel[0]);
 

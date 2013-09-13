@@ -120,9 +120,6 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 		{
 			params->debug = 0;
 			params->velBias = 0.4f;
-			params->adaptiveDivs = 7;
-			params->adaptiveRings = 2;
-			params->adaptiveDepth = 5;
 		}
 
 		std::vector<dtBehavior*> behaviors;

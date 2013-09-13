@@ -114,9 +114,6 @@ struct dtCollisionAvoidanceParams
     dtCollisionAvoidanceParams();
     
 	float velBias;
-	unsigned char adaptiveDivs;		///< adaptive
-	unsigned char adaptiveRings;	///< adaptive
-	unsigned char adaptiveDepth;	///< adaptive
 
 	dtObstacleAvoidanceDebugData* debug;	///< A debug object to load with debug information. [Opt]
 };
@@ -174,6 +171,31 @@ public:
     bool resizeObstaclesContainer();
     //@}
     
+    /// @name Velocity samples generation parameters
+    ///
+    /// The collision avoidance algorithm generate an adaptive pattern
+    /// of velocity candidate then choses the "cheapest" candidate.
+    //@{
+    /// The number of samples levels.
+    ///
+    /// @remark Default value is 5.
+	unsigned char sampleLevelsCount;
+    /// The number of samples sectors per level.
+    ///
+    /// The total amount of samples per level is
+    /// @ref sampleSectorsCount * @ref sampleRingsCount
+    ///
+    /// @remark Default value is 7.
+    unsigned char sampleSectorsCount;
+    /// The number of samples rings per level.
+    ///
+    /// The total amount of samples per level is
+    /// @ref sampleSectorsCount * @ref sampleRingsCount
+    ///
+    /// @remark Default value is 2.
+	unsigned char sampleRingsCount;
+    //@}
+    
     /// @name Velocity sample weight factors
     ///
     /// The cost of any given candidate velocity is the **sum** of 4 costs that each
@@ -218,14 +240,15 @@ public:
 	float weightTimeToCollision;
     //@}
     
-    
-    /// @name Other paramters
+    /// @name Other parameters
     //@{
     /// The time under which incoming collision are taken into account.
     ///
     /// @remark Default value is 2.5s.
     float horizonTime;
     //@}
+    
+    
 	/// Returns the number of velocity samples.
 	int getVelocitySamplesCount() const { return m_velocitySamplesCount; }
     
