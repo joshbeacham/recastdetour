@@ -198,7 +198,7 @@ class dtCrowd
 	float** m_disp;							///< Used to prevent agents from bumping into each other
 	
 	/// Returns the index of the given agent
-	inline unsigned getAgentIndex(const dtCrowdAgent* agent) const  { return agent - m_agents; }
+	inline unsigned getAgentIndex(const dtCrowdAgent* agent) const { return static_cast<unsigned>(agent - m_agents); }
 
 	/// Fetch the agent of the given id if he is active.
 	/// param[out]	ag	The agent corresponding to the given id
