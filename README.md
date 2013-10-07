@@ -4,7 +4,7 @@
 
 # About #
 
-This repository is a fork of [recastnavigation](http://code.google.com/p/recastnavigation/) whose original author is [Mikko Mononen](memon@inside.org).
+This repository is a fork of [recastnavigation](https://github.com/memononen/recastnavigation) whose original author is [Mikko Mononen](memon@inside.org).
 The fork is maintainted by MASA Group´s product team of [MASA LIFE](http://masalife.net).
 To see our latest news in artificial intelligence you can follow our tweet - [@masalife_ai](https://twitter.com/masalife_ai).
 
@@ -81,9 +81,9 @@ The Detour Crowd module provides you with features for agents handling and behav
 
 # Contributors #
 
-## Master repository contributors ##
+## [Origin](https://github.com/memononen/recastnavigation) repository contributors ##
 - Mikko Mononen <memon@inside.org>
-- Steve ?? <stevefsp@gmail.com>
+- Stephen Pratt <stevefsp@gmail.com>
 - Cameron Hart <cameron.hart@gmail.com>
 
 ## [MASA LIFE](http://www.masalife.net) team contributors ##
@@ -93,6 +93,7 @@ The Detour Crowd module provides you with features for agents handling and behav
 
 ## Other contributors ##
 - Jérémy Chanut <jeremy.chanut@gmail.com>
+- Charles Prévot <prevot@cervval.com>
 
 # Release Notes #
 
