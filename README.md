@@ -171,3 +171,7 @@ particularly robust either.
 Another non-robust case is when portal contours (contours shared between two regions) are always
 assumed to be straight. That can lead to overlapping contours specially when the level has
 large open areas.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/masagroup/recastdetour/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
