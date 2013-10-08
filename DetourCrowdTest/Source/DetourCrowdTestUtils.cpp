@@ -16,8 +16,9 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "DetourCrowdTestUtils.h"
+#define CATCH_CONFIG_MAIN // Generate automatically the main (one occurrence only)
 
+#include "DetourCrowdTestUtils.h"
 
 TestScene::TestScene()
 	: m_crowd(0)

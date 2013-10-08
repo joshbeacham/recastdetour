@@ -25,17 +25,6 @@
 #include "DetourSeekBehavior.h"
 #include "DetourSeparationBehavior.h"
 
-#ifdef _MSC_VER
-#pragma warning(push, 0)
-#include <catch.hpp>
-#pragma warning(pop)
-#else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wall"
-#include <catch.hpp>
-#pragma GCC diagnostic pop
-#endif
-
 #include <cstring>
 
 TEST_CASE("DetourBehaviorsTests/CustomBehavior", "Test whether the custom behaviors behave correctly")

@@ -18,19 +18,6 @@
 
 #include "DetourCrowdTestUtils.h"
 
-
-#ifdef _MSC_VER
-#pragma warning(push, 0)
-#include <catch.hpp>
-#pragma warning(pop)
-#else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wall"
-#include <catch.hpp>
-#pragma GCC diagnostic pop
-#endif
-
-
 SCENARIO("DetourCrowdTest/OffMeshConnections", "[offmesh] Check if the agents know when they are walking on offMesh connections or using them")
 {
 	GIVEN("An offMesh connection at (0, 0, 0) with a radius of 1")

@@ -25,6 +25,16 @@
 #include "InputGeom.h"
 #include "DetourSceneCreator.h"
 
+#ifdef _MSC_VER
+#   pragma warning(push, 0)
+#   include <catch.hpp>
+#   pragma warning(pop)
+#else
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wall"
+#   include <catch.hpp>
+#   pragma GCC diagnostic pop
+#endif
 
 /// These are just sample areas to use consistent values across the samples.
 /// The use should specify these base on his needs.
