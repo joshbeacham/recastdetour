@@ -34,17 +34,7 @@ template <typename T>
 class dtParametrizedBehavior;
 
 
-/// The state in which the move request of an agent is.
-enum MoveRequestState
-{
-	DT_CROWDAGENT_TARGET_NONE = 0,			///< The agent does not have a target
-	DT_CROWDAGENT_TARGET_FAILED,			///< The agent's target affectation failed
-	DT_CROWDAGENT_TARGET_VALID,				///< The agent's target is valid
-	DT_CROWDAGENT_TARGET_REQUESTING,		///< The agent's target is currently requesting a target
-	DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE,	///< The path to reach teh target is potentially unreachable
-	DT_CROWDAGENT_TARGET_WAITING_FOR_PATH,	///< The agent is waiting for a path in order to reach its target
-	DT_CROWDAGENT_TARGET_VELOCITY,			///< The agent's target is a veloicty, not a position
-};
+
 
 /// This class gives informations about the current path of the agent
 struct dtCrowdAgentDebugInfo
@@ -61,38 +51,18 @@ struct dtCrowdAgentDebugInfo
 struct dtPathFollowingParams
 {
 	dtPathFollowingParams();
-
-	dtCrowdAgentDebugInfo* debugInfos;	///< A debug object to load with debug information. [Opt]
-	unsigned debugIndex;				///< The index of the agent for debug purpose.
-	float pathOptimizationRange;		///< The path visibility optimization range. [Limit: > 0]
-	float targetReplanTime;				/// <Time since the agent's target was replanned.
-	dtPolyRef targetRef;				///< Target polyref of the movement request.
-	bool targetReplan;					///< Flag indicating that the current path is being replanned.
-	dtPathQueueRef targetPathqRef;		///< Path finder ref.
-	float targetPos[3];					///< Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
-	unsigned char targetState;			///< State of the movement request.
-	unsigned ncorners;					/// The number of corners.
-	
-	/// The maximum number of corners a crowd agent will look ahead in the path.
-	/// This value is used for sizing the crowd agent corner buffers.
-	/// Due to the behavior of the crowd manager, the actual number of useful
-	/// corners will be one less than this number.
-	/// @ingroup behavior
-	static const unsigned DT_CROWDAGENT_MAX_CORNERS = 4;
-
-	float cornerVerts[DT_CROWDAGENT_MAX_CORNERS*3]; ///< The local path corridor corners for the agent. (Staight path.) [(x, y, z) * #ncorners]
-
-	///< The local path corridor corner flags. (See: #dtStraightPathFlags) [(flags) * #ncorners]
-	unsigned char cornerFlags[DT_CROWDAGENT_MAX_CORNERS];
-
-	///< The reference id of the polygon being entered at the corner. [(polyRef) * #ncorners]
-	dtPolyRef cornerPolys[DT_CROWDAGENT_MAX_CORNERS];
-
-	///< Time since the agent's path corridor was optimized.
-	float topologyOptTime;
-
-	///< The path corridor the agent is using.
-	dtPathCorridor corridor;
+    
+    enum State
+    {
+        NO_TARGET = 0,      ///< No target submitted.
+        INVALID_TARGET,     ///< The submitted target is invalid.
+        FOLLOWING_PATH,     ///< The target is valid, the agent is following a path to it.
+        TARGET_SUBMITTED,	///< The target has been succesfully submitted
+        WAITING_FOR_QUEUE,	///< The target is being computed (TBC)
+        WAITING_FOR_PATH,	///< The target is being computed (TBC)
+    };
+    
+    unsigned char state;			///< State of the movement request.
 
 	/// Initializes the parameters.
 	/// The corridor will be initialized according to the given position
@@ -101,6 +71,47 @@ struct dtPathFollowingParams
 	/// @param[in]	query		Used to access the navigation mesh query in order to get the polygon the agent is on.
 	/// @return	True if the initialization was successful, false otherwise
 	bool init(unsigned maxPathResults, const float* position, const dtCrowdQuery& query);
+    
+    /** @name Target */
+    //@{
+    /// Submits a new target.
+    /// @param[in] pos The position of the target [(x, y, z)].
+	/// @param[in] ref The navmesh polygon reference to which the target belong, used as a hint to locate the target, default value is no hint.
+	/// @return True if the request was successfully submitted.
+	void submitTarget(const float* pos, dtPolyRef polyRef = 0);
+    
+    /// Clear the current target.
+	/// @return True if the request was successfully clear.
+	void clearTarget();
+    
+    float targetPos[3];             ///< Target position
+    dtPolyRef targetRef;            ///< Target polygon reference
+    float targetReplanTime;         ///< Time since the agent's target was replanned.
+    bool targetReplan;              ///< Flag indicating that the current path is being replanned.
+    dtPathQueueRef targetPathqRef;  ///< Reference of the pathfind in the queue
+    //@}
+    
+    /** @name Path */
+    //@{
+    dtPathCorridor corridor;    ///< The path corridor the agent is using.	
+    unsigned ncorners;          ///< The number of corners.
+    /// The maximum number of corners a crowd agent will look ahead in the path.
+	/// This value is used for sizing the crowd agent corner buffers.
+	/// Due to the behavior of the crowd manager, the actual number of useful
+	/// corners will be one less than this number.
+	static const unsigned MAX_NCORNERS = 4;
+    
+	float cornerVerts[MAX_NCORNERS*3]; ///< The local path corridor corners for the agent. (Staight path.) [(x, y, z) * #ncorners]
+	unsigned char cornerFlags[MAX_NCORNERS]; ///< The local path corridor corner flags. (See: #dtStraightPathFlags)
+	dtPolyRef cornerPolys[MAX_NCORNERS]; ///< The reference id of the polygon being entered at the corner.
+	float topologyOptTime; ///< Time since the agent's path corridor was optimized.
+    //@}
+    
+    /** @name Debug */
+    //@{
+    dtCrowdAgentDebugInfo* debugInfos;	///< Optionnal debug retrieval object.
+    unsigned debugIndex;				///< The index of the agent for debug purpose.
+    //@}
 };
 
 /// Defines a behavior for pathfollowing.
@@ -139,32 +150,54 @@ public:
 	/// @return True if the initialization succeeded, false otherwise.
 	bool init(dtCrowdQuery& crowdQuery, unsigned maxPathRes = 256);
 
-	/// Submits a new move request for the specified agent.
-	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
-	///  @param[in]		ref		The position's polygon reference.
-	///  @param[in]		pos		The position within the polygon. [(x, y, z)]
-	/// @return True if the request was successfully submitted.
-	bool requestMoveTarget(const unsigned idx, dtPolyRef ref, const float* pos);
-	
-	/// Resets any request for the specified agent.
-	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
-	/// @return True if the request was successfully reseted.
-	bool resetMoveTarget(const unsigned idx);
-
 	/// Cleans the class before destroying
 	void purge();
-
-	/// @name Gets the path results
-	/// @{
-	const dtPolyRef* getPathRes() const { return m_pathResult; }
-	dtPolyRef* getPathRes() { return m_pathResult; }
-	/// @}
-
+    
+    /// @name Parameters
+    //@{
+    /// During the first update after a request move target, the path starts to be computed
+    /// for this given number of iterations (that way this path is not added to the queue if
+    /// it is a short one).
+    ///
+    /// @remark Default value is 20.
+    unsigned initialPathfindIterCount;
+    
+    /// Visibility-based path optimization distance.
+    ///
+    /// Inaccurate locomotion or dynamic obstacle avoidance can force the agent position
+    /// significantly outside the original path corridor. Over time this can result in the
+    /// formation of a non-optimal corridor.
+    /// Non-optimal paths can also form near the corners of tiles.
+    ///
+    /// Setting this parameter to a positive distance will perform, during the update, an
+    /// efficient local visibility search to try to optimize the corridor, finding
+    /// shortcuts.
+    ///
+    /// @remark Default value is -1 (the optimization is disabled).
+    float visibilityPathOptimizationRange;
+    
+    /// Local replanning time interval.
+    ///
+    /// Setting this parameter to a positive time will perform, at the specified frequency
+    /// a local area path find to try to re-optimize the corridor.
+    ///
+    /// This method compliment the one controlled by
+    /// dtPathFollowing::visibilityPathOptimizationRange
+    ////
+    /// @remark Default value is -1 (the replanning is disabled).
+    float localPathReplanningInterval;
+    
+    /// Enable the turn anticipations.
+    ///
+    /// @remark Default value is false.
+    bool anticipateTurns;
+    //@}
+    
+    /// @see dtParametrizedBehavior::doUpdate
+    virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, const dtPathFollowingParams& currentParams, dtPathFollowingParams& newParams, float dt);
 private:
     dtPathFollowing(const dtPathFollowing&);
     dtPathFollowing& operator=(const dtPathFollowing&);
-
-	
 
 	/// Checks that the given agents still have valid paths.
 	/// 
@@ -175,9 +208,6 @@ private:
 	/// Update async move request and path finder.
 	void updateMoveRequest(const dtCrowdQuery& crowdQuery, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
 		dtPathFollowingParams& newParams);
-
-	virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
-		const dtPathFollowingParams& currentParams, dtPathFollowingParams& newParams, float dt);
 
 	/// Optimize path topology.
 	/// 
@@ -212,16 +242,6 @@ private:
 	/// @param[out]		newAgent		The agent storing the new parameters.
 	/// @param[in]		agParams		The parameters of the agent for this behavior
 	void triggerOffMeshConnections(const dtCrowdQuery& crowdQuery, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, dtPathFollowingParams* agParams);
-
-	/// Submits a new move request for the specified agent.
-	/// Sets a flag indicate that the path of the agent is being replanned.
-	///
-	/// @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
-	/// @param[in]		ref		A reference to the destination polygon
-	/// @param[in]		pos		The destination
-	///
-	/// @return True if the request was successfully submitted.
-	bool requestMoveTargetReplan(const unsigned idx, dtPolyRef ref, const float* pos);
 
 	/// Moves an agent into a list according to the last time since its target was replanned.
 	///

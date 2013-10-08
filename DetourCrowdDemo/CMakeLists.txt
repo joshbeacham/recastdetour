@@ -24,7 +24,7 @@ INCLUDE(CMakeDependentOption)
 
 # Options
 CMAKE_DEPENDENT_OPTION(BUILD_DETOURCROWD_DEMO "Build DetourCrowd graphical demo applications" 
-    ON "OPENGL_FOUND;SDL_FOUND"
+    ON "OPENGL_FOUND;OPENGL_GLU_FOUND;SDL_FOUND"
     OFF)
 
 IF(BUILD_DETOURCROWD_DEMO)
@@ -59,20 +59,7 @@ IF(BUILD_DETOURCROWD_DEMO)
 
     SET(sdl_DIR Contrib/SDL)
 
-    IF(APPLE)
-        SET(sdlmain_HDRS 
-            Include/SDLMain.h
-        )
-
-        SET(sdlmain_SRCS 
-            Source/SDLMain.m
-        )
-    ENDIF()
-
     SOURCE_GROUP(sources FILES ${detourcrowddemo_HDRS} ${detourcrowddemo_SRCS})
-    IF(XCODE)
-        SOURCE_GROUP(externals\\SDLMain FILES ${sdlmain_HDRS} ${sdlmain_SRCS})
-    ENDIF()
     SOURCE_GROUP(externals\\fastlz FILES ${fastlz_SRCS})
     SOURCE_GROUP(cmake FILES CMakeLists.txt)
 
@@ -93,12 +80,10 @@ IF(BUILD_DETOURCROWD_DEMO)
         Contrib
     )
 
-    IF(APPLE)
-        ADD_EXECUTABLE(DetourCrowdDemo MACOSX_BUNDLE ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${sdlmain_HDRS} ${sdlmain_SRCS} ${fastlz_SRCS})
-    ELSEIF(MSVC)
+    IF(MSVC)
         ADD_EXECUTABLE(DetourCrowdDemo WIN32 ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS})
     ELSE()
-        ADD_EXECUTABLE(DetourCrowdDemo ${recastdemo_SRCS} ${recastdemo_HDRS})
+        ADD_EXECUTABLE(DetourCrowdDemo ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS})
     ENDIF()
 
     SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY DEBUG_POSTFIX -gd)
@@ -112,10 +97,10 @@ IF(BUILD_DETOURCROWD_DEMO)
     	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
     ENDIF()
 
-    TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_LIBRARIES})
+    TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
     INSTALL(DIRECTORY Bin/Meshes Bin/Samples
-        DESTINATION bin/${PLATFORM_STR}
+        DESTINATION run/${PLATFORM_STR}
     )
 
     IF(MSVC)
@@ -123,18 +108,18 @@ IF(BUILD_DETOURCROWD_DEMO)
         GET_FILENAME_COMPONENT(SDL_LIB_DIR ${SDLMAIN_LIBRARY} PATH)
         INSTALL(
             FILES Bin/DroidSans.ttf ${SDL_LIB_DIR}/SDL.dll
-            DESTINATION bin/${PLATFORM_STR}
+            DESTINATION run/${PLATFORM_STR}
         )
     ELSE()
         INSTALL(
             FILES Bin/DroidSans.ttf
-            DESTINATION bin/${PLATFORM_STR}
+            DESTINATION run/${PLATFORM_STR}
         )
     ENDIF()
 
     INSTALL(TARGETS DetourCrowdDemo 
-        RUNTIME DESTINATION bin/${PLATFORM_STR}
-        BUNDLE DESTINATION bin/${PLATFORM_STR}
+        RUNTIME DESTINATION run/${PLATFORM_STR}
+        BUNDLE DESTINATION run/${PLATFORM_STR}
         LIBRARY DESTINATION lib/${PLATFORM_STR}
         ARCHIVE DESTINATION lib/${PLATFORM_STR}
     )

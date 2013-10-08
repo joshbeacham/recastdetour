@@ -32,7 +32,8 @@ struct dtObstacleCircle
 	float velocity[3];			
 	float desiredVelocity[3];	
 	float radius;
-	float dp[3], np[3];		///< Use for side selection during sampling.
+	float direction[3];         ///< Normalized vector from the agent to the obstacle
+    float directionNormal[3];   ///< Vector normal to 'direction'
 };
 
 /// Obstacle represented as a segment
@@ -110,17 +111,7 @@ static const unsigned DT_MAX_PATTERN_RINGS = 4;	///< Max number of adaptive ring
 /// @ingroup behavior
 struct dtCollisionAvoidanceParams
 {
-	float velBias;
-	float weightDesVel;
-	float weightCurVel;
-	float weightSide;
-	float weightToi;
-	float horizTime;
-	unsigned char gridSize;			///< grid
-	unsigned char adaptiveDivs;		///< adaptive
-	unsigned char adaptiveRings;	///< adaptive
-	unsigned char adaptiveDepth;	///< adaptive
-
+    dtCollisionAvoidanceParams();
 	dtObstacleAvoidanceDebugData* debug;	///< A debug object to load with debug information. [Opt]
 };
 
@@ -150,25 +141,125 @@ public:
 
 	/// Initializes the behavior.
 	///
-	/// Must be called before using the behavior.
-	/// @param[in]		maxCircles	Maximal number of circles supported by the obstacle avoidance query.
-	/// @param[in]		maxSegments	Maximal number of segments supported by the obstacle avoidance query.
-	///
 	/// @return True if the initialization succeeded.
-	bool init(unsigned maxCircles = 6, unsigned maxSegments = 8);
+	bool init();
 
 	/// Cleans the behavior.
 	void purge();
 	
-	/// Returns the number of velocity samples.
-	int getVelocitySamplesCount() const { return m_velocitySamplesCount; }
-
+    /// @name Number of considered obstacles parameters
+    ///
+    /// @remark Changes to these require a call to @ref resizeObstaclesContainer to be
+    /// taken into account.
+    //@{
+    /// The maximum number of circle obstacles (i.e. only agents at the moment) that
+    /// can be taken into account by the avoidance algorithm
+    ///
+    /// @remark Default value is 6.
+    unsigned maximumCircleObstaclesCount;
+    
+    /// The maximum number of segment obstacles (i.e. walls) that can be taken
+    /// into account by the avoidance algorithm
+    ///
+    /// @remark Default value is 8.
+    unsigned maximumSegmentObstaclesCount;
+    
+    /// Resize the container for obstacles according to the set sizes.
+    bool resizeObstaclesContainer();
+    //@}
+    
+    /// @name Velocity samples generation parameters
+    ///
+    /// The collision avoidance algorithm generate an adaptive pattern
+    /// of velocity candidate then choses the "cheapest" candidate.
+    //@{
+    /// Samples origin scale.
+    ///
+    /// The center of the first-level pattern is chosen to be the desired velocity
+    /// scaled by this value. The larger it is, the more the agent will accelerate
+    /// to avoid collisions.
+    ///
+    /// @remark Default value is 0.4.
+    float sampleOriginScale;
+    
+    /// The number of samples levels.
+    ///
+    /// @remark Default value is 5.
+	unsigned char sampleLevelsCount;
+    /// The number of samples sectors per level.
+    ///
+    /// The total amount of samples per level is
+    /// @ref sampleSectorsCount * @ref sampleRingsCount
+    ///
+    /// @remark Default value is 7.
+    unsigned char sampleSectorsCount;
+    /// The number of samples rings per level.
+    ///
+    /// The total amount of samples per level is
+    /// @ref sampleSectorsCount * @ref sampleRingsCount
+    ///
+    /// @remark Default value is 2.
+	unsigned char sampleRingsCount;
+    //@}
+    
+    /// @name Velocity sample weight factors
+    ///
+    /// The cost of any given candidate velocity is the **sum** of 4 costs that each
+    // depends on:
+    ///     - the distance to the desired velocity;
+    ///     - the distance to the current velocity;
+    ///     - the current avoidance side;
+    ///     - the time to the first collision.
+    ///
+    /// Each of this cost is first normalized between 0 and 1 and then weighted by
+    /// its matching factor.
+    //@{
+    
+    /// The weight of the desired velocity
+    ///
+    /// Increase to prefer candidates close to the current desired velocity.
+    ///
+    /// @remark Default value is 2.
+    float weightDesiredVelocity;
+    
+    /// The weight of the current velocity
+    ///
+    /// Increase to prefer candidates close to the current velocity.
+    ///
+    /// @remark Default value is 0.75.
+	float weightCurrentVelocity;
+    
+    /// The weight of the current avoidance side.
+    ///
+    /// Increase to prefer candidates that will keep the currently chosen avoidance side.
+    /// In practice, if the agent is already passing to the left of its neighbors this
+    /// weight will favor candidates that keeps this side of avoidance.
+    ///
+    /// @remark Default value is 0.75.
+	float weightCurrentAvoidanceSide;
+    
+    /// The weight of the time to collision.
+    ///
+    /// Increase to prefer "safer" candidates.
+    ///
+    /// @remark Default value is 2.5.
+	float weightTimeToCollision;
+    //@}
+    
+    /// @name Other parameters
+    //@{
+    /// The time under which incoming collision are taken into account.
+    ///
+    /// @remark Default value is 2.5s.
+    float horizonTime;
+    //@}
+    
+    /// @see dtParametrizedBehavior::doUpdate 
+    virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float dt);
+    
 private:
     dtCollisionAvoidance(const dtCollisionAvoidance&);
     dtCollisionAvoidance& operator=(const dtCollisionAvoidance&);
-
-	virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
-		const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams, float dt);
 
 	/// Registers all the neighbors of the given agent as obstacles.
 	///
@@ -185,23 +276,7 @@ private:
 	void updateVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent, 
 		const dtCollisionAvoidanceParams& currentParams, dtCollisionAvoidanceParams& newParams);
 
-	/// Resets the number of circles and segments.
-	void reset();
-
-	/// Adds a circle to the obstacles list.
-	///
-	/// @param[in]		pos		The position of the circle.
-	/// @param[in]		rad		The radius of the circle.
-	/// @param[in]		vel		The current velocity of the obstacle.
-	/// @param[in]		dvel	The desired velocity of the obstacle.
-	void addCircle(const float* pos, const float rad,
-		const float* vel, const float* dvel);
 	
-	/// Adds a segment to the obstacles list.
-	///
-	/// @param[in]	p	The position of the segment.
-	/// @param[in]	q	The radius of the segment.
-	void addSegment(const float* p, const float* q);
 	
 	/// Computes the desired velocity of an agent.
 	///
@@ -216,15 +291,6 @@ private:
 	int sampleVelocityAdaptive(const float* pos, const float rad, const float vmax,
 							   const float* vel, const float* dvel, float* nvel,
 							   const dtCollisionAvoidanceParams& oldParams, dtCollisionAvoidanceParams& newParams);
-
-	/// Access to the obstacles (other agents for instance)
-	/// @{
-	inline unsigned getObstacleCircleCount() const { return m_ncircles; }
-	const dtObstacleCircle* getObstacleCircle(const int i) { return &m_circles[i]; }
-
-	inline unsigned getObstacleSegmentCount() const { return m_nsegments; }
-	const dtObstacleSegment* getObstacleSegment(const int i) { return &m_segments[i]; }
-	/// @}
 
 	/// Checks if the agent is in conflict with the registered obstacles.
 	///
@@ -248,22 +314,28 @@ private:
 		const dtCollisionAvoidanceParams& oldParams, 
 		dtCollisionAvoidanceParams& newParams);
 
-	int m_velocitySamplesCount;				///< The number of velocity samples generate on the last frame.
-	const int m_maxAvoidanceParams;			///< The maximum number of crowd avoidance configurations supported by the collision avoidance.
-
-	float m_invHorizTime;		
-	float m_vmax;							///< The maximal speed.
+	float m_invHorizonTime; ///< Inverse of 'horizonTime', used to speed up some processes
 	float m_invVmax;						///< The inverse of the maximal speed.
 
-	int m_maxCircles;						///< Maximum number of circles.
-	dtObstacleCircle* m_circles;			///< The obstacles as circles.
-	int m_ncircles;							///< Number of registered circles.
-
-	int m_maxSegments;						///< Maximum number of segments.
-	dtObstacleSegment* m_segments;			///< The obstacles as segments.
-	int m_nsegments;						///< Number of registered segments.
-
-	const dtCrowdAgentEnvironment* m_env;	///< The environment of the agents (neighborhood, etc.)
+    /// Adds a circle to the obstacles list.
+	///
+	/// @param[in]		pos		The position of the circle.
+	/// @param[in]		rad		The radius of the circle.
+	/// @param[in]		vel		The current velocity of the obstacle.
+	/// @param[in]		dvel	The desired velocity of the obstacle.
+	void addCircle(const float* pos, const float rad,
+                   const float* vel, const float* dvel);
+	
+	/// Adds a segment to the obstacles list.
+	///
+	/// @param[in]	p	The position of the segment.
+	/// @param[in]	q	The radius of the segment.
+	void addSegment(const float* p, const float* q);
+    
+	dtObstacleCircle* m_circles;    ///< The circle obstacles.
+	unsigned m_circlesCount;		///< Circle obstacles count.
+	dtObstacleSegment* m_segments;	///< The segment obstacles.
+	unsigned m_segmentsCount;		///< Segment obstacles count.
 };
 
 #endif

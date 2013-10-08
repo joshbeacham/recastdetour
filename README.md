@@ -4,7 +4,7 @@
 
 # About #
 
-This repository is a fork of [recastnavigation](http://code.google.com/p/recastnavigation/) whose original author is [Mikko Mononen](memon@inside.org).
+This repository is a fork of [recastnavigation](https://github.com/memononen/recastnavigation) whose original author is [Mikko Mononen](memon@inside.org).
 The fork is maintainted by MASA Group´s product team of [MASA LIFE](http://masalife.net).
 To see our latest news in artificial intelligence you can follow our tweet - [@masalife_ai](https://twitter.com/masalife_ai).
 
@@ -81,9 +81,9 @@ The Detour Crowd module provides you with features for agents handling and behav
 
 # Contributors #
 
-## Master repository contributors ##
+## [Origin](https://github.com/memononen/recastnavigation) repository contributors ##
 - Mikko Mononen <memon@inside.org>
-- Steve ?? <stevefsp@gmail.com>
+- Stephen Pratt <stevefsp@gmail.com>
 - Cameron Hart <cameron.hart@gmail.com>
 
 ## [MASA LIFE](http://www.masalife.net) team contributors ##
@@ -93,8 +93,24 @@ The Detour Crowd module provides you with features for agents handling and behav
 
 ## Other contributors ##
 - Jérémy Chanut <jeremy.chanut@gmail.com>
+- Charles Prévot <prevot@cervval.com>
 
 # Release Notes #
+
+## Recast/Detour 2.0.2 ##
+**Released October 8th, 2013**
+
+- Overhaul of `dtCollisionAvoidance`: parameters moved to the behavior itself and better documentation.
+- Overhaul of `dtPathFollowing`: parameters moved to the behavior itself, target setting moved to the params and better documentation.
+- Clearer lifetime for agents desired velocity.
+- Renaming of dtVperp2D tp dtVCross2D for better consistency.
+- Renaming `dtCrowd::setAgentBehavior` to `dtCrowd::pushAgentBehavior`.
+- Renaming `dtCrowd::updateAgentPosition` to `dtCrowd::pushAgentPosition`.
+- Renaming `dtCrowd::applyAgent` to `dtCrowd::pushAgent`.
+- Addition of the *mazy hall* DetourCrowd sample.
+- Additional DetourCrowd unit tests.
+- Attaching the revision tree to the new [*origin* github repository](https://github.com/memononen/recastnavigation).
+- Fixing the build of DetourCrowdDemo on linux.
 
 ## Recast/Detour 2.0.1 ##
 **Released August 22nd, 2013**

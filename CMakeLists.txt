@@ -46,7 +46,6 @@ ENDIF(MSVC)
 INSTALL(
     FILES recastdetour.LICENSE.txt
     DESTINATION license
-    CONFIGURATIONS Release
 )
 
 ADD_SUBDIRECTORY(RecastDetourDebugUtils)

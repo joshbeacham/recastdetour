@@ -172,31 +172,6 @@ void CrowdSample::parseCrowd(dtCrowd* crowd)
 					JSONValue* behavior = parameters->Child(L"behavior");
 					if (behavior && behavior->IsObject())
 						parseBehavior(behavior, iAgent, crowd, false);
-
-					JSONValue* updateFlags = parameters->Child(L"updateFlags");
-					if (updateFlags && updateFlags->IsArray())
-					{
-						for (std::size_t iFlag(0), size(updateFlags->CountChildren()) ; iFlag < size ; ++iFlag)
-						{
-							JSONValue* updateFlag = updateFlags->Child(iFlag);
-
-							if (updateFlag && updateFlag->IsString())
-							{
-								const std::wstring& updateFlagStr = updateFlag->AsString();
-
-								if (updateFlagStr==L"DT_CROWD_ANTICIPATE_TURNS")
-									m_agentCfgs[iAgent].updateFlags |= DT_CROWD_ANTICIPATE_TURNS;
-								else if (updateFlagStr==L"DT_CROWD_OBSTACLE_AVOIDANCE")
-									m_agentCfgs[iAgent].updateFlags |= DT_CROWD_OBSTACLE_AVOIDANCE;
-								else if (updateFlagStr==L"DT_CROWD_SEPARATION")
-									m_agentCfgs[iAgent].updateFlags |= DT_CROWD_SEPARATION;
-								else if (updateFlagStr==L"DT_CROWD_OPTIMIZE_VIS")
-									m_agentCfgs[iAgent].updateFlags |= DT_CROWD_OPTIMIZE_VIS;
-								else if (updateFlagStr==L"DT_CROWD_OPTIMIZE_TOPO")
-									m_agentCfgs[iAgent].updateFlags |= DT_CROWD_OPTIMIZE_TOPO;
-							}
-						}
-					}
 				}
 			}
 		}
@@ -249,18 +224,44 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 		if (params)
 		{
 			params->debug = 0;
-			params->velBias = 0.4f;
-			params->weightDesVel = 2.0f;
-			params->weightCurVel = 0.75f;
-			params->weightSide = 0.75f;
-			params->weightToi = 2.5f;
-			params->horizTime = 2.5f;
-			params->gridSize = 33;
-			params->adaptiveDivs = 7;
-			params->adaptiveRings = 2;
-			params->adaptiveDepth = 5;
 		}
-
+        
+        JSONValue* weightDesiredVelocity = behavior->Child(L"weightDesiredVelocity");
+		if (weightDesiredVelocity && weightDesiredVelocity->IsNumber())
+			ca->weightDesiredVelocity = (float)weightDesiredVelocity->AsNumber();
+        
+        JSONValue* weightCurrentVelocity = behavior->Child(L"weightCurrentVelocity");
+		if (weightCurrentVelocity && weightCurrentVelocity->IsNumber())
+			ca->weightCurrentVelocity = (float)weightCurrentVelocity->AsNumber();
+        
+        JSONValue* weightCurrentAvoidanceSide = behavior->Child(L"weightCurrentAvoidanceSide");
+		if (weightCurrentAvoidanceSide && weightCurrentAvoidanceSide->IsNumber())
+			ca->weightCurrentAvoidanceSide = (float)weightCurrentAvoidanceSide->AsNumber();
+        
+        JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
+		if (weightTimeToCollision && weightTimeToCollision->IsNumber())
+			ca->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
+        
+        JSONValue* sampleOriginScale = behavior->Child(L"sampleOriginScale");
+		if (sampleOriginScale && sampleOriginScale->IsNumber())
+			ca->sampleOriginScale = (float)sampleOriginScale->AsNumber();
+        
+        JSONValue* sampleSectorsCount = behavior->Child(L"sampleSectorsCount");
+		if (sampleSectorsCount && sampleSectorsCount->IsNumber())
+			ca->sampleSectorsCount = (float)sampleSectorsCount->AsNumber();
+        
+        JSONValue* sampleRingsCount = behavior->Child(L"sampleRingsCount");
+		if (sampleRingsCount && sampleRingsCount->IsNumber())
+			ca->sampleRingsCount = (float)sampleRingsCount->AsNumber();
+        
+        JSONValue* sampleLevelsCount = behavior->Child(L"sampleLevelsCount");
+		if (sampleLevelsCount && sampleLevelsCount->IsNumber())
+			ca->sampleLevelsCount = (float)sampleLevelsCount->AsNumber();
+        
+        JSONValue* horizonTime = behavior->Child(L"horizonTime");
+		if (horizonTime && horizonTime->IsNumber())
+			ca->horizonTime = (float)horizonTime->AsNumber();
+        
 		m_agentCfgs[iAgent].steeringBehavior = ca;
 	}
 
@@ -281,9 +282,21 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 			params->debugIndex = iAgent;
 		}
 
-		JSONValue* pathOpti = behavior->Child(L"pathOptimizationRange");
-		if (pathOpti && pathOpti->IsNumber())
-			params->pathOptimizationRange = (float)pathOpti->AsNumber();
+		JSONValue* visibilityPathOptimizationRange = behavior->Child(L"visibilityPathOptimizationRange");
+		if (visibilityPathOptimizationRange && visibilityPathOptimizationRange->IsNumber())
+			pf->visibilityPathOptimizationRange = (float)visibilityPathOptimizationRange->AsNumber();
+        
+        JSONValue* initialPathfindIterCount = behavior->Child(L"initialPathfindIterCount");
+		if (initialPathfindIterCount && initialPathfindIterCount->IsNumber())
+			pf->initialPathfindIterCount = (unsigned)initialPathfindIterCount->AsNumber();
+        
+        JSONValue* localPathReplanningInterval = behavior->Child(L"localPathReplanningInterval");
+		if (localPathReplanningInterval && localPathReplanningInterval->IsBool())
+			pf->localPathReplanningInterval = localPathReplanningInterval->AsBool();
+        
+        JSONValue* anticipateTurns = behavior->Child(L"anticipateTurns");
+		if (anticipateTurns && anticipateTurns->IsBool())
+			pf->anticipateTurns = anticipateTurns->AsBool();
 		
 		JSONValue* destination = behavior->Child(L"destination");
 		if (destination && destination->IsArray())
@@ -296,8 +309,9 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 				crowd->getCrowdQuery()->getQueryFilter(), 
 				&m_agentCfgs[iAgent].destinationPoly, 0);
 
-			pf->requestMoveTarget(iAgent, m_agentCfgs[iAgent].destinationPoly, m_agentCfgs[iAgent].destination);
+			pf->getBehaviorParams(iAgent)->submitTarget(m_agentCfgs[iAgent].destination, m_agentCfgs[iAgent].destinationPoly);
 		}
+
 	}
 
 	// Seek behavior
@@ -599,10 +613,9 @@ bool CrowdSample::initializeCrowd(dtCrowd* crowd)
 		ag.position[2] = m_agentCfgs[i].position[2];
 		ag.height = m_agentCfgs[i].height;
 		ag.behavior = m_agentCfgs[i].steeringBehavior;
-		ag.updateFlags = m_agentCfgs[i].updateFlags;
 		ag.perceptionDistance = m_agentCfgs[i].collisionQueryRange;
 
-		crowd->applyAgent(ag);
+		crowd->pushAgent(ag);
     }
 	
     return true; 

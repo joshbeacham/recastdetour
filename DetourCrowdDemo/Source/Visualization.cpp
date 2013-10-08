@@ -293,7 +293,7 @@ bool Visualization::update()
 				else if (event.key.keysym.sym == SDLK_r)
 				{
 					float pos[3] = {-15, 0, 15};
-					m_crowd->updateAgentPosition(0, pos);
+					m_crowd->pushAgentPosition(0, pos);
 				}
 				else if (event.key.keysym.sym == SDLK_KP7)
 				{
@@ -304,7 +304,7 @@ bool Visualization::update()
 					dtCrowdAgent ag;
 					m_crowd->fetchAgent(ag, 0);
 					dtVcopy(ag.velocity, pos);
-					m_crowd->applyAgent(ag);
+					m_crowd->pushAgent(ag);
 				}
 				else if (event.key.keysym.sym == SDLK_KP9)
 				{
@@ -315,7 +315,7 @@ bool Visualization::update()
 					dtCrowdAgent ag;
 					m_crowd->fetchAgent(ag, 0);
 					dtVcopy(ag.velocity, pos);
-					m_crowd->applyAgent(ag);
+					m_crowd->pushAgent(ag);
 				}
 				else if (event.key.keysym.sym == SDLK_KP3)
 				{
@@ -326,7 +326,7 @@ bool Visualization::update()
 					dtCrowdAgent ag;
 					m_crowd->fetchAgent(ag, 0);
 					dtVcopy(ag.velocity, pos);
-					m_crowd->applyAgent(ag);
+					m_crowd->pushAgent(ag);
 				}
 				else if (event.key.keysym.sym == SDLK_KP1)
 				{
@@ -337,7 +337,7 @@ bool Visualization::update()
 					dtCrowdAgent ag;
 					m_crowd->fetchAgent(ag, 0);
 					dtVcopy(ag.velocity, pos);
-					m_crowd->applyAgent(ag);
+					m_crowd->pushAgent(ag);
 				}
 				else if (event.key.keysym.sym == SDLK_KP5)
 				{
@@ -348,7 +348,7 @@ bool Visualization::update()
 					dtCrowdAgent ag;
 					m_crowd->fetchAgent(ag, 0);
 					dtVcopy(ag.velocity, pos);
-					m_crowd->applyAgent(ag);
+					m_crowd->pushAgent(ag);
 				}
                 break;
                 

@@ -21,13 +21,17 @@
                         {
                             "type": "pathFollowing",
                             "destination": [10, 0, 10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
-                    {                       
+                    {
                         "behavior":
                         {
-                            "type": "collisionAvoidance"
+                            "type": "collisionAvoidance",
+                            "weightDesiredVelocity": 2.0,
+                            "weightCurrentVelocity": 0.75,
+                            "weightCurrentAvoidanceSide": 0.75,
+                            "weightTimeToCollision": 2.5
                         }
                     }
                 ]
@@ -49,13 +53,17 @@
                         {
                             "type": "pathFollowing",
                             "destination": [-10, 0, -10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
-                    {                       
+                    {
                         "behavior":
                         {
-                            "type": "collisionAvoidance"
+                            "type": "collisionAvoidance",
+                            "weightDesiredVelocity": 2.0,
+                            "weightCurrentVelocity": 0.75,
+                            "weightCurrentAvoidanceSide": 0.75,
+                            "weightTimeToCollision": 2.5
                         }
                     }
                 ]
@@ -77,13 +85,17 @@
                         {
                             "type": "pathFollowing",
                             "destination": [10, 0, -10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
                     {                       
                         "behavior":
                         {
-                            "type": "collisionAvoidance"
+                            "type": "collisionAvoidance",
+                            "weightDesiredVelocity": 2.0,
+                            "weightCurrentVelocity": 0.75,
+                            "weightCurrentAvoidanceSide": 0.75,
+                            "weightTimeToCollision": 2.5
                         }
                     }
                 ]
@@ -105,13 +117,17 @@
                         {
                             "type": "pathFollowing",
                             "destination": [-10, 0, 10],
-                            "pathOptimizationRange": 6
+                            "visibilityPathOptimizationRange": 6
                         }
                     },
                     {                       
                         "behavior":
                         {
-                            "type": "collisionAvoidance"
+                            "type": "collisionAvoidance",
+                            "weightDesiredVelocity": 2.0,
+                            "weightCurrentVelocity": 0.75,
+                            "weightCurrentAvoidanceSide": 0.75,
+                            "weightTimeToCollision": 2.5
                         }
                     }
                 ]

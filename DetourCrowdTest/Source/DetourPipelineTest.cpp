@@ -52,7 +52,7 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 	REQUIRE(crowd->addAgent(ag, posAgt1));
 	ts.defaultInitializeAgent(*crowd, ag.id);
 
-	crowd->setAgentBehavior(ag.id, pipeline);
+	crowd->pushAgentBehavior(ag.id, pipeline);
 
 	crowd->update(0.5, 0);
 
@@ -62,8 +62,8 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 	// Since no behavior is affected to the pipeline, the agent must not have moved
 	CHECK(dtVequal(agt1NewPos, posAgt1));
 
-		dtPathFollowing* pf = dtPathFollowing::allocate(5);
-		dtPathFollowingParams* pfParams = pf->getBehaviorParams(crowd->getAgent(0)->id);
+    dtPathFollowing* pf = dtPathFollowing::allocate(5);
+    dtPathFollowingParams* pfParams = pf->getBehaviorParams(crowd->getAgent(0)->id);
 
 	// Set the destination
 	dtPolyRef dest;
@@ -72,7 +72,7 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 
 	REQUIRE(dest != 0);		
 	REQUIRE(pf->init(*crowd->getCrowdQuery()));
-	REQUIRE(pf->requestMoveTarget(ag.id, dest, destAgt1));
+	pf->getBehaviorParams(ag.id)->submitTarget(destAgt1, dest);
 
 	SECTION("Adding and Removing behaviors to the pipeline", "Trying to add and remove behaviors into the pipeline, should not crash")
 	{
@@ -119,16 +119,6 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 		if (params)
 		{
 			params->debug = 0;
-			params->velBias = 0.4f;
-			params->weightDesVel = 2.0f;
-			params->weightCurVel = 0.75f;
-			params->weightSide = 0.75f;
-			params->weightToi = 2.5f;
-			params->horizTime = 2.5f;
-			params->gridSize = 33;
-			params->adaptiveDivs = 7;
-			params->adaptiveRings = 2;
-			params->adaptiveDepth = 5;
 		}
 
 		std::vector<dtBehavior*> behaviors;

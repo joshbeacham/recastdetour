@@ -128,7 +128,7 @@ according to the agent it is updating. Here is a sample code:
 dtArriveBehavior arrive(1);
 
 // You also need to associate this behavior to the agent
-crowd.setAgentBehavior(&arrive, myAgent.id);
+crowd.pushAgentBehavior(&arrive, myAgent.id);
 
 // Now we create the parameters for this behavior. For the Arrive behavior, 
 // the already existing structure is dtArriveBehaviorParams.
@@ -201,7 +201,7 @@ MyParams* params = b.getBehaviorParams(idAgent);
 params->target = crowd.getAgent(idTarget);
 
 // We set the behavior for the agent
-crowd.setAgentBehavior(idAgent, &b);
+crowd.pushAgentBehavior(idAgent, &b);
 @endcode
 
 Now our behavior has been assigned to the agent. The next time the crowd updates its agents, 
