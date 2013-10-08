@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -130,20 +130,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a92f0d782784677c71be74a8158e2d9f1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a92f0d782784677c71be74a8158e2d9f1">init</a> (<a class="el" href="classdtCrowdQuery.html">dtCrowdQuery</a> &amp;crowdQuery, unsigned maxPathRes=256)</td></tr>
 <tr class="memdesc:a92f0d782784677c71be74a8158e2d9f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the behavior.  <a href="#a92f0d782784677c71be74a8158e2d9f1">More...</a><br/></td></tr>
 <tr class="separator:a92f0d782784677c71be74a8158e2d9f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32043cf7af2a6a9177437c78f6872493"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a32043cf7af2a6a9177437c78f6872493">requestMoveTarget</a> (const unsigned idx, <a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a> ref, const float *pos)</td></tr>
-<tr class="memdesc:a32043cf7af2a6a9177437c78f6872493"><td class="mdescLeft">&#160;</td><td class="mdescRight">Submits a new move request for the specified agent.  <a href="#a32043cf7af2a6a9177437c78f6872493">More...</a><br/></td></tr>
-<tr class="separator:a32043cf7af2a6a9177437c78f6872493"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4950db7053b74ee45de5afd795ec42a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#ac4950db7053b74ee45de5afd795ec42a">resetMoveTarget</a> (const unsigned idx)</td></tr>
-<tr class="memdesc:ac4950db7053b74ee45de5afd795ec42a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets any request for the specified agent.  <a href="#ac4950db7053b74ee45de5afd795ec42a">More...</a><br/></td></tr>
-<tr class="separator:ac4950db7053b74ee45de5afd795ec42a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62ca88879379d0c8e4614d2cb80baacb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a62ca88879379d0c8e4614d2cb80baacb">purge</a> ()</td></tr>
 <tr class="memdesc:a62ca88879379d0c8e4614d2cb80baacb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans the class before destroying.  <a href="#a62ca88879379d0c8e4614d2cb80baacb">More...</a><br/></td></tr>
 <tr class="separator:a62ca88879379d0c8e4614d2cb80baacb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Gets the path results</div></td></tr>
-<tr class="memitem:aa479e22099b614b9f279c9c5a26a8529"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#aa479e22099b614b9f279c9c5a26a8529">getPathRes</a> () const </td></tr>
-<tr class="separator:aa479e22099b614b9f279c9c5a26a8529"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88760792b86174f5ca3f3aa168218f59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a88760792b86174f5ca3f3aa168218f59">getPathRes</a> ()</td></tr>
-<tr class="separator:a88760792b86174f5ca3f3aa168218f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e06ff6905b53a522899df7ac0b7ff5b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a8e06ff6905b53a522899df7ac0b7ff5b">doUpdate</a> (const <a class="el" href="classdtCrowdQuery.html">dtCrowdQuery</a> &amp;query, const <a class="el" href="structdtCrowdAgent.html">dtCrowdAgent</a> &amp;oldAgent, <a class="el" href="structdtCrowdAgent.html">dtCrowdAgent</a> &amp;newAgent, const <a class="el" href="structdtPathFollowingParams.html">dtPathFollowingParams</a> &amp;currentParams, <a class="el" href="structdtPathFollowingParams.html">dtPathFollowingParams</a> &amp;newParams, float dt)</td></tr>
+<tr class="separator:a8e06ff6905b53a522899df7ac0b7ff5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classdtParametrizedBehavior"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classdtParametrizedBehavior')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classdtParametrizedBehavior.html">dtParametrizedBehavior&lt; dtPathFollowingParams &gt;</a></td></tr>
 <tr class="memitem:a824fde8029d4fd0760755f0e56e1ef03 inherit pub_methods_classdtParametrizedBehavior"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtParametrizedBehavior.html#a824fde8029d4fd0760755f0e56e1ef03">dtParametrizedBehavior</a> (unsigned nbAgentsEstimated)</td></tr>
 <tr class="memdesc:a824fde8029d4fd0760755f0e56e1ef03 inherit pub_methods_classdtParametrizedBehavior"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs the behavior The user must specify how many agents will be using this behavior.  <a href="#a824fde8029d4fd0760755f0e56e1ef03">More...</a><br/></td></tr>
@@ -170,6 +161,22 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a869aa218581cc929766e486edc414d76"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a869aa218581cc929766e486edc414d76">free</a> (<a class="el" href="classdtPathFollowing.html">dtPathFollowing</a> *ptr)</td></tr>
 <tr class="memdesc:a869aa218581cc929766e486edc414d76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the given behavior.  <a href="#a869aa218581cc929766e486edc414d76">More...</a><br/></td></tr>
 <tr class="separator:a869aa218581cc929766e486edc414d76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Parameters</div></td></tr>
+<tr class="memitem:a1f0f43e7f4c36af7a43e83baca1bcae5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a1f0f43e7f4c36af7a43e83baca1bcae5">initialPathfindIterCount</a></td></tr>
+<tr class="memdesc:a1f0f43e7f4c36af7a43e83baca1bcae5"><td class="mdescLeft">&#160;</td><td class="mdescRight">During the first update after a request move target, the path starts to be computed for this given number of iterations (that way this path is not added to the queue if it is a short one).  <a href="#a1f0f43e7f4c36af7a43e83baca1bcae5">More...</a><br/></td></tr>
+<tr class="separator:a1f0f43e7f4c36af7a43e83baca1bcae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19a1e0a91539bbe4eac0b5e430c60fe0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a19a1e0a91539bbe4eac0b5e430c60fe0">visibilityPathOptimizationRange</a></td></tr>
+<tr class="memdesc:a19a1e0a91539bbe4eac0b5e430c60fe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visibility-based path optimization distance.  <a href="#a19a1e0a91539bbe4eac0b5e430c60fe0">More...</a><br/></td></tr>
+<tr class="separator:a19a1e0a91539bbe4eac0b5e430c60fe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73d50c922f9f61f97259c2ca552ffcc5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a73d50c922f9f61f97259c2ca552ffcc5">localPathReplanningInterval</a></td></tr>
+<tr class="memdesc:a73d50c922f9f61f97259c2ca552ffcc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local replanning time interval.  <a href="#a73d50c922f9f61f97259c2ca552ffcc5">More...</a><br/></td></tr>
+<tr class="separator:a73d50c922f9f61f97259c2ca552ffcc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d36f0f0db3c5aab2440b73400294be"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtPathFollowing.html#a22d36f0f0db3c5aab2440b73400294be">anticipateTurns</a></td></tr>
+<tr class="memdesc:a22d36f0f0db3c5aab2440b73400294be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable the turn anticipations.  <a href="#a22d36f0f0db3c5aab2440b73400294be">More...</a><br/></td></tr>
+<tr class="separator:a22d36f0f0db3c5aab2440b73400294be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -258,6 +265,67 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a8e06ff6905b53a522899df7ac0b7ff5b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dtPathFollowing::doUpdate </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdtCrowdQuery.html">dtCrowdQuery</a> &amp;&#160;</td>
+          <td class="paramname"><em>query</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structdtCrowdAgent.html">dtCrowdAgent</a> &amp;&#160;</td>
+          <td class="paramname"><em>oldAgent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdtCrowdAgent.html">dtCrowdAgent</a> &amp;&#160;</td>
+          <td class="paramname"><em>newAgent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structdtPathFollowingParams.html">dtPathFollowingParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>currentParams</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdtPathFollowingParams.html">dtPathFollowingParams</a> &amp;&#160;</td>
+          <td class="paramname"><em>newParams</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>dt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classdtParametrizedBehavior.html#a64a71c53ef9e4219d248fbdc3a3f37e7" title="This method will eventually be called by the dtParametrizedBehavior::update() method. ">dtParametrizedBehavior::doUpdate</a> </dd></dl>
+
+<p>Implements <a class="el" href="classdtParametrizedBehavior.html#a64a71c53ef9e4219d248fbdc3a3f37e7">dtParametrizedBehavior&lt; dtPathFollowingParams &gt;</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a869aa218581cc929766e486edc414d76"></a>
 <div class="memitem">
 <div class="memproto">
@@ -287,52 +355,6 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a class="anchor" id="aa479e22099b614b9f279c9c5a26a8529"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>* dtPathFollowing::getPathRes </td>
-          <td>(</td>
-          <td class="paramname">)</td><td></td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a88760792b86174f5ca3f3aa168218f59"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>* dtPathFollowing::getPathRes </td>
-          <td>(</td>
-          <td class="paramname">)</td><td></td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -390,75 +412,68 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a32043cf7af2a6a9177437c78f6872493"></a>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a22d36f0f0db3c5aab2440b73400294be"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool dtPathFollowing::requestMoveTarget </td>
-          <td>(</td>
-          <td class="paramtype">const unsigned&#160;</td>
-          <td class="paramname"><em>idx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>&#160;</td>
-          <td class="paramname"><em>ref</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const float *&#160;</td>
-          <td class="paramname"><em>pos</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="memname">bool dtPathFollowing::anticipateTurns</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Submits a new move request for the specified agent. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">idx</td><td>The agent index. [Limits: 0 &lt;= value &lt; #getAgentCount()] </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ref</td><td>The position's polygon reference. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">pos</td><td>The position within the polygon. [(x, y, z)] </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if the request was successfully submitted.</dd></dl>
-<dl class="section user"><dt></dt><dd></dd></dl>
-<p>This method is used when a new target is set.</p>
-<p>The position will be constrained to the surface of the navigation mesh.</p>
-<p>The request will be processed during the next update. </p>
+<p>Enable the turn anticipations. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Default value is false. </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="ac4950db7053b74ee45de5afd795ec42a"></a>
+<a class="anchor" id="a1f0f43e7f4c36af7a43e83baca1bcae5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool dtPathFollowing::resetMoveTarget </td>
-          <td>(</td>
-          <td class="paramtype">const unsigned&#160;</td>
-          <td class="paramname"><em>idx</em>)</td><td></td>
-          <td></td>
+          <td class="memname">unsigned dtPathFollowing::initialPathfindIterCount</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Resets any request for the specified agent. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">idx</td><td>The agent index. [Limits: 0 &lt;= value &lt; #getAgentCount()] </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if the request was successfully reseted. </dd></dl>
+<p>During the first update after a request move target, the path starts to be computed for this given number of iterations (that way this path is not added to the queue if it is a short one). </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Default value is 20. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a73d50c922f9f61f97259c2ca552ffcc5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float dtPathFollowing::localPathReplanningInterval</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Local replanning time interval. </p>
+<p>Setting this parameter to a positive time will perform, at the specified frequency a local area path find to try to re-optimize the corridor.</p>
+<p>This method compliment the one controlled by <a class="el" href="classdtPathFollowing.html#a19a1e0a91539bbe4eac0b5e430c60fe0" title="Visibility-based path optimization distance. ">dtPathFollowing::visibilityPathOptimizationRange</a></p>
+<dl class="section remark"><dt>Remarks</dt><dd>Default value is -1 (the replanning is disabled). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a19a1e0a91539bbe4eac0b5e430c60fe0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float dtPathFollowing::visibilityPathOptimizationRange</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Visibility-based path optimization distance. </p>
+<p>Inaccurate locomotion or dynamic obstacle avoidance can force the agent position significantly outside the original path corridor. Over time this can result in the formation of a non-optimal corridor. Non-optimal paths can also form near the corners of tiles.</p>
+<p>Setting this parameter to a positive distance will perform, during the update, an efficient local visibility search to try to optimize the corridor, finding shortcuts.</p>
+<dl class="section remark"><dt>Remarks</dt><dd>Default value is -1 (the optimization is disabled). </dd></dl>
 
 </div>
 </div>

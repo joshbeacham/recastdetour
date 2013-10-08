@@ -7,5 +7,5 @@ var searchData=
   ['heights',['heights',['../structdtTileCacheLayer.html#ad5671088121159f5f4f39d52f6c3d42f',1,'dtTileCacheLayer::heights()'],['../structrcHeightfieldLayer.html#ac524f9b2f07bd31eba6a9ef72c2f2d0b',1,'rcHeightfieldLayer::heights()']]],
   ['hmax',['hmax',['../structdtTileCacheLayerHeader.html#a1a39cf584edf04f90b05b38f1979f13d',1,'dtTileCacheLayerHeader::hmax()'],['../structrcHeightfieldLayer.html#a95365db6dde274d1722aec90ade7a8c8',1,'rcHeightfieldLayer::hmax()']]],
   ['hmin',['hmin',['../structdtTileCacheLayerHeader.html#ac67e4ecbb71ab3814e9e270f14004ee9',1,'dtTileCacheLayerHeader::hmin()'],['../structrcHeightfieldLayer.html#a6ddd970ccf1cd15048ac535f9f75d083',1,'rcHeightfieldLayer::hmin()']]],
-  ['horiztime',['horizTime',['../structdtCollisionAvoidanceParams.html#a368f58fa69b3985f897923b3dfaf2561',1,'dtCollisionAvoidanceParams']]]
+  ['horizontime',['horizonTime',['../classdtCollisionAvoidance.html#a5331715164ba06bec9105263cb62e7c8',1,'dtCollisionAvoidance']]]
 ];

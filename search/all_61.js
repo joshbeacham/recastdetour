@@ -1,9 +1,6 @@
 var searchData=
 [
   ['active',['active',['../structdtCrowdAgent.html#aa95698f1b5109d79b3dea7db2599d644',1,'dtCrowdAgent']]],
-  ['adaptivedepth',['adaptiveDepth',['../structdtCollisionAvoidanceParams.html#a26fc70bf1ec1984186e4f4bf86c35d16',1,'dtCollisionAvoidanceParams']]],
-  ['adaptivedivs',['adaptiveDivs',['../structdtCollisionAvoidanceParams.html#ab1509336c8b58305a14eb271fa55df0c',1,'dtCollisionAvoidanceParams']]],
-  ['adaptiverings',['adaptiveRings',['../structdtCollisionAvoidanceParams.html#ae93cdd05dde18924da8ff05f82ee6cdd',1,'dtCollisionAvoidanceParams']]],
   ['addagent',['addAgent',['../classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669',1,'dtCrowd']]],
   ['addedge',['addEdge',['../RecastMeshDetail_8cpp.html#aff810577b2aaf1338c7051ad08435ce7',1,'RecastMeshDetail.cpp']]],
   ['addneighbour',['addNeighbour',['../DetourCrowd_8cpp.html#a9e5491a91f795b81e724a48f8a4ee942',1,'DetourCrowd.cpp']]],
@@ -21,8 +18,8 @@ var searchData=
   ['allocate',['allocate',['../classdtAlignmentBehavior.html#a198d647a8b5e04d7d4d606c2c56a5cd2',1,'dtAlignmentBehavior::allocate()'],['../classdtCohesionBehavior.html#a7a8ac025960a73d67138bbc080acd383',1,'dtCohesionBehavior::allocate()'],['../classdtCollisionAvoidance.html#a2ddc6d408fd56a3596a8ea9a1489612d',1,'dtCollisionAvoidance::allocate()'],['../classdtFlockingBehavior.html#a60db4c684d9b6256211f5f723457d1fd',1,'dtFlockingBehavior::allocate()'],['../classdtArriveBehavior.html#abc8d9095a7c32a2ac0b2a0197cca297e',1,'dtArriveBehavior::allocate()'],['../classdtPathFollowing.html#a1a14cf32b4e54b40ad43d5304b3c8a0f',1,'dtPathFollowing::allocate()'],['../classdtPipelineBehavior.html#abc8592d4d602f44736146b271a0a96fd',1,'dtPipelineBehavior::allocate()'],['../classdtSeekBehavior.html#a224c41b369479f6297c31871f4f0a6ee',1,'dtSeekBehavior::allocate()'],['../classdtSeparationBehavior.html#ab041785c61f2653a878d0243faf53755',1,'dtSeparationBehavior::allocate()']]],
   ['alloclink',['allocLink',['../DetourNavMesh_8cpp.html#aa74dd7666e6d665dd48779e18f5d4ed9',1,'DetourNavMesh.cpp']]],
   ['allocspan',['allocSpan',['../RecastRasterization_8cpp.html#aa11b8335cd3e2dfd39972a4e9046467c',1,'RecastRasterization.cpp']]],
+  ['anticipateturns',['anticipateTurns',['../classdtPathFollowing.html#a22d36f0f0db3c5aab2440b73400294be',1,'dtPathFollowing']]],
   ['appendvertex',['appendVertex',['../DetourTileCacheBuilder_8cpp.html#a7b70b108373f83e39073cd995c83342e',1,'DetourTileCacheBuilder.cpp']]],
-  ['applyagent',['applyAgent',['../classdtCrowd.html#a668bdfce5339359c158ac3875a24826b',1,'dtCrowd']]],
   ['applyforce',['applyForce',['../classdtSteeringBehavior.html#ac31641276912aa565fefab5b2465b1ce',1,'dtSteeringBehavior']]],
   ['area',['area',['../structdtPolyState.html#afd684e7c95d1048ace6dc198457b7c69',1,'dtPolyState::area()'],['../structdtTileCacheContour.html#a3ab1d658278d4dcc482dcb7f17be6b3b',1,'dtTileCacheContour::area()'],['../structdtLayerMonotoneRegion.html#a1ac6f67259d70c25d55f1c0fc05077bf',1,'dtLayerMonotoneRegion::area()'],['../structrcSpan.html#a8bf133cf1e7ccf3d69f1ba365cb0c1ca',1,'rcSpan::area()'],['../structrcContour.html#a1052e9ac2da6e515cbb12908a58fca78',1,'rcContour::area()']]],
   ['area2',['area2',['../DetourTileCacheBuilder_8cpp.html#a4026446823c064e1eee76b85985e82cd',1,'area2(const unsigned char *a, const unsigned char *b, const unsigned char *c):&#160;DetourTileCacheBuilder.cpp'],['../RecastMesh_8cpp.html#a09ae1f04327bcd46a12ace0769a8f266',1,'area2(const int *a, const int *b, const int *c):&#160;RecastMesh.cpp']]],

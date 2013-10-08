@@ -1,5 +1,10 @@
 var NAVTREEINDEX2 =
 {
+"structdtPoly.html#a671fd6893087936e80fcd17f7f666c0e":[2,0,0,5],
+"structdtPoly.html#a84f05dcf69d70b26323b65a0c1c66954":[2,0,0,2],
+"structdtPoly.html#a8b7fd4b5716bced396fdd5e106fae725":[2,0,0,0],
+"structdtPoly.html#ac4f5aa32df32aa5b1385f76f697376af":[2,0,0,7],
+"structdtPoly.html#ac625b3f1acf8df354a50464e210300dc":[2,0,0,3],
 "structdtPoly.html#acff94eb19526d33ef3c966b583d1d73f":[2,0,0,9],
 "structdtPoly.html#af3caa090f5d4776766bf56f82c27a899":[2,0,0,4],
 "structdtPoly.html#af940c431464c022f844e61130f83d9c2":[2,0,0,8],

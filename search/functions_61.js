@@ -17,7 +17,6 @@ var searchData=
   ['alloclink',['allocLink',['../DetourNavMesh_8cpp.html#aa74dd7666e6d665dd48779e18f5d4ed9',1,'DetourNavMesh.cpp']]],
   ['allocspan',['allocSpan',['../RecastRasterization_8cpp.html#aa11b8335cd3e2dfd39972a4e9046467c',1,'RecastRasterization.cpp']]],
   ['appendvertex',['appendVertex',['../DetourTileCacheBuilder_8cpp.html#a7b70b108373f83e39073cd995c83342e',1,'DetourTileCacheBuilder.cpp']]],
-  ['applyagent',['applyAgent',['../classdtCrowd.html#a668bdfce5339359c158ac3875a24826b',1,'dtCrowd']]],
   ['applyforce',['applyForce',['../classdtSteeringBehavior.html#ac31641276912aa565fefab5b2465b1ce',1,'dtSteeringBehavior']]],
   ['area2',['area2',['../DetourTileCacheBuilder_8cpp.html#a4026446823c064e1eee76b85985e82cd',1,'area2(const unsigned char *a, const unsigned char *b, const unsigned char *c):&#160;DetourTileCacheBuilder.cpp'],['../RecastMesh_8cpp.html#a09ae1f04327bcd46a12ace0769a8f266',1,'area2(const int *a, const int *b, const int *c):&#160;RecastMesh.cpp']]]
 ];

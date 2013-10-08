@@ -13,6 +13,7 @@ var searchData=
   ['circumcircle',['circumCircle',['../RecastMeshDetail_8cpp.html#a22704fbc4ce6a6d0aa11821bc4684f22',1,'RecastMeshDetail.cpp']]],
   ['classifyoffmeshpoint',['classifyOffMeshPoint',['../DetourNavMeshBuilder_8cpp.html#a9a7e6003820face64f333c968b5c0cdb',1,'DetourNavMeshBuilder.cpp']]],
   ['clear',['clear',['../classdtNodePool.html#a4341af64b1f043b2775b7f1abae34d7b',1,'dtNodePool::clear()'],['../classdtNodeQueue.html#aa0f83a0d1f38b0b97fb549d1372c8be7',1,'dtNodeQueue::clear()']]],
+  ['cleartarget',['clearTarget',['../structdtPathFollowingParams.html#a3c7dfbb6a8fa7169a0649f68da044cd0',1,'dtPathFollowingParams']]],
   ['clippoly',['clipPoly',['../RecastRasterization_8cpp.html#a3ef587d7cabf49fa0be26f2a8adf769b',1,'RecastRasterization.cpp']]],
   ['closestpointonpoly',['closestPointOnPoly',['../classdtNavMeshQuery.html#ace375a2d8b236abcd3fc05c38def4810',1,'dtNavMeshQuery']]],
   ['closestpointonpolyboundary',['closestPointOnPolyBoundary',['../classdtNavMeshQuery.html#a66f3f4e7be8121e8abfc9dbed3e54d00',1,'dtNavMeshQuery']]],

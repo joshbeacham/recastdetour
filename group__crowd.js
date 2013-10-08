@@ -12,6 +12,7 @@ var group__crowd =
       [ "neighbors", "structdtCrowdAgentEnvironment.html#af2a6b50d38c611edf98e63e9fa1f46fd", null ]
     ] ],
     [ "dtCrowdAgent", "structdtCrowdAgent.html", [
+      [ "init", "structdtCrowdAgent.html#ab19dda764487877abcec903b0675bd21", null ],
       [ "active", "structdtCrowdAgent.html#aa95698f1b5109d79b3dea7db2599d644", null ],
       [ "behavior", "structdtCrowdAgent.html#af2bd901bc5d72c92413e5ceea06cbb5f", null ],
       [ "desiredVelocity", "structdtCrowdAgent.html#a17cf6c3e4c84689d004a65e59a3c6161", null ],
@@ -29,7 +30,6 @@ var group__crowd =
       [ "position", "structdtCrowdAgent.html#acc512b4b9bf4889d884d34556b6d075a", null ],
       [ "radius", "structdtCrowdAgent.html#a9f709ffc8ca4ecf987fab16c5ace30f5", null ],
       [ "state", "structdtCrowdAgent.html#a091dd7851f63dbe00a59b54072152d5f", null ],
-      [ "updateFlags", "structdtCrowdAgent.html#a7c1fb4ad4f83448bf83d2ff1e816788e", null ],
       [ "userData", "structdtCrowdAgent.html#ae67ec8fd9e8ebc07b1d38982eea509c8", null ],
       [ "velocity", "structdtCrowdAgent.html#afbfe48378ae579111c7d4b09b0b8bda0", null ]
     ] ],
@@ -54,7 +54,6 @@ var group__crowd =
       [ "~dtCrowd", "classdtCrowd.html#a9a6817150b328d1646e58713cef9d9b4", null ],
       [ "addAgent", "classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669", null ],
       [ "agentIsMoving", "classdtCrowd.html#adca8ad3ff02c144037971808672a412c", null ],
-      [ "applyAgent", "classdtCrowd.html#a668bdfce5339359c158ac3875a24826b", null ],
       [ "fetchAgent", "classdtCrowd.html#a2fbaa8319b5b642ba276fe97bf4c55fc", null ],
       [ "getActiveAgents", "classdtCrowd.html#a8ea9cdd5903e5bbf065771fb27c83417", null ],
       [ "getAgent", "classdtCrowd.html#ab7042f3ef197b308a416df3d67ee2d1c", null ],
@@ -64,10 +63,11 @@ var group__crowd =
       [ "getCrowdQuery", "classdtCrowd.html#ab64200d4c4651d32f80108175e8bf74a", null ],
       [ "getCrowdQuery", "classdtCrowd.html#af2c614b5a67c8f60670be31efcd04483", null ],
       [ "init", "classdtCrowd.html#acb9fcd60106f1755ae9d3d98e6fe5dd2", null ],
+      [ "pushAgent", "classdtCrowd.html#ae6639b6067ccb23f373caf80c3ae0c30", null ],
+      [ "pushAgentBehavior", "classdtCrowd.html#a8d8d07c8ca7edb760cd97e8deef30bfd", null ],
+      [ "pushAgentPosition", "classdtCrowd.html#ae404aa4fd23f68abf944646945a69a16", null ],
       [ "removeAgent", "classdtCrowd.html#adef40afb1b60c660dff07e3c481acbfc", null ],
-      [ "setAgentBehavior", "classdtCrowd.html#a7b7f562593b0f14b62fc67a93a561484", null ],
       [ "update", "classdtCrowd.html#a19fdb802fa014ecf42320b230d89221c", null ],
-      [ "updateAgentPosition", "classdtCrowd.html#a2213cfa93d35adfe5d2b6a2c8159f41f", null ],
       [ "updateEnvironment", "classdtCrowd.html#ace570f2fba8fef9223b890b0602a288e", null ],
       [ "updatePosition", "classdtCrowd.html#a2b11d6f7972568548bdb6a9445f4e689", null ],
       [ "updateVelocity", "classdtCrowd.html#a7f7e3eff82fd4fb54640d06e6cda6fde", null ]
@@ -76,13 +76,6 @@ var group__crowd =
       [ "DT_CROWDAGENT_STATE_INVALID", "group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82ac2abcf7abcdba5abeda5801fc771baa8", null ],
       [ "DT_CROWDAGENT_STATE_WALKING", "group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82ab165ebb808ee9390c7f7ec9f5ea277ec", null ],
       [ "DT_CROWDAGENT_STATE_OFFMESH", "group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82a4194d4934f447526177f505e93c96fec", null ]
-    ] ],
-    [ "UpdateFlags", "group__crowd.html#gaa94b67d2fdcc390690c523f28019e52f", [
-      [ "DT_CROWD_ANTICIPATE_TURNS", "group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fafeecd3363350e50041dca39352c3e268", null ],
-      [ "DT_CROWD_OBSTACLE_AVOIDANCE", "group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fad5d5d50e0b623e78e0dd68eb816bcc00", null ],
-      [ "DT_CROWD_SEPARATION", "group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fa07d463e4e35cd6ca1f16e6bede02856e", null ],
-      [ "DT_CROWD_OPTIMIZE_VIS", "group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fad11f447facf1bf42c09de64e9483f3aa", null ],
-      [ "DT_CROWD_OPTIMIZE_TOPO", "group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fa89c6f7f2e49254e775cb2b85259a0a93", null ]
     ] ],
     [ "dtAllocCrowd", "group__crowd.html#ga01a53c9d76d1b61678ab1944dfbfac55", null ],
     [ "dtFreeCrowd", "group__crowd.html#ga9475313642645070e78c359e0fc02b7a", null ],

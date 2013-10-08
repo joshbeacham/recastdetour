@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['setagentbehavior',['setAgentBehavior',['../classdtCrowd.html#a7b7f562593b0f14b62fc67a93a561484',1,'dtCrowd']]],
   ['setarea',['setArea',['../structdtPoly.html#a84f05dcf69d70b26323b65a0c1c66954',1,'dtPoly']]],
   ['setareacost',['setAreaCost',['../classdtQueryFilter.html#a36063c39d5c391a393412108a8a33927',1,'dtQueryFilter']]],
   ['setbehaviors',['setBehaviors',['../classdtPipelineBehavior.html#a15a2f803c8eaf51aa0ec62de8c4f4640',1,'dtPipelineBehavior']]],
@@ -17,5 +16,6 @@ var searchData=
   ['stoptimer',['stopTimer',['../classrcContext.html#a3f7042723b8d99d486575eb3d592af25',1,'rcContext']]],
   ['storetilestate',['storeTileState',['../classdtNavMesh.html#a5da18975eb0eb7285cc5f27865ddecad',1,'dtNavMesh']]],
   ['subdivide',['subdivide',['../DetourNavMeshBuilder_8cpp.html#a95ba365676cad314741a13f58b6b0eba',1,'DetourNavMeshBuilder.cpp']]],
+  ['submittarget',['submitTarget',['../structdtPathFollowingParams.html#abbc7869be27fedf3d715da13d1737b08',1,'dtPathFollowingParams']]],
   ['sweepcirclecircle',['sweepCircleCircle',['../DetourCollisionAvoidance_8cpp.html#a07a96536185de3b5b7e8aae361ac70a9',1,'DetourCollisionAvoidance.cpp']]]
 ];

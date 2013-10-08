@@ -83,11 +83,10 @@ var searchData=
   ['removevertex',['removeVertex',['../DetourTileCacheBuilder_8cpp.html#a5bdb6e945a71779feecea1da449ee446',1,'removeVertex(dtTileCachePolyMesh &amp;mesh, const unsigned short rem, const int maxTris):&#160;DetourTileCacheBuilder.cpp'],['../RecastMesh_8cpp.html#ac8ebd1bb6f534d5a37959dcb3321ce7d',1,'removeVertex(rcContext *ctx, rcPolyMesh &amp;mesh, const unsigned short rem, const int maxTris):&#160;RecastMesh.cpp']]],
   ['replaceneighbour',['replaceNeighbour',['../RecastRegion_8cpp.html#a5b2ece2d7931891cdb3fe0b7b41de1b4',1,'RecastRegion.cpp']]],
   ['request',['request',['../classdtPathQueue.html#acc95d9bf0e1b12543be41c3ca938e994',1,'dtPathQueue']]],
-  ['requestmovetarget',['requestMoveTarget',['../classdtPathFollowing.html#a32043cf7af2a6a9177437c78f6872493',1,'dtPathFollowing']]],
   ['reset',['reset',['../classdtObstacleAvoidanceDebugData.html#a2e7d802ea941ad37d5244af91c47f0c9',1,'dtObstacleAvoidanceDebugData::reset()'],['../classdtLocalBoundary.html#a2a3911b20edb27140857289dd2eea76c',1,'dtLocalBoundary::reset()'],['../classdtPathCorridor.html#abe057e7b5e1d6677e3d9eadb558df2b0',1,'dtPathCorridor::reset()'],['../structdtTileCacheAlloc.html#a04f61863b2c6a81e1fbfd96dd519a733',1,'dtTileCacheAlloc::reset()']]],
   ['resetlog',['resetLog',['../classrcContext.html#a68403737730ee112c523890a9fdc237d',1,'rcContext']]],
-  ['resetmovetarget',['resetMoveTarget',['../classdtPathFollowing.html#ac4950db7053b74ee45de5afd795ec42a',1,'dtPathFollowing']]],
   ['resettimers',['resetTimers',['../classrcContext.html#a2fcc58bb1e29bbb9a7dfb834efff4a6d',1,'rcContext']]],
   ['resize',['resize',['../classrcIntArray.html#a2135fb43dd504939a2eadbb78650c155',1,'rcIntArray']]],
+  ['resizeobstaclescontainer',['resizeObstaclesContainer',['../classdtCollisionAvoidance.html#a2c0f1921184d6ed4018f13d190684241',1,'dtCollisionAvoidance']]],
   ['restoretilestate',['restoreTileState',['../classdtNavMesh.html#aef336a67e552a9d031d669ec84029fb8',1,'dtNavMesh']]]
 ];

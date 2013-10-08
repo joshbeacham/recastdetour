@@ -8,6 +8,7 @@ var searchData=
   ['mainpage_2etxt',['mainpage.txt',['../mainpage_8txt.html',1,'']]],
   ['max_5favoidance_5fparams',['MAX_AVOIDANCE_PARAMS',['../DetourCrowd_8cpp.html#a49f93c3e96b96303f97f163271c062e0',1,'DetourCrowd.cpp']]],
   ['max_5fiters_5fper_5fupdate',['MAX_ITERS_PER_UPDATE',['../DetourCrowd_8cpp.html#a6415beb0f334c026346ca21f1473d3ed',1,'DetourCrowd.cpp']]],
+  ['max_5fncorners',['MAX_NCORNERS',['../structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606',1,'dtPathFollowingParams']]],
   ['max_5frem_5fedges',['MAX_REM_EDGES',['../DetourTileCacheBuilder_8cpp.html#a5131aaaa744669c5e9418ecffa6e64f5',1,'DetourTileCacheBuilder.cpp']]],
   ['max_5fverts_5fper_5fpoly',['MAX_VERTS_PER_POLY',['../DetourTileCacheBuilder_8cpp.html#a765f17c1f40a919b5a17a9701a0c9f52',1,'DetourTileCacheBuilder.cpp']]],
   ['max_5fvisited',['MAX_VISITED',['../classdtPathCorridor.html#a498f518ab868a854477c13e1d21e4749',1,'dtPathCorridor']]],
@@ -15,6 +16,8 @@ var searchData=
   ['maxcompressedsize',['maxCompressedSize',['../structdtTileCacheCompressor.html#aaa7fcfc5889a5f3fc5fbf689bbbc1494',1,'dtTileCacheCompressor']]],
   ['maxdistance',['maxDistance',['../structrcCompactHeightfield.html#a38921b347d72bdc07487d07e7608ffc7',1,'rcCompactHeightfield']]],
   ['maxedgelen',['maxEdgeLen',['../structrcConfig.html#a2149036442bf38b9ec9615549aa48fd4',1,'rcConfig']]],
+  ['maximumcircleobstaclescount',['maximumCircleObstaclesCount',['../classdtCollisionAvoidance.html#a89fd76d3c69540775beebf50695a240d',1,'dtCollisionAvoidance']]],
+  ['maximumsegmentobstaclescount',['maximumSegmentObstaclesCount',['../classdtCollisionAvoidance.html#adeb42dc3523d2daf854c5c8795544a84',1,'dtCollisionAvoidance']]],
   ['maxlinkcount',['maxLinkCount',['../structdtMeshHeader.html#ab9f95d40e21c8710f59e78ef89ce1cc0',1,'dtMeshHeader']]],
   ['maxobstacles',['maxObstacles',['../structdtTileCacheParams.html#a30fb34944589db46ad6262748d3f4c0c',1,'dtTileCacheParams']]],
   ['maxpolys',['maxpolys',['../structrcPolyMesh.html#afc6261e7cee3e3ff2a83b6ee8baf14a9',1,'rcPolyMesh::maxpolys()'],['../structdtNavMeshParams.html#a4f44babd04fff4f8300ecd15d4237375',1,'dtNavMeshParams::maxPolys()']]],
@@ -38,6 +41,5 @@ var searchData=
   ['movealongsurface',['moveAlongSurface',['../classdtNavMeshQuery.html#a4652499f16b04137b920123f224909b7',1,'dtNavMeshQuery']]],
   ['moveoveroffmeshconnection',['moveOverOffmeshConnection',['../classdtPathCorridor.html#ac27e4de69a7af8005fcb9c3271a4cbf7',1,'dtPathCorridor']]],
   ['moveposition',['movePosition',['../classdtPathCorridor.html#a742045c35f5d8bae4d26d5f78457a0e2',1,'dtPathCorridor']]],
-  ['moverequeststate',['MoveRequestState',['../DetourPathFollowing_8h.html#aad3d0709fbef530774fb64258d384b45',1,'DetourPathFollowing.h']]],
   ['movetargetposition',['moveTargetPosition',['../classdtPathCorridor.html#afa89908ddec9b84ee1482b0c23598097',1,'dtPathCorridor']]]
 ];

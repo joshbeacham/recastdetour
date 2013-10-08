@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -119,11 +119,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a1e9c8049f68f913a94fb3d15c38f37b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c4abb5b9b71643eefcb4a9948f5c532"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtObstacleCircle.html#a5c4abb5b9b71643eefcb4a9948f5c532">radius</a></td></tr>
 <tr class="separator:a5c4abb5b9b71643eefcb4a9948f5c532"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14169be1b546aeaf06fb19406f523a08"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtObstacleCircle.html#a14169be1b546aeaf06fb19406f523a08">dp</a> [3]</td></tr>
-<tr class="separator:a14169be1b546aeaf06fb19406f523a08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04d72360e079c808469b6650fa4e3566"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtObstacleCircle.html#a04d72360e079c808469b6650fa4e3566">np</a> [3]</td></tr>
-<tr class="memdesc:a04d72360e079c808469b6650fa4e3566"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use for side selection during sampling.  <a href="#a04d72360e079c808469b6650fa4e3566">More...</a><br/></td></tr>
-<tr class="separator:a04d72360e079c808469b6650fa4e3566"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a298fc52e487400e0ebfe65dc17470baa"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtObstacleCircle.html#a298fc52e487400e0ebfe65dc17470baa">direction</a> [3]</td></tr>
+<tr class="memdesc:a298fc52e487400e0ebfe65dc17470baa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalized vector from the agent to the obstacle.  <a href="#a298fc52e487400e0ebfe65dc17470baa">More...</a><br/></td></tr>
+<tr class="separator:a298fc52e487400e0ebfe65dc17470baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4996ebd9f0d48b7aa0b0c5a7fa3819e8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtObstacleCircle.html#a4996ebd9f0d48b7aa0b0c5a7fa3819e8">directionNormal</a> [3]</td></tr>
+<tr class="memdesc:a4996ebd9f0d48b7aa0b0c5a7fa3819e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector normal to 'direction'.  <a href="#a4996ebd9f0d48b7aa0b0c5a7fa3819e8">More...</a><br/></td></tr>
+<tr class="separator:a4996ebd9f0d48b7aa0b0c5a7fa3819e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Obstacle represented as a circle. </p>
@@ -140,29 +141,31 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a14169be1b546aeaf06fb19406f523a08"></a>
+<a class="anchor" id="a298fc52e487400e0ebfe65dc17470baa"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float dtObstacleCircle::dp[3]</td>
+          <td class="memname">float dtObstacleCircle::direction[3]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Normalized vector from the agent to the obstacle. </p>
+
 </div>
 </div>
-<a class="anchor" id="a04d72360e079c808469b6650fa4e3566"></a>
+<a class="anchor" id="a4996ebd9f0d48b7aa0b0c5a7fa3819e8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float dtObstacleCircle::np[3]</td>
+          <td class="memname">float dtObstacleCircle::directionNormal[3]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Use for side selection during sampling. </p>
+<p>Vector normal to 'direction'. </p>
 
 </div>
 </div>

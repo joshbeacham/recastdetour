@@ -28,26 +28,29 @@ var group__behavior =
       [ "free", "classdtCohesionBehavior.html#a4a5e63c3038b0a87626a920773e80968", null ]
     ] ],
     [ "dtCollisionAvoidanceParams", "structdtCollisionAvoidanceParams.html", [
-      [ "adaptiveDepth", "structdtCollisionAvoidanceParams.html#a26fc70bf1ec1984186e4f4bf86c35d16", null ],
-      [ "adaptiveDivs", "structdtCollisionAvoidanceParams.html#ab1509336c8b58305a14eb271fa55df0c", null ],
-      [ "adaptiveRings", "structdtCollisionAvoidanceParams.html#ae93cdd05dde18924da8ff05f82ee6cdd", null ],
-      [ "debug", "structdtCollisionAvoidanceParams.html#add8258368d323375047be2b89ac290c8", null ],
-      [ "gridSize", "structdtCollisionAvoidanceParams.html#afa411aaed300ae04b4d63c799601c5c6", null ],
-      [ "horizTime", "structdtCollisionAvoidanceParams.html#a368f58fa69b3985f897923b3dfaf2561", null ],
-      [ "velBias", "structdtCollisionAvoidanceParams.html#a3ddd2dc2c5edfd7f187b3fe1d169de3f", null ],
-      [ "weightCurVel", "structdtCollisionAvoidanceParams.html#a7e240d349a6e0055bab7d47d6b10b225", null ],
-      [ "weightDesVel", "structdtCollisionAvoidanceParams.html#a9d581618f785818e78c432123fa869a9", null ],
-      [ "weightSide", "structdtCollisionAvoidanceParams.html#aa796daf6909970bfbd53448f994edbab", null ],
-      [ "weightToi", "structdtCollisionAvoidanceParams.html#a295632b53b9759ab9f4c9c82c311c983", null ]
+      [ "dtCollisionAvoidanceParams", "structdtCollisionAvoidanceParams.html#a3735bfe1ee1050d684f1b034d5b1afc1", null ],
+      [ "debug", "structdtCollisionAvoidanceParams.html#add8258368d323375047be2b89ac290c8", null ]
     ] ],
     [ "dtCollisionAvoidance", "classdtCollisionAvoidance.html", [
       [ "dtCollisionAvoidance", "classdtCollisionAvoidance.html#a69c2ce4ad6736c5cb378cc79aad71e1b", null ],
       [ "~dtCollisionAvoidance", "classdtCollisionAvoidance.html#a8e304f3c685a058cef96f78e06ea7c63", null ],
       [ "allocate", "classdtCollisionAvoidance.html#a2ddc6d408fd56a3596a8ea9a1489612d", null ],
+      [ "doUpdate", "classdtCollisionAvoidance.html#a8d90fe0ad43a475ae1c65139ee0f544b", null ],
       [ "free", "classdtCollisionAvoidance.html#aabee201a9279bbe3382a04bca589ab7e", null ],
-      [ "getVelocitySamplesCount", "classdtCollisionAvoidance.html#af6bf825a04b87686d6d648d23f3b4c54", null ],
-      [ "init", "classdtCollisionAvoidance.html#af189c95000a8b1897651539c10021a9a", null ],
-      [ "purge", "classdtCollisionAvoidance.html#a293187e2244d95b7eeaeeeb7642972eb", null ]
+      [ "init", "classdtCollisionAvoidance.html#a8e901c321b0cee371459fc0cd2d84705", null ],
+      [ "purge", "classdtCollisionAvoidance.html#a293187e2244d95b7eeaeeeb7642972eb", null ],
+      [ "resizeObstaclesContainer", "classdtCollisionAvoidance.html#a2c0f1921184d6ed4018f13d190684241", null ],
+      [ "horizonTime", "classdtCollisionAvoidance.html#a5331715164ba06bec9105263cb62e7c8", null ],
+      [ "maximumCircleObstaclesCount", "classdtCollisionAvoidance.html#a89fd76d3c69540775beebf50695a240d", null ],
+      [ "maximumSegmentObstaclesCount", "classdtCollisionAvoidance.html#adeb42dc3523d2daf854c5c8795544a84", null ],
+      [ "sampleLevelsCount", "classdtCollisionAvoidance.html#afe38ce15605bb10b3c27af1de46c4f5c", null ],
+      [ "sampleOriginScale", "classdtCollisionAvoidance.html#a126eac52fb779863b40590af4cf6092a", null ],
+      [ "sampleRingsCount", "classdtCollisionAvoidance.html#a359bc1351394c4c7400751298144ce7c", null ],
+      [ "sampleSectorsCount", "classdtCollisionAvoidance.html#aec1e6e61b2f5018d1e45aa5fe0bbd174", null ],
+      [ "weightCurrentAvoidanceSide", "classdtCollisionAvoidance.html#aa16c632d3616dcecc91fcc337881d69d", null ],
+      [ "weightCurrentVelocity", "classdtCollisionAvoidance.html#a9253e704fccc95fbd8a9b779d8f4fe03", null ],
+      [ "weightDesiredVelocity", "classdtCollisionAvoidance.html#a797f353ac1cb8668d3fab4c648381856", null ],
+      [ "weightTimeToCollision", "classdtCollisionAvoidance.html#acd799f8b48de8f8e561c5edf77984d46", null ]
     ] ],
     [ "dtFlockingBehaviorParams", "structdtFlockingBehaviorParams.html", [
       [ "nbflockingTargets", "structdtFlockingBehaviorParams.html#ab0d560c67839cac2535e6921b70e80ef", null ],
@@ -112,36 +115,46 @@ var group__behavior =
       [ "MAX_VISITED", "classdtPathCorridor.html#a498f518ab868a854477c13e1d21e4749", null ]
     ] ],
     [ "dtPathFollowingParams", "structdtPathFollowingParams.html", [
+      [ "State", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4", [
+        [ "NO_TARGET", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a74b51d8de50f6baec52aaa28a914c399", null ],
+        [ "INVALID_TARGET", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a320729a2533c7583f8e166f78988b858", null ],
+        [ "FOLLOWING_PATH", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a0e56a61ddf4a8ce1aea64d6a663bd277", null ],
+        [ "TARGET_SUBMITTED", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a6c9cb8fe2364afb4a6e89735c35423a4", null ],
+        [ "WAITING_FOR_QUEUE", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4ad4ecc1800fc24e77c8e44ccd66e2dd60", null ],
+        [ "WAITING_FOR_PATH", "structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a85bbfabb5912050c0901ca2cbcf3a2f1", null ]
+      ] ],
       [ "dtPathFollowingParams", "structdtPathFollowingParams.html#aa29a0d2ba7e6fb348ea5005fc69a569e", null ],
+      [ "clearTarget", "structdtPathFollowingParams.html#a3c7dfbb6a8fa7169a0649f68da044cd0", null ],
       [ "init", "structdtPathFollowingParams.html#a541f2027cf640f3cf078670ae0365428", null ],
-      [ "cornerFlags", "structdtPathFollowingParams.html#a5b41c52301294d1560d64438cca9444c", null ],
-      [ "cornerPolys", "structdtPathFollowingParams.html#a37ac51fd8e35766811f64e66fec820c2", null ],
-      [ "cornerVerts", "structdtPathFollowingParams.html#abf54e2a811465d542392c4685b32de75", null ],
+      [ "submitTarget", "structdtPathFollowingParams.html#abbc7869be27fedf3d715da13d1737b08", null ],
+      [ "cornerFlags", "structdtPathFollowingParams.html#a188ec5f0775883bb3ae55ff6242e215c", null ],
+      [ "cornerPolys", "structdtPathFollowingParams.html#a0faedf5ded7d0fde6f861bad5a1f4a64", null ],
+      [ "cornerVerts", "structdtPathFollowingParams.html#a510ce1004ad8cbda477601e20bb0b958", null ],
       [ "corridor", "structdtPathFollowingParams.html#a5b8158a499320abf8675f33d2d99926c", null ],
       [ "debugIndex", "structdtPathFollowingParams.html#a60f6a6bd4033a591393e9501c8ba6d04", null ],
       [ "debugInfos", "structdtPathFollowingParams.html#ad31fb53ce18e6c99e0cbdbb2e7e851c7", null ],
-      [ "DT_CROWDAGENT_MAX_CORNERS", "group__behavior.html#gae19737e011d1f246af816d5b31229955", null ],
+      [ "MAX_NCORNERS", "structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606", null ],
       [ "ncorners", "structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e", null ],
-      [ "pathOptimizationRange", "structdtPathFollowingParams.html#abf3a987452e7fbf6bbf0107d6b7b5273", null ],
+      [ "state", "structdtPathFollowingParams.html#a85a519aef15143a9a753dab15dd7a07d", null ],
       [ "targetPathqRef", "structdtPathFollowingParams.html#af438ad6473bce33e6d0c081443544303", null ],
       [ "targetPos", "structdtPathFollowingParams.html#adb768bf835e57676943ec5db0dc529db", null ],
       [ "targetRef", "structdtPathFollowingParams.html#a87288709300796e7d620c4200bb6f624", null ],
       [ "targetReplan", "structdtPathFollowingParams.html#aa0d299f0341463a8fbc709142fda6657", null ],
       [ "targetReplanTime", "structdtPathFollowingParams.html#aa03f1006b6a443cf497494b1ccbd6834", null ],
-      [ "targetState", "structdtPathFollowingParams.html#a2d61c6dd16d9f658ddaaa3508c7656a3", null ],
       [ "topologyOptTime", "structdtPathFollowingParams.html#ad523740861fb9150d07213978ad09705", null ]
     ] ],
     [ "dtPathFollowing", "classdtPathFollowing.html", [
       [ "dtPathFollowing", "classdtPathFollowing.html#aeb556c6a24823b3eca1f071ee78f9362", null ],
       [ "~dtPathFollowing", "classdtPathFollowing.html#ab68d3e29c52015980d5752da75b7cc5a", null ],
       [ "allocate", "classdtPathFollowing.html#a1a14cf32b4e54b40ad43d5304b3c8a0f", null ],
+      [ "doUpdate", "classdtPathFollowing.html#a8e06ff6905b53a522899df7ac0b7ff5b", null ],
       [ "free", "classdtPathFollowing.html#a869aa218581cc929766e486edc414d76", null ],
-      [ "getPathRes", "classdtPathFollowing.html#aa479e22099b614b9f279c9c5a26a8529", null ],
-      [ "getPathRes", "classdtPathFollowing.html#a88760792b86174f5ca3f3aa168218f59", null ],
       [ "init", "classdtPathFollowing.html#a92f0d782784677c71be74a8158e2d9f1", null ],
       [ "purge", "classdtPathFollowing.html#a62ca88879379d0c8e4614d2cb80baacb", null ],
-      [ "requestMoveTarget", "classdtPathFollowing.html#a32043cf7af2a6a9177437c78f6872493", null ],
-      [ "resetMoveTarget", "classdtPathFollowing.html#ac4950db7053b74ee45de5afd795ec42a", null ]
+      [ "anticipateTurns", "classdtPathFollowing.html#a22d36f0f0db3c5aab2440b73400294be", null ],
+      [ "initialPathfindIterCount", "classdtPathFollowing.html#a1f0f43e7f4c36af7a43e83baca1bcae5", null ],
+      [ "localPathReplanningInterval", "classdtPathFollowing.html#a73d50c922f9f61f97259c2ca552ffcc5", null ],
+      [ "visibilityPathOptimizationRange", "classdtPathFollowing.html#a19a1e0a91539bbe4eac0b5e430c60fe0", null ]
     ] ],
     [ "dtPipelineBehavior", "classdtPipelineBehavior.html", [
       [ "dtPipelineBehavior", "classdtPipelineBehavior.html#a24e1f344d306505131db4703303913dd", null ],
@@ -182,6 +195,5 @@ var group__behavior =
       [ "applyForce", "classdtSteeringBehavior.html#ac31641276912aa565fefab5b2465b1ce", null ],
       [ "computeForce", "classdtSteeringBehavior.html#a6eeb25b7980de9547c28205a97278665", null ],
       [ "doUpdate", "classdtSteeringBehavior.html#a0e514d94e8d88764358e5382bdb7dab2", null ]
-    ] ],
-    [ "DT_CROWDAGENT_MAX_CORNERS", "group__behavior.html#gae19737e011d1f246af816d5b31229955", null ]
+    ] ]
 ];

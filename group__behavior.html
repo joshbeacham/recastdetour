@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -97,8 +97,7 @@ $(document).ready(function(){initNavTree('group__behavior.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle">
 <div class="title">Behaviors</div>  </div>
 </div><!--header-->
@@ -111,7 +110,7 @@ $(document).ready(function(){initNavTree('group__behavior.html','');});
 <p>Basically the goal of a behavior is to compute a new velocity for a given agent. This new velocity will be used to update the position / orientation of the agent.</p>
 <p>It is important to make difference between the following two properties of an agent:</p>
 <ul>
-<li>The desired velocity (<code><a class="el" href="structdtCrowdAgent.html#a17cf6c3e4c84689d004a65e59a3c6161" title="The desired velocity of the agent. [(x, y, z)]. ">dtCrowdAgent::desiredVelocity</a></code>)</li>
+<li>The desired velocity (<code><a class="el" href="structdtCrowdAgent.html#a17cf6c3e4c84689d004a65e59a3c6161" title="The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update...">dtCrowdAgent::desiredVelocity</a></code>)</li>
 <li>The current velocity (<code><a class="el" href="structdtCrowdAgent.html#afbfe48378ae579111c7d4b09b0b8bda0" title="The actual velocity of the agent. [(x, y, z)]. ">dtCrowdAgent::velocity</a></code>)</li>
 </ul>
 <p>When updating the position of an agent, the desired velocity is used to compute the current velocity which is itself used to determine the next position. In other words, the user should not update the current velocity of an agent himself (although it can be done).</p>
@@ -146,7 +145,7 @@ $(document).ready(function(){initNavTree('group__behavior.html','');});
 <div class="line"><a class="code" href="classdtArriveBehavior.html" title="Defines the GoTo behavior. ">dtArriveBehavior</a> arrive(1);</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// You also need to associate this behavior to the agent</span></div>
-<div class="line">crowd.setAgentBehavior(&amp;arrive, myAgent.id);</div>
+<div class="line">crowd.pushAgentBehavior(&amp;arrive, myAgent.id);</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Now we create the parameters for this behavior. For the Arrive behavior, </span></div>
 <div class="line"><span class="comment">// the already existing structure is dtArriveBehaviorParams.</span></div>
@@ -182,7 +181,7 @@ $(document).ready(function(){initNavTree('group__behavior.html','');});
 <div class="line">        <a class="code" href="DetourCommon_8h.html#a20bd1921d4bb81875f48bb8cbf7a63b4" title="Performs a vector copy. ">dtVcopy</a>(targetVelocity, query.<a class="code" href="classdtCrowdQuery.html#a3777c40ce6d26a089f7675b14ae9935e" title="Gets a const access to the specified agent from the pool. ">getAgent</a>(currentParams.targetID)-&gt;vel);</div>
 <div class="line">        <a class="code" href="DetourCommon_8h.html#a865e98b3352fdea9216c36374d1f0b6a" title="Scales the vector by the specified value. ">dtVscale</a>(targetVelocity, targetVelocity, -1.f);</div>
 <div class="line"></div>
-<div class="line">        <a class="code" href="DetourCommon_8h.html#a78ab75edc5f87fc90471873c2652ca89" title="Sets the vector elements to the specified values. ">dtVset</a>(newAgent.<a class="code" href="structdtCrowdAgent.html#a17cf6c3e4c84689d004a65e59a3c6161" title="The desired velocity of the agent. [(x, y, z)]. ">desiredVelocity</a>, targetVelocity);</div>
+<div class="line">        <a class="code" href="DetourCommon_8h.html#a78ab75edc5f87fc90471873c2652ca89" title="Sets the vector elements to the specified values. ">dtVset</a>(newAgent.<a class="code" href="structdtCrowdAgent.html#a17cf6c3e4c84689d004a65e59a3c6161" title="The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update...">desiredVelocity</a>, targetVelocity);</div>
 <div class="line">    }</div>
 <div class="line">};</div>
 </div><!-- fragment --><p>Now we have a (simple) behavior ready to be used.</p>
@@ -203,7 +202,7 @@ $(document).ready(function(){initNavTree('group__behavior.html','');});
 <div class="line">params-&gt;target = crowd.<a class="code" href="classdtCrowd.html#ab7042f3ef197b308a416df3d67ee2d1c" title="Gets a const access to the specified agent from the pool. ">getAgent</a>(idTarget);</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// We set the behavior for the agent</span></div>
-<div class="line">crowd.<a class="code" href="classdtCrowd.html#a7b7f562593b0f14b62fc67a93a561484" title="Sets the behavior of the agent referenced by the given id. ">setAgentBehavior</a>(idAgent, &amp;b);</div>
+<div class="line">crowd.<a class="code" href="classdtCrowd.html#a8d8d07c8ca7edb760cd97e8deef30bfd" title="Sets the behavior of the agent referenced by the given id. ">pushAgentBehavior</a>(idAgent, &amp;b);</div>
 </div><!-- fragment --><p>Now our behavior has been assigned to the agent. The next time the crowd updates its agents, the agent will go in the opposite direction of its target. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -274,37 +273,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdtSteeringBehavior.html">dtSteeringBehavior&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface defining a steering behavior.  <a href="classdtSteeringBehavior.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:gae19737e011d1f246af816d5b31229955"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">dtPathFollowingParams::DT_CROWDAGENT_MAX_CORNERS</a> = 4</td></tr>
-<tr class="memdesc:gae19737e011d1f246af816d5b31229955"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of corners.  <a href="#gae19737e011d1f246af816d5b31229955">More...</a><br/></td></tr>
-<tr class="separator:gae19737e011d1f246af816d5b31229955"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="gae19737e011d1f246af816d5b31229955"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const unsigned dtPathFollowingParams::DT_CROWDAGENT_MAX_CORNERS = 4</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The number of corners. </p>
-<p>The maximum number of corners a crowd agent will look ahead in the path. This value is used for sizing the crowd agent corner buffers. Due to the behavior of the crowd manager, the actual number of useful corners will be one less than this number. </p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 

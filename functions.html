@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -137,15 +139,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>active
 : <a class="el" href="structdtCrowdAgent.html#aa95698f1b5109d79b3dea7db2599d644">dtCrowdAgent</a>
 </li>
-<li>adaptiveDepth
-: <a class="el" href="structdtCollisionAvoidanceParams.html#a26fc70bf1ec1984186e4f4bf86c35d16">dtCollisionAvoidanceParams</a>
-</li>
-<li>adaptiveDivs
-: <a class="el" href="structdtCollisionAvoidanceParams.html#ab1509336c8b58305a14eb271fa55df0c">dtCollisionAvoidanceParams</a>
-</li>
-<li>adaptiveRings
-: <a class="el" href="structdtCollisionAvoidanceParams.html#ae93cdd05dde18924da8ff05f82ee6cdd">dtCollisionAvoidanceParams</a>
-</li>
 <li>addAgent()
 : <a class="el" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669">dtCrowd</a>
 </li>
@@ -170,28 +163,28 @@ $(document).ready(function(){initNavTree('functions.html','');});
 , <a class="el" href="structdtTileCacheAlloc.html#acc233b107e42a5dcec56093dd1d29741">dtTileCacheAlloc</a>
 </li>
 <li>allocate()
-: <a class="el" href="classdtCollisionAvoidance.html#a2ddc6d408fd56a3596a8ea9a1489612d">dtCollisionAvoidance</a>
-, <a class="el" href="classdtFlockingBehavior.html#a60db4c684d9b6256211f5f723457d1fd">dtFlockingBehavior</a>
-, <a class="el" href="classdtArriveBehavior.html#abc8d9095a7c32a2ac0b2a0197cca297e">dtArriveBehavior</a>
-, <a class="el" href="classdtPathFollowing.html#a1a14cf32b4e54b40ad43d5304b3c8a0f">dtPathFollowing</a>
+: <a class="el" href="classdtPathFollowing.html#a1a14cf32b4e54b40ad43d5304b3c8a0f">dtPathFollowing</a>
 , <a class="el" href="classdtPipelineBehavior.html#abc8592d4d602f44736146b271a0a96fd">dtPipelineBehavior</a>
 , <a class="el" href="classdtSeekBehavior.html#a224c41b369479f6297c31871f4f0a6ee">dtSeekBehavior</a>
 , <a class="el" href="classdtSeparationBehavior.html#ab041785c61f2653a878d0243faf53755">dtSeparationBehavior</a>
 , <a class="el" href="classdtAlignmentBehavior.html#a198d647a8b5e04d7d4d606c2c56a5cd2">dtAlignmentBehavior</a>
 , <a class="el" href="classdtCohesionBehavior.html#a7a8ac025960a73d67138bbc080acd383">dtCohesionBehavior</a>
+, <a class="el" href="classdtCollisionAvoidance.html#a2ddc6d408fd56a3596a8ea9a1489612d">dtCollisionAvoidance</a>
+, <a class="el" href="classdtFlockingBehavior.html#a60db4c684d9b6256211f5f723457d1fd">dtFlockingBehavior</a>
+, <a class="el" href="classdtArriveBehavior.html#abc8d9095a7c32a2ac0b2a0197cca297e">dtArriveBehavior</a>
 </li>
-<li>applyAgent()
-: <a class="el" href="classdtCrowd.html#a668bdfce5339359c158ac3875a24826b">dtCrowd</a>
+<li>anticipateTurns
+: <a class="el" href="classdtPathFollowing.html#a22d36f0f0db3c5aab2440b73400294be">dtPathFollowing</a>
 </li>
 <li>applyForce()
 : <a class="el" href="classdtSteeringBehavior.html#ac31641276912aa565fefab5b2465b1ce">dtSteeringBehavior&lt; T &gt;</a>
 </li>
 <li>area
-: <a class="el" href="structdtPolyState.html#afd684e7c95d1048ace6dc198457b7c69">dtPolyState</a>
-, <a class="el" href="structrcContour.html#a1052e9ac2da6e515cbb12908a58fca78">rcContour</a>
-, <a class="el" href="structdtLayerMonotoneRegion.html#a1ac6f67259d70c25d55f1c0fc05077bf">dtLayerMonotoneRegion</a>
-, <a class="el" href="structdtTileCacheContour.html#a3ab1d658278d4dcc482dcb7f17be6b3b">dtTileCacheContour</a>
+: <a class="el" href="structdtTileCacheContour.html#a3ab1d658278d4dcc482dcb7f17be6b3b">dtTileCacheContour</a>
 , <a class="el" href="structrcSpan.html#a8bf133cf1e7ccf3d69f1ba365cb0c1ca">rcSpan</a>
+, <a class="el" href="structdtPolyState.html#afd684e7c95d1048ace6dc198457b7c69">dtPolyState</a>
+, <a class="el" href="structdtLayerMonotoneRegion.html#a1ac6f67259d70c25d55f1c0fc05077bf">dtLayerMonotoneRegion</a>
+, <a class="el" href="structrcContour.html#a1052e9ac2da6e515cbb12908a58fca78">rcContour</a>
 </li>
 <li>areaAndtype
 : <a class="el" href="structdtPoly.html#af3caa090f5d4776766bf56f82c27a899">dtPoly</a>
@@ -200,11 +193,11 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="structdtLayerMonotoneRegion.html#a9e0572100cbcf847291716b3b1008e6d">dtLayerMonotoneRegion</a>
 </li>
 <li>areas
-: <a class="el" href="structrcCompactHeightfield.html#abcdf0d737779779376bce23d1c0be910">rcCompactHeightfield</a>
-, <a class="el" href="structdtTileCacheLayer.html#afeb17050bbd75d6c31fc4601dcff8045">dtTileCacheLayer</a>
+: <a class="el" href="structrcPolyMesh.html#aa08d7da4e0c97f57151f93d9a7d46bde">rcPolyMesh</a>
 , <a class="el" href="structrcHeightfieldLayer.html#a82606c7d0d590c924d49e84698452353">rcHeightfieldLayer</a>
-, <a class="el" href="structrcPolyMesh.html#aa08d7da4e0c97f57151f93d9a7d46bde">rcPolyMesh</a>
 , <a class="el" href="structdtTileCachePolyMesh.html#a6536adffe42fc5c4c6591347f1af7b0c">dtTileCachePolyMesh</a>
+, <a class="el" href="structrcCompactHeightfield.html#abcdf0d737779779376bce23d1c0be910">rcCompactHeightfield</a>
+, <a class="el" href="structdtTileCacheLayer.html#afeb17050bbd75d6c31fc4601dcff8045">dtTileCacheLayer</a>
 </li>
 <li>areaType
 : <a class="el" href="structrcRegion.html#a35bfc8470602b06a1a09c519582b821a">rcRegion</a>

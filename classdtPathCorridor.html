@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -819,13 +819,10 @@ Static Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">navquery</td><td>The query object used to build the corridor. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">filter</td><td>The filter to apply to the operation.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filter</td><td>The filter to apply to the operation. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt></dt><dd></dd></dl>
-<p>Inaccurate locomotion or dynamic obstacle avoidance can force the agent position significantly outside the original corridor. Over time this can result in the formation of a non-optimal corridor. This function will use a local area path search to try to re-optimize the corridor.</p>
-<p>The more inaccurate the agent movement, the more beneficial this function becomes. Simply adjust the frequency of the call to match the needs to the agent. </p>
 
 </div>
 </div>
@@ -871,16 +868,10 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">next</td><td>The point to search toward. [(x, y, z]) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pathOptimizationRange</td><td>The maximum range to search. [Limit: &gt; 0] </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">navquery</td><td>The query object used to build the corridor. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">filter</td><td>The filter to apply to the operation.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filter</td><td>The filter to apply to the operation. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt></dt><dd></dd></dl>
-<p>Inaccurate locomotion or dynamic obstacle avoidance can force the argent position significantly outside the original corridor. Over time this can result in the formation of a non-optimal corridor. Non-optimal paths can also form near the corners of tiles.</p>
-<p>This function uses an efficient local visibility search to try to optimize the corridor between the current position and <code>next</code>.</p>
-<p>The corridor will change only if <code>next</code> is visible from the current position and moving directly toward the point is better than following the existing path.</p>
-<p>The more inaccurate the agent movement, the more beneficial this function becomes. Simply adjust the frequency of the call to match the needs to the agent.</p>
-<p>This function is not suitable for long distance searches. </p>
 
 </div>
 </div>

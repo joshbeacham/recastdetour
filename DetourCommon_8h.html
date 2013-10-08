@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -139,9 +139,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a950177c2c05a3853ece198cc303ba972"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#a950177c2c05a3853ece198cc303ba972">dtVcross</a> (float *dest, const float *v1, const float *v2)</td></tr>
 <tr class="memdesc:a950177c2c05a3853ece198cc303ba972"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives the cross product of two vectors.  <a href="#a950177c2c05a3853ece198cc303ba972">More...</a><br/></td></tr>
 <tr class="separator:a950177c2c05a3853ece198cc303ba972"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a323674d9b1f5acbf5ce10168504fede2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#a323674d9b1f5acbf5ce10168504fede2">dtVcross2D</a> (const float *u, const float *v)</td></tr>
+<tr class="memdesc:a323674d9b1f5acbf5ce10168504fede2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the xz-plane 2D dot product of the two vectors.  <a href="#a323674d9b1f5acbf5ce10168504fede2">More...</a><br/></td></tr>
+<tr class="separator:a323674d9b1f5acbf5ce10168504fede2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a668c20a766e16f1e88b0ce55fcff6b3a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#a668c20a766e16f1e88b0ce55fcff6b3a">dtVdot</a> (const float *v1, const float *v2)</td></tr>
 <tr class="memdesc:a668c20a766e16f1e88b0ce55fcff6b3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives the dot product of two vectors.  <a href="#a668c20a766e16f1e88b0ce55fcff6b3a">More...</a><br/></td></tr>
 <tr class="separator:a668c20a766e16f1e88b0ce55fcff6b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab16c954d6f9b1c271916d56a1210fb31"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#ab16c954d6f9b1c271916d56a1210fb31">dtVdot2D</a> (const float *u, const float *v)</td></tr>
+<tr class="memdesc:ab16c954d6f9b1c271916d56a1210fb31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives the dot product of two vectors on the xz-plane.  <a href="#ab16c954d6f9b1c271916d56a1210fb31">More...</a><br/></td></tr>
+<tr class="separator:ab16c954d6f9b1c271916d56a1210fb31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c4e6b8a509d183f62f57af1e73e1c6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#a1c4e6b8a509d183f62f57af1e73e1c6e">dtVmad</a> (float *dest, const float *v1, const float *v2, const float s)</td></tr>
 <tr class="memdesc:a1c4e6b8a509d183f62f57af1e73e1c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a scaled vector addition.  <a href="#a1c4e6b8a509d183f62f57af1e73e1c6e">More...</a><br/></td></tr>
 <tr class="separator:a1c4e6b8a509d183f62f57af1e73e1c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,12 +199,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ad246e02163e1de850ffe6a2645f3c28e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#ad246e02163e1de850ffe6a2645f3c28e">dtVequal</a> (const float *p0, const float *p1)</td></tr>
 <tr class="memdesc:ad246e02163e1de850ffe6a2645f3c28e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a 'sloppy' colocation check of the specified points.  <a href="#ad246e02163e1de850ffe6a2645f3c28e">More...</a><br/></td></tr>
 <tr class="separator:ad246e02163e1de850ffe6a2645f3c28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab16c954d6f9b1c271916d56a1210fb31"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#ab16c954d6f9b1c271916d56a1210fb31">dtVdot2D</a> (const float *u, const float *v)</td></tr>
-<tr class="memdesc:ab16c954d6f9b1c271916d56a1210fb31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives the dot product of two vectors on the xz-plane.  <a href="#ab16c954d6f9b1c271916d56a1210fb31">More...</a><br/></td></tr>
-<tr class="separator:ab16c954d6f9b1c271916d56a1210fb31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebb664a885e741148b381caeeb4f0dba"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#aebb664a885e741148b381caeeb4f0dba">dtVperp2D</a> (const float *u, const float *v)</td></tr>
-<tr class="memdesc:aebb664a885e741148b381caeeb4f0dba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives the xz-plane 2D perp product of the two vectors.  <a href="#aebb664a885e741148b381caeeb4f0dba">More...</a><br/></td></tr>
-<tr class="separator:aebb664a885e741148b381caeeb4f0dba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cc0796eb934e89db21b5fc0b0eb5974"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DetourCommon_8h.html#a0cc0796eb934e89db21b5fc0b0eb5974">dtVclamp</a> (float *v, float min, float max)</td></tr>
 <tr class="memdesc:a0cc0796eb934e89db21b5fc0b0eb5974"><td class="mdescLeft">&#160;</td><td class="mdescRight">The length of v will be clamped to the given values;.  <a href="#a0cc0796eb934e89db21b5fc0b0eb5974">More...</a><br/></td></tr>
 <tr class="separator:a0cc0796eb934e89db21b5fc0b0eb5974"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1690,6 +1690,57 @@ The triangle's 3D face normal is in the general down direction. </li>
 
 </div>
 </div>
+<a class="anchor" id="a323674d9b1f5acbf5ce10168504fede2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float dtVcross2D </td>
+          <td>(</td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>u</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the xz-plane 2D dot product of the two vectors. </p>
+<p>(uz*vx - ux*vz)</p>
+<p>This operation is also called perpendicular dot product or determinant.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">u</td><td>A vector [(x, y, z)] </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>A vector [(x, y, z)] </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The cross product on the xz-plane,<ul>
+<li>if positive, the angle from u to v is positive, v is on the left side.</li>
+<li>if negative, the andle from u to v is negative, v is on the right side.</li>
+</ul>
+</dd></dl>
+<p>The vectors are projected onto the xz-plane, so the y-values are ignored. </p>
+
+</div>
+</div>
 <a class="anchor" id="a000a4b437d73fd37c831c4bcbc3abb8d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2302,52 +2353,6 @@ The triangle's 3D face normal is in the general down direction. </li>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The previous norm of the vector </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="aebb664a885e741148b381caeeb4f0dba"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float dtVperp2D </td>
-          <td>(</td>
-          <td class="paramtype">const float *&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const float *&#160;</td>
-          <td class="paramname"><em>v</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Derives the xz-plane 2D perp product of the two vectors. </p>
-<p>(uz*vx - ux*vz) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">u</td><td>The LHV vector [(x, y, z)] </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>The RHV vector [(x, y, z)] </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The dot product on the xz-plane.</dd></dl>
-<p>The vectors are projected onto the xz-plane, so the y-values are ignored. </p>
 
 </div>
 </div>

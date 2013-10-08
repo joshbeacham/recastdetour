@@ -5,9 +5,9 @@ var searchData=
   ['walkableradius',['walkableRadius',['../structdtMeshHeader.html#af46713cd7140c9cea829730c246e146d',1,'dtMeshHeader::walkableRadius()'],['../structdtNavMeshCreateParams.html#a5c467f6297663e0ed82c49d768bc3b12',1,'dtNavMeshCreateParams::walkableRadius()'],['../structdtTileCacheParams.html#ae2c266df6a6a9feb25c3ab7d6aff2616',1,'dtTileCacheParams::walkableRadius()'],['../structrcConfig.html#a57a961a919d76559d6124d60ddf73864',1,'rcConfig::walkableRadius()']]],
   ['walkableslopeangle',['walkableSlopeAngle',['../structrcConfig.html#a689373b55bb5fab1d3284b716e972fe0',1,'rcConfig']]],
   ['weight',['weight',['../structdtSeparationBehaviorParams.html#a0c7a2a23e7beb31b18b0bae9fb3baf69',1,'dtSeparationBehaviorParams']]],
-  ['weightcurvel',['weightCurVel',['../structdtCollisionAvoidanceParams.html#a7e240d349a6e0055bab7d47d6b10b225',1,'dtCollisionAvoidanceParams']]],
-  ['weightdesvel',['weightDesVel',['../structdtCollisionAvoidanceParams.html#a9d581618f785818e78c432123fa869a9',1,'dtCollisionAvoidanceParams']]],
-  ['weightside',['weightSide',['../structdtCollisionAvoidanceParams.html#aa796daf6909970bfbd53448f994edbab',1,'dtCollisionAvoidanceParams']]],
-  ['weighttoi',['weightToi',['../structdtCollisionAvoidanceParams.html#a295632b53b9759ab9f4c9c82c311c983',1,'dtCollisionAvoidanceParams']]],
+  ['weightcurrentavoidanceside',['weightCurrentAvoidanceSide',['../classdtCollisionAvoidance.html#aa16c632d3616dcecc91fcc337881d69d',1,'dtCollisionAvoidance']]],
+  ['weightcurrentvelocity',['weightCurrentVelocity',['../classdtCollisionAvoidance.html#a9253e704fccc95fbd8a9b779d8f4fe03',1,'dtCollisionAvoidance']]],
+  ['weightdesiredvelocity',['weightDesiredVelocity',['../classdtCollisionAvoidance.html#a797f353ac1cb8668d3fab4c648381856',1,'dtCollisionAvoidance']]],
+  ['weighttimetocollision',['weightTimeToCollision',['../classdtCollisionAvoidance.html#acd799f8b48de8f8e561c5edf77984d46',1,'dtCollisionAvoidance']]],
   ['width',['width',['../structdtTileCacheParams.html#a0028aaae0c422f2191be3f5f44a06c02',1,'dtTileCacheParams::width()'],['../structdtTileCacheLayerHeader.html#a967e7b1b310ae0a5a90168727c146f4c',1,'dtTileCacheLayerHeader::width()'],['../structrcConfig.html#aa870882b1addeb37535185740838eb32',1,'rcConfig::width()'],['../structrcHeightfield.html#a9dd6e386c167f1537e3c7638f6b9a752',1,'rcHeightfield::width()'],['../structrcCompactHeightfield.html#a98868c1df2523cd724696ed1d223ba13',1,'rcCompactHeightfield::width()'],['../structrcHeightfieldLayer.html#a6904f7a9539c4a5f88c2f134ac7b8649',1,'rcHeightfieldLayer::width()'],['../structrcContourSet.html#af165415f9e2ef3cf446786040864e6d2',1,'rcContourSet::width()'],['../structrcHeightPatch.html#ab26096449132f591083d5355b88953f8',1,'rcHeightPatch::width()']]]
 ];

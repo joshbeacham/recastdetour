@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -98,9 +98,9 @@ $(document).ready(function(){initNavTree('structdtPathFollowingParams.html','');
 <div class="header">
   <div class="summary">
 <a href="structdtPathFollowingParams-members.html">List of all members</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a>  </div>
+<a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">dtPathFollowingParams Struct Reference<div class="ingroups"><a class="el" href="group__behavior.html">Behaviors</a></div></div>  </div>
 </div><!--header-->
@@ -111,6 +111,20 @@ $(document).ready(function(){initNavTree('structdtPathFollowingParams.html','');
 
 <p><code>#include &lt;<a class="el" href="DetourPathFollowing_8h_source.html">DetourPathFollowing.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:abb36012454e3de1bd01c61e3efef35b4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4">State</a> { <br/>
+&#160;&#160;<a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a74b51d8de50f6baec52aaa28a914c399">NO_TARGET</a> = 0, 
+<a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a320729a2533c7583f8e166f78988b858">INVALID_TARGET</a>, 
+<a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a0e56a61ddf4a8ce1aea64d6a663bd277">FOLLOWING_PATH</a>, 
+<a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a6c9cb8fe2364afb4a6e89735c35423a4">TARGET_SUBMITTED</a>, 
+<br/>
+&#160;&#160;<a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4ad4ecc1800fc24e77c8e44ccd66e2dd60">WAITING_FOR_QUEUE</a>, 
+<a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4a85bbfabb5912050c0901ca2cbcf3a2f1">WAITING_FOR_PATH</a>
+<br/>
+ }</td></tr>
+<tr class="separator:abb36012454e3de1bd01c61e3efef35b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa29a0d2ba7e6fb348ea5005fc69a569e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#aa29a0d2ba7e6fb348ea5005fc69a569e">dtPathFollowingParams</a> ()</td></tr>
@@ -121,59 +135,102 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a85a519aef15143a9a753dab15dd7a07d"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a85a519aef15143a9a753dab15dd7a07d">state</a></td></tr>
+<tr class="memdesc:a85a519aef15143a9a753dab15dd7a07d"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the movement request.  <a href="#a85a519aef15143a9a753dab15dd7a07d">More...</a><br/></td></tr>
+<tr class="separator:a85a519aef15143a9a753dab15dd7a07d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Debug</div></td></tr>
 <tr class="memitem:ad31fb53ce18e6c99e0cbdbb2e7e851c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdtCrowdAgentDebugInfo.html">dtCrowdAgentDebugInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#ad31fb53ce18e6c99e0cbdbb2e7e851c7">debugInfos</a></td></tr>
-<tr class="memdesc:ad31fb53ce18e6c99e0cbdbb2e7e851c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">A debug object to load with debug information. [Opt].  <a href="#ad31fb53ce18e6c99e0cbdbb2e7e851c7">More...</a><br/></td></tr>
+<tr class="memdesc:ad31fb53ce18e6c99e0cbdbb2e7e851c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optionnal debug retrieval object.  <a href="#ad31fb53ce18e6c99e0cbdbb2e7e851c7">More...</a><br/></td></tr>
 <tr class="separator:ad31fb53ce18e6c99e0cbdbb2e7e851c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60f6a6bd4033a591393e9501c8ba6d04"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a60f6a6bd4033a591393e9501c8ba6d04">debugIndex</a></td></tr>
 <tr class="memdesc:a60f6a6bd4033a591393e9501c8ba6d04"><td class="mdescLeft">&#160;</td><td class="mdescRight">The index of the agent for debug purpose.  <a href="#a60f6a6bd4033a591393e9501c8ba6d04">More...</a><br/></td></tr>
 <tr class="separator:a60f6a6bd4033a591393e9501c8ba6d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf3a987452e7fbf6bbf0107d6b7b5273"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#abf3a987452e7fbf6bbf0107d6b7b5273">pathOptimizationRange</a></td></tr>
-<tr class="memdesc:abf3a987452e7fbf6bbf0107d6b7b5273"><td class="mdescLeft">&#160;</td><td class="mdescRight">The path visibility optimization range. [Limit: &gt; 0].  <a href="#abf3a987452e7fbf6bbf0107d6b7b5273">More...</a><br/></td></tr>
-<tr class="separator:abf3a987452e7fbf6bbf0107d6b7b5273"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa03f1006b6a443cf497494b1ccbd6834"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#aa03f1006b6a443cf497494b1ccbd6834">targetReplanTime</a></td></tr>
-<tr class="separator:aa03f1006b6a443cf497494b1ccbd6834"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Target</h2></td></tr>
+<tr class="memitem:adb768bf835e57676943ec5db0dc529db"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#adb768bf835e57676943ec5db0dc529db">targetPos</a> [3]</td></tr>
+<tr class="memdesc:adb768bf835e57676943ec5db0dc529db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Target position.  <a href="#adb768bf835e57676943ec5db0dc529db">More...</a><br/></td></tr>
+<tr class="separator:adb768bf835e57676943ec5db0dc529db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87288709300796e7d620c4200bb6f624"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a87288709300796e7d620c4200bb6f624">targetRef</a></td></tr>
-<tr class="memdesc:a87288709300796e7d620c4200bb6f624"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt;Time since the agent's target was replanned.  <a href="#a87288709300796e7d620c4200bb6f624">More...</a><br/></td></tr>
+<tr class="memdesc:a87288709300796e7d620c4200bb6f624"><td class="mdescLeft">&#160;</td><td class="mdescRight">Target polygon reference.  <a href="#a87288709300796e7d620c4200bb6f624">More...</a><br/></td></tr>
 <tr class="separator:a87288709300796e7d620c4200bb6f624"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa03f1006b6a443cf497494b1ccbd6834"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#aa03f1006b6a443cf497494b1ccbd6834">targetReplanTime</a></td></tr>
+<tr class="memdesc:aa03f1006b6a443cf497494b1ccbd6834"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time since the agent's target was replanned.  <a href="#aa03f1006b6a443cf497494b1ccbd6834">More...</a><br/></td></tr>
+<tr class="separator:aa03f1006b6a443cf497494b1ccbd6834"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0d299f0341463a8fbc709142fda6657"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#aa0d299f0341463a8fbc709142fda6657">targetReplan</a></td></tr>
 <tr class="memdesc:aa0d299f0341463a8fbc709142fda6657"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag indicating that the current path is being replanned.  <a href="#aa0d299f0341463a8fbc709142fda6657">More...</a><br/></td></tr>
 <tr class="separator:aa0d299f0341463a8fbc709142fda6657"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af438ad6473bce33e6d0c081443544303"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DetourPathQueue_8h.html#ab97a1eb15082a50b8b7b781a715f5f74">dtPathQueueRef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#af438ad6473bce33e6d0c081443544303">targetPathqRef</a></td></tr>
-<tr class="memdesc:af438ad6473bce33e6d0c081443544303"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path finder ref.  <a href="#af438ad6473bce33e6d0c081443544303">More...</a><br/></td></tr>
+<tr class="memdesc:af438ad6473bce33e6d0c081443544303"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference of the pathfind in the queue.  <a href="#af438ad6473bce33e6d0c081443544303">More...</a><br/></td></tr>
 <tr class="separator:af438ad6473bce33e6d0c081443544303"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb768bf835e57676943ec5db0dc529db"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#adb768bf835e57676943ec5db0dc529db">targetPos</a> [3]</td></tr>
-<tr class="memdesc:adb768bf835e57676943ec5db0dc529db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).  <a href="#adb768bf835e57676943ec5db0dc529db">More...</a><br/></td></tr>
-<tr class="separator:adb768bf835e57676943ec5db0dc529db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d61c6dd16d9f658ddaaa3508c7656a3"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a2d61c6dd16d9f658ddaaa3508c7656a3">targetState</a></td></tr>
-<tr class="memdesc:a2d61c6dd16d9f658ddaaa3508c7656a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the movement request.  <a href="#a2d61c6dd16d9f658ddaaa3508c7656a3">More...</a><br/></td></tr>
-<tr class="separator:a2d61c6dd16d9f658ddaaa3508c7656a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a753c04be6716281a8b605761afdb834e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a></td></tr>
-<tr class="separator:a753c04be6716281a8b605761afdb834e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf54e2a811465d542392c4685b32de75"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#abf54e2a811465d542392c4685b32de75">cornerVerts</a> [<a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a> *3]</td></tr>
-<tr class="memdesc:abf54e2a811465d542392c4685b32de75"><td class="mdescLeft">&#160;</td><td class="mdescRight">The local path corridor corners for the agent. (Staight path.) [(x, y, z) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a>].  <a href="#abf54e2a811465d542392c4685b32de75">More...</a><br/></td></tr>
-<tr class="separator:abf54e2a811465d542392c4685b32de75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b41c52301294d1560d64438cca9444c"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a5b41c52301294d1560d64438cca9444c">cornerFlags</a> [<a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a>]</td></tr>
-<tr class="memdesc:a5b41c52301294d1560d64438cca9444c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The reference id of the polygon being entered at the corner. [(polyRef) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a>].  <a href="#a5b41c52301294d1560d64438cca9444c">More...</a><br/></td></tr>
-<tr class="separator:a5b41c52301294d1560d64438cca9444c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37ac51fd8e35766811f64e66fec820c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a37ac51fd8e35766811f64e66fec820c2">cornerPolys</a> [<a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a>]</td></tr>
-<tr class="memdesc:a37ac51fd8e35766811f64e66fec820c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time since the agent's path corridor was optimized.  <a href="#a37ac51fd8e35766811f64e66fec820c2">More...</a><br/></td></tr>
-<tr class="separator:a37ac51fd8e35766811f64e66fec820c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad523740861fb9150d07213978ad09705"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#ad523740861fb9150d07213978ad09705">topologyOptTime</a></td></tr>
-<tr class="memdesc:ad523740861fb9150d07213978ad09705"><td class="mdescLeft">&#160;</td><td class="mdescRight">The path corridor the agent is using.  <a href="#ad523740861fb9150d07213978ad09705">More...</a><br/></td></tr>
-<tr class="separator:ad523740861fb9150d07213978ad09705"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b8158a499320abf8675f33d2d99926c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdtPathCorridor.html">dtPathCorridor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a5b8158a499320abf8675f33d2d99926c">corridor</a></td></tr>
-<tr class="separator:a5b8158a499320abf8675f33d2d99926c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbc7869be27fedf3d715da13d1737b08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#abbc7869be27fedf3d715da13d1737b08">submitTarget</a> (const float *pos, <a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a> polyRef=0)</td></tr>
+<tr class="memdesc:abbc7869be27fedf3d715da13d1737b08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Submits a new target.  <a href="#abbc7869be27fedf3d715da13d1737b08">More...</a><br/></td></tr>
+<tr class="separator:abbc7869be27fedf3d715da13d1737b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c7dfbb6a8fa7169a0649f68da044cd0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a3c7dfbb6a8fa7169a0649f68da044cd0">clearTarget</a> ()</td></tr>
+<tr class="memdesc:a3c7dfbb6a8fa7169a0649f68da044cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the current target.  <a href="#a3c7dfbb6a8fa7169a0649f68da044cd0">More...</a><br/></td></tr>
+<tr class="separator:a3c7dfbb6a8fa7169a0649f68da044cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:gae19737e011d1f246af816d5b31229955"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a> = 4</td></tr>
-<tr class="memdesc:gae19737e011d1f246af816d5b31229955"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of corners.  <a href="group__behavior.html#gae19737e011d1f246af816d5b31229955">More...</a><br/></td></tr>
-<tr class="separator:gae19737e011d1f246af816d5b31229955"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Path</h2></td></tr>
+<tr class="memitem:a5b8158a499320abf8675f33d2d99926c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdtPathCorridor.html">dtPathCorridor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a5b8158a499320abf8675f33d2d99926c">corridor</a></td></tr>
+<tr class="memdesc:a5b8158a499320abf8675f33d2d99926c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The path corridor the agent is using.  <a href="#a5b8158a499320abf8675f33d2d99926c">More...</a><br/></td></tr>
+<tr class="separator:a5b8158a499320abf8675f33d2d99926c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a753c04be6716281a8b605761afdb834e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a></td></tr>
+<tr class="memdesc:a753c04be6716281a8b605761afdb834e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of corners.  <a href="#a753c04be6716281a8b605761afdb834e">More...</a><br/></td></tr>
+<tr class="separator:a753c04be6716281a8b605761afdb834e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a510ce1004ad8cbda477601e20bb0b958"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a510ce1004ad8cbda477601e20bb0b958">cornerVerts</a> [<a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a> *3]</td></tr>
+<tr class="memdesc:a510ce1004ad8cbda477601e20bb0b958"><td class="mdescLeft">&#160;</td><td class="mdescRight">The local path corridor corners for the agent. (Staight path.) [(x, y, z) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e" title="The number of corners. ">ncorners</a>].  <a href="#a510ce1004ad8cbda477601e20bb0b958">More...</a><br/></td></tr>
+<tr class="separator:a510ce1004ad8cbda477601e20bb0b958"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a188ec5f0775883bb3ae55ff6242e215c"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a188ec5f0775883bb3ae55ff6242e215c">cornerFlags</a> [<a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a>]</td></tr>
+<tr class="memdesc:a188ec5f0775883bb3ae55ff6242e215c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The local path corridor corner flags. (See: <a class="el" href="DetourNavMesh_8h.html#ac8cecf1c1e32f8464a1905edfeaebbc7" title="Vertex flags returned by dtNavMeshQuery::findStraightPath. ">dtStraightPathFlags</a>)  <a href="#a188ec5f0775883bb3ae55ff6242e215c">More...</a><br/></td></tr>
+<tr class="separator:a188ec5f0775883bb3ae55ff6242e215c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0faedf5ded7d0fde6f861bad5a1f4a64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a0faedf5ded7d0fde6f861bad5a1f4a64">cornerPolys</a> [<a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a>]</td></tr>
+<tr class="memdesc:a0faedf5ded7d0fde6f861bad5a1f4a64"><td class="mdescLeft">&#160;</td><td class="mdescRight">The reference id of the polygon being entered at the corner.  <a href="#a0faedf5ded7d0fde6f861bad5a1f4a64">More...</a><br/></td></tr>
+<tr class="separator:a0faedf5ded7d0fde6f861bad5a1f4a64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad523740861fb9150d07213978ad09705"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#ad523740861fb9150d07213978ad09705">topologyOptTime</a></td></tr>
+<tr class="memdesc:ad523740861fb9150d07213978ad09705"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time since the agent's path corridor was optimized.  <a href="#ad523740861fb9150d07213978ad09705">More...</a><br/></td></tr>
+<tr class="separator:ad523740861fb9150d07213978ad09705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85ff9f86719d7727c56ef62193097606"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a> = 4</td></tr>
+<tr class="memdesc:a85ff9f86719d7727c56ef62193097606"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum number of corners a crowd agent will look ahead in the path.  <a href="#a85ff9f86719d7727c56ef62193097606">More...</a><br/></td></tr>
+<tr class="separator:a85ff9f86719d7727c56ef62193097606"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Parameters for the path following behavior The parameters will be automatically initialized when used for the first time by the PathFollowing behavior. </p>
 <p>However the user still has the possibility to do it himself. For that he must call the <a class="el" href="structdtPathFollowingParams.html#a541f2027cf640f3cf078670ae0365428" title="Initializes the parameters. ">init()</a> method. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="structdtPathFollowingParams.html#abb36012454e3de1bd01c61e3efef35b4">dtPathFollowingParams::State</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4a74b51d8de50f6baec52aaa28a914c399"></a>NO_TARGET</em>&nbsp;</td><td class="fielddoc">
+<p>No target submitted. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4a320729a2533c7583f8e166f78988b858"></a>INVALID_TARGET</em>&nbsp;</td><td class="fielddoc">
+<p>The submitted target is invalid. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4a0e56a61ddf4a8ce1aea64d6a663bd277"></a>FOLLOWING_PATH</em>&nbsp;</td><td class="fielddoc">
+<p>The target is valid, the agent is following a path to it. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4a6c9cb8fe2364afb4a6e89735c35423a4"></a>TARGET_SUBMITTED</em>&nbsp;</td><td class="fielddoc">
+<p>The target has been succesfully submitted. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4ad4ecc1800fc24e77c8e44ccd66e2dd60"></a>WAITING_FOR_QUEUE</em>&nbsp;</td><td class="fielddoc">
+<p>The target is being computed (TBC) </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="abb36012454e3de1bd01c61e3efef35b4a85bbfabb5912050c0901ca2cbcf3a2f1"></a>WAITING_FOR_PATH</em>&nbsp;</td><td class="fielddoc">
+<p>The target is being computed (TBC) </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aa29a0d2ba7e6fb348ea5005fc69a569e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -190,6 +247,24 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a3c7dfbb6a8fa7169a0649f68da044cd0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dtPathFollowingParams::clearTarget </td>
+          <td>(</td>
+          <td class="paramname">)</td><td></td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clear the current target. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if the request was successfully clear. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a541f2027cf640f3cf078670ae0365428"></a>
 <div class="memitem">
 <div class="memproto">
@@ -234,47 +309,82 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="abbc7869be27fedf3d715da13d1737b08"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dtPathFollowingParams::submitTarget </td>
+          <td>(</td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a>&#160;</td>
+          <td class="paramname"><em>polyRef</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Submits a new target. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">pos</td><td>The position of the target [(x, y, z)]. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ref</td><td>The navmesh polygon reference to which the target belong, used as a hint to locate the target, default value is no hint. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the request was successfully submitted. </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a5b41c52301294d1560d64438cca9444c"></a>
+<a class="anchor" id="a188ec5f0775883bb3ae55ff6242e215c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char dtPathFollowingParams::cornerFlags[<a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a>]</td>
+          <td class="memname">unsigned char dtPathFollowingParams::cornerFlags[<a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The reference id of the polygon being entered at the corner. [(polyRef) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a>]. </p>
+<p>The local path corridor corner flags. (See: <a class="el" href="DetourNavMesh_8h.html#ac8cecf1c1e32f8464a1905edfeaebbc7" title="Vertex flags returned by dtNavMeshQuery::findStraightPath. ">dtStraightPathFlags</a>) </p>
 
 </div>
 </div>
-<a class="anchor" id="a37ac51fd8e35766811f64e66fec820c2"></a>
+<a class="anchor" id="a0faedf5ded7d0fde6f861bad5a1f4a64"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a> dtPathFollowingParams::cornerPolys[<a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a>]</td>
+          <td class="memname"><a class="el" href="group__detour.html#gab4e0b2257a670c1a800057999612b466">dtPolyRef</a> dtPathFollowingParams::cornerPolys[<a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Time since the agent's path corridor was optimized. </p>
+<p>The reference id of the polygon being entered at the corner. </p>
 
 </div>
 </div>
-<a class="anchor" id="abf54e2a811465d542392c4685b32de75"></a>
+<a class="anchor" id="a510ce1004ad8cbda477601e20bb0b958"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float dtPathFollowingParams::cornerVerts[<a class="el" href="group__behavior.html#gae19737e011d1f246af816d5b31229955">DT_CROWDAGENT_MAX_CORNERS</a> *3]</td>
+          <td class="memname">float dtPathFollowingParams::cornerVerts[<a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">MAX_NCORNERS</a> *3]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The local path corridor corners for the agent. (Staight path.) [(x, y, z) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a>]. </p>
-<p>The local path corridor corner flags. (See: <a class="el" href="DetourNavMesh_8h.html#ac8cecf1c1e32f8464a1905edfeaebbc7" title="Vertex flags returned by dtNavMeshQuery::findStraightPath. ">dtStraightPathFlags</a>) [(flags) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e">ncorners</a>] </p>
+<p>The local path corridor corners for the agent. (Staight path.) [(x, y, z) * <a class="el" href="structdtPathFollowingParams.html#a753c04be6716281a8b605761afdb834e" title="The number of corners. ">ncorners</a>]. </p>
 
 </div>
 </div>
@@ -287,6 +397,8 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The path corridor the agent is using. </p>
 
 </div>
 </div>
@@ -314,7 +426,30 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>A debug object to load with debug information. [Opt]. </p>
+<p>Optionnal debug retrieval object. </p>
+
+</div>
+</div>
+<a class="anchor" id="a85ff9f86719d7727c56ef62193097606"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned dtPathFollowingParams::MAX_NCORNERS = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The maximum number of corners a crowd agent will look ahead in the path. </p>
+<p>This value is used for sizing the crowd agent corner buffers. Due to the behavior of the crowd manager, the actual number of useful corners will be one less than this number. </p>
 
 </div>
 </div>
@@ -328,19 +463,21 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The number of corners. </p>
+
 </div>
 </div>
-<a class="anchor" id="abf3a987452e7fbf6bbf0107d6b7b5273"></a>
+<a class="anchor" id="a85a519aef15143a9a753dab15dd7a07d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float dtPathFollowingParams::pathOptimizationRange</td>
+          <td class="memname">unsigned char dtPathFollowingParams::state</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The path visibility optimization range. [Limit: &gt; 0]. </p>
+<p>State of the movement request. </p>
 
 </div>
 </div>
@@ -354,7 +491,7 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Path finder ref. </p>
+<p>Reference of the pathfind in the queue. </p>
 
 </div>
 </div>
@@ -368,7 +505,7 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY). </p>
+<p>Target position. </p>
 
 </div>
 </div>
@@ -382,8 +519,7 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>&lt;Time since the agent's target was replanned. </p>
-<p>Target polyref of the movement request. </p>
+<p>Target polygon reference. </p>
 
 </div>
 </div>
@@ -411,19 +547,7 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a class="anchor" id="a2d61c6dd16d9f658ddaaa3508c7656a3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned char dtPathFollowingParams::targetState</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>State of the movement request. </p>
+<p>Time since the agent's target was replanned. </p>
 
 </div>
 </div>
@@ -437,7 +561,7 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The path corridor the agent is using. </p>
+<p>Time since the agent's path corridor was optimized. </p>
 
 </div>
 </div>

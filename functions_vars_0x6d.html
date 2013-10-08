@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li class="current"><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -81,7 +83,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_vars_0x64.html#index_d"><span>d</span></a></li>
       <li><a href="functions_vars_0x65.html#index_e"><span>e</span></a></li>
       <li><a href="functions_vars_0x66.html#index_f"><span>f</span></a></li>
-      <li><a href="functions_vars_0x67.html#index_g"><span>g</span></a></li>
       <li><a href="functions_vars_0x68.html#index_h"><span>h</span></a></li>
       <li><a href="functions_vars_0x69.html#index_i"><span>i</span></a></li>
       <li><a href="functions_vars_0x6c.html#index_l"><span>l</span></a></li>
@@ -150,6 +151,9 @@ $(document).ready(function(){initNavTree('functions_vars_0x6d.html','');});
 , <a class="el" href="structdtTileState.html#ad1d40a5f3e34dcd3b0cd5e52a1929e15">dtTileState</a>
 , <a class="el" href="structdtTileCacheLayerHeader.html#a8c7b27ed53bf0189ccc94c67d6820e2f">dtTileCacheLayerHeader</a>
 </li>
+<li>MAX_NCORNERS
+: <a class="el" href="structdtPathFollowingParams.html#a85ff9f86719d7727c56ef62193097606">dtPathFollowingParams</a>
+</li>
 <li>MAX_VISITED
 : <a class="el" href="classdtPathCorridor.html#a498f518ab868a854477c13e1d21e4749">dtPathCorridor</a>
 </li>
@@ -161,6 +165,12 @@ $(document).ready(function(){initNavTree('functions_vars_0x6d.html','');});
 </li>
 <li>maxEdgeLen
 : <a class="el" href="structrcConfig.html#a2149036442bf38b9ec9615549aa48fd4">rcConfig</a>
+</li>
+<li>maximumCircleObstaclesCount
+: <a class="el" href="classdtCollisionAvoidance.html#a89fd76d3c69540775beebf50695a240d">dtCollisionAvoidance</a>
+</li>
+<li>maximumSegmentObstaclesCount
+: <a class="el" href="classdtCollisionAvoidance.html#adeb42dc3523d2daf854c5c8795544a84">dtCollisionAvoidance</a>
 </li>
 <li>maxLinkCount
 : <a class="el" href="structdtMeshHeader.html#ab9f95d40e21c8710f59e78ef89ce1cc0">dtMeshHeader</a>
@@ -192,8 +202,8 @@ $(document).ready(function(){initNavTree('functions_vars_0x6d.html','');});
 : <a class="el" href="structrcConfig.html#a055d0ed71c79c9af29424de5d0cf3d2d">rcConfig</a>
 </li>
 <li>maxx
-: <a class="el" href="structdtTileCacheLayerHeader.html#ab675bd252447bcae38a8356b627af383">dtTileCacheLayerHeader</a>
-, <a class="el" href="structrcHeightfieldLayer.html#ab0b3836202050d3a701d2e3cfba8d9ab">rcHeightfieldLayer</a>
+: <a class="el" href="structrcHeightfieldLayer.html#ab0b3836202050d3a701d2e3cfba8d9ab">rcHeightfieldLayer</a>
+, <a class="el" href="structdtTileCacheLayerHeader.html#ab675bd252447bcae38a8356b627af383">dtTileCacheLayerHeader</a>
 </li>
 <li>maxy
 : <a class="el" href="structrcHeightfieldLayer.html#ad697fc4a8a65c2b1ef1f976097ee2b3f">rcHeightfieldLayer</a>
@@ -209,12 +219,12 @@ $(document).ready(function(){initNavTree('functions_vars_0x6d.html','');});
 : <a class="el" href="structrcConfig.html#af91c92dd5bb5ebf51a85b194917062ec">rcConfig</a>
 </li>
 <li>minx
-: <a class="el" href="structdtTileCacheLayerHeader.html#ac536f24cbc32f35d0a42bd23f6ac1a56">dtTileCacheLayerHeader</a>
-, <a class="el" href="structrcHeightfieldLayer.html#adcd87e9ea184d277f36eea61314f6f4a">rcHeightfieldLayer</a>
+: <a class="el" href="structrcHeightfieldLayer.html#adcd87e9ea184d277f36eea61314f6f4a">rcHeightfieldLayer</a>
+, <a class="el" href="structdtTileCacheLayerHeader.html#ac536f24cbc32f35d0a42bd23f6ac1a56">dtTileCacheLayerHeader</a>
 </li>
 <li>miny
-: <a class="el" href="structrcHeightfieldLayer.html#af5df0f6946f89193ca1c3e5c6f9ab49b">rcHeightfieldLayer</a>
-, <a class="el" href="structdtTileCacheLayerHeader.html#a4e0f98a4b6cba8baf300311feb2700e2">dtTileCacheLayerHeader</a>
+: <a class="el" href="structdtTileCacheLayerHeader.html#a4e0f98a4b6cba8baf300311feb2700e2">dtTileCacheLayerHeader</a>
+, <a class="el" href="structrcHeightfieldLayer.html#af5df0f6946f89193ca1c3e5c6f9ab49b">rcHeightfieldLayer</a>
 </li>
 </ul>
 </div><!-- contents -->

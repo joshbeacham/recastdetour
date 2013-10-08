@@ -53,7 +53,6 @@ var searchData=
   ['getparams',['getParams',['../classdtNavMesh.html#abdf09a204b6e67496c76b236d127eac9',1,'dtNavMesh::getParams()'],['../classdtTileCache.html#a1a8c448a2f3d1fd37ef1a66969209cea',1,'dtTileCache::getParams()']]],
   ['getpath',['getPath',['../classdtPathCorridor.html#ab5ecaea9320e52644c1bf2cb9027826c',1,'dtPathCorridor']]],
   ['getpathcount',['getPathCount',['../classdtPathCorridor.html#a3499293c0db6116a0002f8796050ba17',1,'dtPathCorridor']]],
-  ['getpathres',['getPathRes',['../classdtPathFollowing.html#aa479e22099b614b9f279c9c5a26a8529',1,'dtPathFollowing::getPathRes() const '],['../classdtPathFollowing.html#a88760792b86174f5ca3f3aa168218f59',1,'dtPathFollowing::getPathRes()']]],
   ['getpathresult',['getPathResult',['../classdtPathQueue.html#a6599518fe1e3c0e4c7d8c3cba062aeab',1,'dtPathQueue']]],
   ['getpolyarea',['getPolyArea',['../classdtNavMesh.html#a7ee5fb1d61ed3c90c178322e4c5948fa',1,'dtNavMesh']]],
   ['getpolyflags',['getPolyFlags',['../classdtNavMesh.html#ac0f745e647a1c91c8eb0aa1de8e00e9b',1,'dtNavMesh']]],
@@ -88,7 +87,5 @@ var searchData=
   ['gettilesat',['getTilesAt',['../classdtNavMesh.html#a7201ddc09b526a01521bb36a2522f0b0',1,'dtNavMesh::getTilesAt()'],['../classdtTileCache.html#a87aa2331987dbd2effb84c45a8ff741d',1,'dtTileCache::getTilesAt()']]],
   ['gettilestatesize',['getTileStateSize',['../classdtNavMesh.html#a35dd2e00058b1cedd61665634f2603e8',1,'dtNavMesh']]],
   ['gettriflags',['getTriFlags',['../RecastMeshDetail_8cpp.html#ab92e230a5419da84e12aadb8bbfc1819',1,'RecastMeshDetail.cpp']]],
-  ['gettype',['getType',['../structdtPoly.html#a611acfffafddebcf07f6428f1c8ae4d0',1,'dtPoly']]],
-  ['getvelocitysamplescount',['getVelocitySamplesCount',['../classdtCollisionAvoidance.html#af6bf825a04b87686d6d648d23f3b4c54',1,'dtCollisionAvoidance']]],
-  ['gridsize',['gridSize',['../structdtCollisionAvoidanceParams.html#afa411aaed300ae04b4d63c799601c5c6',1,'dtCollisionAvoidanceParams']]]
+  ['gettype',['getType',['../structdtPoly.html#a611acfffafddebcf07f6428f1c8ae4d0',1,'dtPoly']]]
 ];

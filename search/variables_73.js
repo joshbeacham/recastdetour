@@ -2,6 +2,10 @@ var searchData=
 [
   ['sallocfunc',['sAllocFunc',['../DetourAlloc_8cpp.html#a0f08afad9e7466f3ccbddf92700b5342',1,'DetourAlloc.cpp']]],
   ['salt',['salt',['../structdtMeshTile.html#a21bccdc0f5d778d886eaa5aae72b400f',1,'dtMeshTile::salt()'],['../structdtCompressedTile.html#a9df1de3328c707f4fb75d15522ec8ec3',1,'dtCompressedTile::salt()'],['../structdtTileCacheObstacle.html#aaed7d123d0feb3efcfa735968c478fe3',1,'dtTileCacheObstacle::salt()']]],
+  ['samplelevelscount',['sampleLevelsCount',['../classdtCollisionAvoidance.html#afe38ce15605bb10b3c27af1de46c4f5c',1,'dtCollisionAvoidance']]],
+  ['sampleoriginscale',['sampleOriginScale',['../classdtCollisionAvoidance.html#a126eac52fb779863b40590af4cf6092a',1,'dtCollisionAvoidance']]],
+  ['sampleringscount',['sampleRingsCount',['../classdtCollisionAvoidance.html#a359bc1351394c4c7400751298144ce7c',1,'dtCollisionAvoidance']]],
+  ['samplesectorscount',['sampleSectorsCount',['../classdtCollisionAvoidance.html#aec1e6e61b2f5018d1e45aa5fe0bbd174',1,'dtCollisionAvoidance']]],
   ['separationdistance',['separationDistance',['../classdtFlockingBehavior.html#acf74b08e9da7452845d5bc703913495a',1,'dtFlockingBehavior']]],
   ['separationweight',['separationWeight',['../classdtFlockingBehavior.html#a58d5e9c16552729523d23bd289e5c4a6',1,'dtFlockingBehavior']]],
   ['sfreefunc',['sFreeFunc',['../DetourAlloc_8cpp.html#a8175e527667d6a55c4acd7c573ea2ccb',1,'DetourAlloc.cpp']]],
@@ -12,5 +16,5 @@ var searchData=
   ['spans',['spans',['../structrcHeightfield.html#a0fea35ab8365dfcb38c63566abf7f261',1,'rcHeightfield::spans()'],['../structrcCompactHeightfield.html#a20f5a93095dfd199b0a9baad4127bec3',1,'rcCompactHeightfield::spans()']]],
   ['srecastallocfunc',['sRecastAllocFunc',['../RecastAlloc_8cpp.html#af1b06b448acf4005967583e7dc905a66',1,'RecastAlloc.cpp']]],
   ['srecastfreefunc',['sRecastFreeFunc',['../RecastAlloc_8cpp.html#a64d9d48dc6a273593cf8034ab2e303de',1,'RecastAlloc.cpp']]],
-  ['state',['state',['../structdtCrowdAgent.html#a091dd7851f63dbe00a59b54072152d5f',1,'dtCrowdAgent::state()'],['../structdtTileCacheObstacle.html#a43d1c2aa32d48a2a88713ca3f62e0512',1,'dtTileCacheObstacle::state()']]]
+  ['state',['state',['../structdtCrowdAgent.html#a091dd7851f63dbe00a59b54072152d5f',1,'dtCrowdAgent::state()'],['../structdtPathFollowingParams.html#a85a519aef15143a9a753dab15dd7a07d',1,'dtPathFollowingParams::state()'],['../structdtTileCacheObstacle.html#a43d1c2aa32d48a2a88713ca3f62e0512',1,'dtTileCacheObstacle::state()']]]
 ];

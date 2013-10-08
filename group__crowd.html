@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -143,14 +143,14 @@ $(document).ready(function(){initNavTree('group__crowd.html','');});
 <div class="line"><span class="keywordtype">float</span> position[] = {0, 0, 0};</div>
 <div class="line"><a class="code" href="structdtCrowdAgent.html" title="Represents an agent managed by a dtCrowd object. ">dtCrowdAgent</a> agent;</div>
 <div class="line"></div>
-<div class="line"><span class="keywordflow">if</span> (crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669" title="Adds a new agent to the crowd. ">addAgent</a>(agent, position) == <span class="keyword">false</span>)</div>
+<div class="line"><span class="keywordflow">if</span> (crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669">addAgent</a>(agent, position) == <span class="keyword">false</span>)</div>
 <div class="line">    <span class="comment">// Error The agent could not be added to the crowd</span></div>
 <div class="line"></div>
 <div class="line"><span class="comment">// At this point, agent has been added and set as active. Its data (and id) have been updated.</span></div>
 <div class="line"></div>
 <div class="line"><span class="comment">// You can also remove the agent from the crowd, which will set him as inactive</span></div>
 <div class="line">crowd.<a class="code" href="classdtCrowd.html#adef40afb1b60c660dff07e3c481acbfc" title="Removes the agent of the given id from the crowd. ">removeAgent</a>(ag.id);</div>
-</div><!-- fragment --><p>With the method <code><a class="el" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669" title="Adds a new agent to the crowd. ">dtCrowd::addAgent()</a></code> we can toggle an agent as active an place it at a specific point on the navigation mesh. The method will copy the data of the newly created agent into the agent structure you provided. You can use the id of the agent later on to get access to it thanks to the method <code><a class="el" href="classdtCrowd.html#ab7042f3ef197b308a416df3d67ee2d1c" title="Gets a const access to the specified agent from the pool. ">dtCrowd::getAgent()</a></code>.</p>
+</div><!-- fragment --><p>With the method <code><a class="el" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669">dtCrowd::addAgent()</a></code> we can toggle an agent as active an place it at a specific point on the navigation mesh. The method will copy the data of the newly created agent into the agent structure you provided. You can use the id of the agent later on to get access to it thanks to the method <code><a class="el" href="classdtCrowd.html#ab7042f3ef197b308a416df3d67ee2d1c" title="Gets a const access to the specified agent from the pool. ">dtCrowd::getAgent()</a></code>.</p>
 <p>Your crowd now contains one agent.</p>
 <h1>Access and edit existing agents</h1>
 <p><code><a class="el" href="classdtCrowd.html" title="Class containing and handling the agents of the simulation. ">dtCrowd</a></code> does not allow you to directly edit the agents. You need to get a copy of the agent, edit it, then send the modifications to the crowd. In any case, you will need the id of an agent in order to retrieve it.</p>
@@ -178,7 +178,7 @@ $(document).ready(function(){initNavTree('group__crowd.html','');});
 <div class="line"><span class="comment">// ...</span></div>
 <div class="line"></div>
 <div class="line"><span class="comment">// You can now send the changes to the crowd</span></div>
-<div class="line">crowd.<a class="code" href="classdtCrowd.html#a668bdfce5339359c158ac3875a24826b" title="Copies the data of the given agent into its equivalent in the crowd In order to know which agent must...">applyAgent</a>(ag);</div>
+<div class="line">crowd.<a class="code" href="classdtCrowd.html#ae6639b6067ccb23f373caf80c3ae0c30" title="Copies the data of the given agent into its equivalent in the crowd. ">pushAgent</a>(ag);</div>
 </div><!-- fragment --><dl class="section warning"><dt>Warning</dt><dd><code><a class="el" href="classdtCrowd.html" title="Class containing and handling the agents of the simulation. ">dtCrowd</a></code> uses the id when looking for and editing an agent, therefore be careful not the change the id property of an agent, otherwise the crowd might not update the right agent.</dd></dl>
 <h1>Update the crowd</h1>
 <p>When you update the crowd, by default, all the active agents inside this crowd will be updated. But maybe you just want some of them to be updated. This can be done by providing a list of agents' ids.</p>
@@ -189,7 +189,7 @@ $(document).ready(function(){initNavTree('group__crowd.html','');});
 <div class="line"></div>
 <div class="line"><a class="code" href="structdtCrowdAgent.html" title="Represents an agent managed by a dtCrowd object. ">dtCrowdAgent</a> ag1, ag2, ag3;</div>
 <div class="line"></div>
-<div class="line"><span class="keywordflow">if</span> (!crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669" title="Adds a new agent to the crowd. ">addAgent</a>(ag1, position1) || !crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669" title="Adds a new agent to the crowd. ">addAgent</a>(ag2, position2) || !crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669" title="Adds a new agent to the crowd. ">addAgent</a>(ag3, position3))</div>
+<div class="line"><span class="keywordflow">if</span> (!crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669">addAgent</a>(ag1, position1) || !crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669">addAgent</a>(ag2, position2) || !crowd.<a class="code" href="classdtCrowd.html#a271954eb58f8ecb86f14cfcec790e669">addAgent</a>(ag3, position3))</div>
 <div class="line">    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// ...</span></div>
@@ -227,10 +227,10 @@ $(document).ready(function(){initNavTree('group__crowd.html','');});
 <dl class="section note"><dt>Note</dt><dd>Calling the method <code><a class="el" href="classdtCrowd.html#a19fdb802fa014ecf42320b230d89221c" title="Updates the steering and positions of the agents whose indices may be given by the user...">dtCrowd::update()</a></code> will call all three methods listed above.</dd></dl>
 <h1>Other features</h1>
 <h2>Change the position of an agent</h2>
-<p>Of course the position of an agent will be updated trough its behavior(s), but sometimes you might want to set your agent at a given position instantly, without the constraints of a behavior (for instance your agent have walked on a teleporter). This can be done using the <code><a class="el" href="classdtCrowd.html#a2213cfa93d35adfe5d2b6a2c8159f41f" title="Moves the agent to the given position if possible. ">dtCrowd::updateAgentPosition()</a></code> method:</p>
+<p>Of course the position of an agent will be updated trough its behavior(s), but sometimes you might want to set your agent at a given position instantly, without the constraints of a behavior (for instance your agent have walked on a teleporter). This can be done using the <code><a class="el" href="classdtCrowd.html#ae404aa4fd23f68abf944646945a69a16" title="Moves the agent to the given position if possible. ">dtCrowd::pushAgentPosition()</a></code> method:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">float</span> newPosition[] = {10, 0, 0};</div>
 <div class="line"></div>
-<div class="line"><span class="keywordflow">if</span> (crowd.<a class="code" href="classdtCrowd.html#a2213cfa93d35adfe5d2b6a2c8159f41f" title="Moves the agent to the given position if possible. ">updateAgentPosition</a>(agentId, newPosition))</div>
+<div class="line"><span class="keywordflow">if</span> (crowd.<a class="code" href="classdtCrowd.html#ae404aa4fd23f68abf944646945a69a16" title="Moves the agent to the given position if possible. ">pushAgentPosition</a>(agentId, newPosition))</div>
 <div class="line">    <span class="comment">// Done, your agent has moved</span></div>
 <div class="line"><span class="keywordflow">else</span></div>
 <div class="line">    <span class="comment">// Something went wrong, either the position is invalid or the given id was out of bounds</span></div>
@@ -261,23 +261,12 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ga59bc9aa54705292d8f0f1ad9ca48ca82"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__crowd.html#ga59bc9aa54705292d8f0f1ad9ca48ca82">CrowdAgentState</a> { <a class="el" href="group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82ac2abcf7abcdba5abeda5801fc771baa8">DT_CROWDAGENT_STATE_INVALID</a>, 
+<tr class="memitem:ga59bc9aa54705292d8f0f1ad9ca48ca82"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__crowd.html#ga59bc9aa54705292d8f0f1ad9ca48ca82">CrowdAgentState</a> { <a class="el" href="group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82ac2abcf7abcdba5abeda5801fc771baa8">DT_CROWDAGENT_STATE_INVALID</a> = 0, 
 <a class="el" href="group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82ab165ebb808ee9390c7f7ec9f5ea277ec">DT_CROWDAGENT_STATE_WALKING</a>, 
 <a class="el" href="group__crowd.html#gga59bc9aa54705292d8f0f1ad9ca48ca82a4194d4934f447526177f505e93c96fec">DT_CROWDAGENT_STATE_OFFMESH</a>
  }</td></tr>
 <tr class="memdesc:ga59bc9aa54705292d8f0f1ad9ca48ca82"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of navigation mesh polygon the agent is currently traversing.  <a href="group__crowd.html#ga59bc9aa54705292d8f0f1ad9ca48ca82">More...</a><br/></td></tr>
 <tr class="separator:ga59bc9aa54705292d8f0f1ad9ca48ca82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa94b67d2fdcc390690c523f28019e52f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__crowd.html#gaa94b67d2fdcc390690c523f28019e52f">UpdateFlags</a> { <br/>
-&#160;&#160;<a class="el" href="group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fafeecd3363350e50041dca39352c3e268">DT_CROWD_ANTICIPATE_TURNS</a> = 1, 
-<a class="el" href="group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fad5d5d50e0b623e78e0dd68eb816bcc00">DT_CROWD_OBSTACLE_AVOIDANCE</a> = 2, 
-<a class="el" href="group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fa07d463e4e35cd6ca1f16e6bede02856e">DT_CROWD_SEPARATION</a> = 4, 
-<a class="el" href="group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fad11f447facf1bf42c09de64e9483f3aa">DT_CROWD_OPTIMIZE_VIS</a> = 8, 
-<br/>
-&#160;&#160;<a class="el" href="group__crowd.html#ggaa94b67d2fdcc390690c523f28019e52fa89c6f7f2e49254e775cb2b85259a0a93">DT_CROWD_OPTIMIZE_TOPO</a> = 16
-<br/>
- }</td></tr>
-<tr class="memdesc:gaa94b67d2fdcc390690c523f28019e52f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crowd agent update flags.  <a href="group__crowd.html#gaa94b67d2fdcc390690c523f28019e52f">More...</a><br/></td></tr>
-<tr class="separator:gaa94b67d2fdcc390690c523f28019e52f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -315,35 +304,6 @@ Variables</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="gga59bc9aa54705292d8f0f1ad9ca48ca82a4194d4934f447526177f505e93c96fec"></a>DT_CROWDAGENT_STATE_OFFMESH</em>&nbsp;</td><td class="fielddoc">
 <p>The agent is traversing an off-mesh connection. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
-<a class="anchor" id="gaa94b67d2fdcc390690c523f28019e52f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__crowd.html#gaa94b67d2fdcc390690c523f28019e52f">UpdateFlags</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Crowd agent update flags. </p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="structdtCrowdAgent.html#a7c1fb4ad4f83448bf83d2ff1e816788e" title="Flags that impact steering behavior. (See: UpdateFlags) ">dtCrowdAgent::updateFlags</a> </dd></dl>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ggaa94b67d2fdcc390690c523f28019e52fafeecd3363350e50041dca39352c3e268"></a>DT_CROWD_ANTICIPATE_TURNS</em>&nbsp;</td><td class="fielddoc">
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="ggaa94b67d2fdcc390690c523f28019e52fad5d5d50e0b623e78e0dd68eb816bcc00"></a>DT_CROWD_OBSTACLE_AVOIDANCE</em>&nbsp;</td><td class="fielddoc">
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="ggaa94b67d2fdcc390690c523f28019e52fa07d463e4e35cd6ca1f16e6bede02856e"></a>DT_CROWD_SEPARATION</em>&nbsp;</td><td class="fielddoc">
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="ggaa94b67d2fdcc390690c523f28019e52fad11f447facf1bf42c09de64e9483f3aa"></a>DT_CROWD_OPTIMIZE_VIS</em>&nbsp;</td><td class="fielddoc">
-<p>Use <a class="el" href="classdtPathCorridor.html#af9e43f83012017d3fcbf0e1671882f1a" title="Attempts to optimize the path if the specified point is visible from the current position. ">dtPathCorridor::optimizePathVisibility()</a> to optimize the agent path. </p>
-</td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="ggaa94b67d2fdcc390690c523f28019e52fa89c6f7f2e49254e775cb2b85259a0a93"></a>DT_CROWD_OPTIMIZE_TOPO</em>&nbsp;</td><td class="fielddoc">
-<p>Use <a class="el" href="classdtPathCorridor.html#a69288d28ab5d23b2c2654e45c5a33c25" title="Attempts to optimize the path using a local area search. ">dtPathCorridor::optimizePathTopology()</a> to optimize the agent path. </p>
 </td></tr>
 </table>
 

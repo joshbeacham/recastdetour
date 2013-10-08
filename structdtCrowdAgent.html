@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Recast/Detour
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.2</span>
    </div>
   </td>
  </tr>
@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('structdtCrowdAgent.html','');});
 <div class="header">
   <div class="summary">
 <a href="structdtCrowdAgent-members.html">List of all members</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">dtCrowdAgent Struct Reference<div class="ingroups"><a class="el" href="group__crowd.html">Crowd Management</a></div></div>  </div>
@@ -109,6 +110,12 @@ $(document).ready(function(){initNavTree('structdtCrowdAgent.html','');});
 
 <p><code>#include &lt;<a class="el" href="DetourCrowd_8h_source.html">DetourCrowd.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ab19dda764487877abcec903b0675bd21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#ab19dda764487877abcec903b0675bd21">init</a> (float <a class="el" href="structdtCrowdAgent.html#a9f709ffc8ca4ecf987fab16c5ace30f5">radius</a>=0.2f, float height=1.7f, float maxAcceleration=10.f, float maxSpeed=2.f, float perceptionDistance=4.f)</td></tr>
+<tr class="memdesc:ab19dda764487877abcec903b0675bd21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the value of the agent.  <a href="#ab19dda764487877abcec903b0675bd21">More...</a><br/></td></tr>
+<tr class="separator:ab19dda764487877abcec903b0675bd21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:abd78abb701ad388cb031953388b414ba"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#abd78abb701ad388cb031953388b414ba">id</a></td></tr>
@@ -124,7 +131,7 @@ Public Attributes</h2></td></tr>
 <tr class="memdesc:acc512b4b9bf4889d884d34556b6d075a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current agent position. [(x, y, z)].  <a href="#acc512b4b9bf4889d884d34556b6d075a">More...</a><br/></td></tr>
 <tr class="separator:acc512b4b9bf4889d884d34556b6d075a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17cf6c3e4c84689d004a65e59a3c6161"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#a17cf6c3e4c84689d004a65e59a3c6161">desiredVelocity</a> [3]</td></tr>
-<tr class="memdesc:a17cf6c3e4c84689d004a65e59a3c6161"><td class="mdescLeft">&#160;</td><td class="mdescRight">The desired velocity of the agent. [(x, y, z)].  <a href="#a17cf6c3e4c84689d004a65e59a3c6161">More...</a><br/></td></tr>
+<tr class="memdesc:a17cf6c3e4c84689d004a65e59a3c6161"><td class="mdescLeft">&#160;</td><td class="mdescRight">The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update. [(x, y, z)].  <a href="#a17cf6c3e4c84689d004a65e59a3c6161">More...</a><br/></td></tr>
 <tr class="separator:a17cf6c3e4c84689d004a65e59a3c6161"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbfe48378ae579111c7d4b09b0b8bda0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#afbfe48378ae579111c7d4b09b0b8bda0">velocity</a> [3]</td></tr>
 <tr class="memdesc:afbfe48378ae579111c7d4b09b0b8bda0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The actual velocity of the agent. [(x, y, z)].  <a href="#afbfe48378ae579111c7d4b09b0b8bda0">More...</a><br/></td></tr>
@@ -147,9 +154,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a85882d71ac86e71667de843b722b45cd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#a85882d71ac86e71667de843b722b45cd">perceptionDistance</a></td></tr>
 <tr class="memdesc:a85882d71ac86e71667de843b722b45cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)  <a href="#a85882d71ac86e71667de843b722b45cd">More...</a><br/></td></tr>
 <tr class="separator:a85882d71ac86e71667de843b722b45cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c1fb4ad4f83448bf83d2ff1e816788e"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#a7c1fb4ad4f83448bf83d2ff1e816788e">updateFlags</a></td></tr>
-<tr class="memdesc:a7c1fb4ad4f83448bf83d2ff1e816788e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags that impact steering behavior. (See: <a class="el" href="group__crowd.html#gaa94b67d2fdcc390690c523f28019e52f" title="Crowd agent update flags. ">UpdateFlags</a>)  <a href="#a7c1fb4ad4f83448bf83d2ff1e816788e">More...</a><br/></td></tr>
-<tr class="separator:a7c1fb4ad4f83448bf83d2ff1e816788e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef0936609cd0a640e8b6aef138391dd2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#aef0936609cd0a640e8b6aef138391dd2">offmeshInitPos</a> [3]</td></tr>
 <tr class="separator:aef0936609cd0a640e8b6aef138391dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a815c8febe6ab9412651afc0f68858e14"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdtCrowdAgent.html#a815c8febe6ab9412651afc0f68858e14">offmeshStartPos</a> [3]</td></tr>
@@ -172,7 +176,56 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents an agent managed by a <a class="el" href="classdtCrowd.html" title="Class containing and handling the agents of the simulation. ">dtCrowd</a> object. </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab19dda764487877abcec903b0675bd21"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dtCrowdAgent::init </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em> = <code>0.2f</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>height</em> = <code>1.7f</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>maxAcceleration</em> = <code>10.f</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>maxSpeed</em> = <code>2.f</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>perceptionDistance</em> = <code>4.f</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize the value of the agent. </p>
+<p>Set all the attributes to valid 'nil' values except the given ones.</p>
+<dl class="section remark"><dt>Remarks</dt><dd>No memory allocation is performed. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="aa95698f1b5109d79b3dea7db2599d644"></a>
 <div class="memitem">
 <div class="memproto">
@@ -211,7 +264,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The desired velocity of the agent. [(x, y, z)]. </p>
+<p>The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update. [(x, y, z)]. </p>
 
 </div>
 </div>
@@ -407,20 +460,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7c1fb4ad4f83448bf83d2ff1e816788e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned char dtCrowdAgent::updateFlags</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Flags that impact steering behavior. (See: <a class="el" href="group__crowd.html#gaa94b67d2fdcc390690c523f28019e52f" title="Crowd agent update flags. ">UpdateFlags</a>) </p>
-
-</div>
-</div>
 <a class="anchor" id="ae67ec8fd9e8ebc07b1d38982eea509c8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -449,8 +488,9 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li><a class="el" href="DetourCrowd_8h_source.html">DetourCrowd.h</a></li>
+<li><a class="el" href="DetourCrowd_8cpp.html">DetourCrowd.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
