@@ -300,12 +300,6 @@ public:
 	/// @return		False if the position is outside the navigation mesh or if the index is out of bound. True otherwise.
 	bool pushAgentPosition(unsigned id, const float* position);
 	/// @}
-
-	/// Indicates whether the agent is moving or not.
-	/// An agent is moving when:
-	/// - its desired speed is > 0
-	/// - its velocity is not a nil vector
-	bool agentIsMoving(const dtCrowdAgent& ag) const;
 	
 	/// @name Updating the crowd
 	/// @{

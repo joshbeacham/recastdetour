@@ -656,14 +656,6 @@ void dtCrowd::update(const float dt, unsigned* indexList, unsigned nbIndex)
 	updatePosition(dt, indexList, nbIndex);
 }
 
-bool dtCrowd::agentIsMoving(const dtCrowdAgent& ag) const
-{
-	if (ag.id >= m_maxAgents)
-		return false;
-
-	return (dtVlen(m_agents[ag.id].velocity) > EPSILON);
-}
-
 bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 {
 	if (ag.id >= m_maxAgents)
