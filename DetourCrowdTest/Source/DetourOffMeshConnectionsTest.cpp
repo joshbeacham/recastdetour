@@ -75,7 +75,7 @@ SCENARIO("DetourCrowdTest/OffMeshConnections", "[offmesh] Check if the agents kn
 		WHEN("The agent is moved to (-2, 0, 0)")
 		{
 			float pos2[] = {-2, 0, 0};
-			CHECK(crowd->updateAgentPosition(ag.id, pos2));
+			CHECK(crowd->pushAgentPosition(ag.id, pos2));
 
 			THEN("It doesn't detect the offMesh connection anymore")
 			{
@@ -101,13 +101,13 @@ SCENARIO("DetourCrowdTest/OffMeshConnections", "[offmesh] Check if the agents kn
 		{
 			float pos[] = {-0.2, 0, -0.2};
 
-			CHECK(crowd->updateAgentPosition(ag.id, pos));
+			CHECK(crowd->pushAgentPosition(ag.id, pos));
 			CHECK(crowd->getCrowdQuery()->getOffMeshConnection(ag.id) != 0);
 
 			crowd->fetchAgent(ag, ag.id);
 			crowd->getCrowdQuery()->startOffMeshConnection(ag, 
 				*crowd->getCrowdQuery()->getOffMeshConnection(ag.id));
-			crowd->applyAgent(ag);
+			crowd->pushAgent(ag);
 
 			THEN("It moves toward the other side of the connection")
 			{

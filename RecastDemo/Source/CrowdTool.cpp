@@ -163,31 +163,31 @@ void CrowdToolState::init(class Sample* sample)
 		//memcpy(&params, crowd->getObstacleAvoidanceParams(0), sizeof(dtObstacleAvoidanceParams));
 		//
 		//// Low (11)
-		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 5;
-		//params.adaptiveRings = 2;
-		//params.adaptiveDepth = 1;
+		//params.sampleOriginScale = 0.5f;
+		//params.sampleSectorsCount = 5;
+		//params.sampleRingsCount = 2;
+		//params.sampleLevelsCount = 1;
 		//crowd->setObstacleAvoidanceParams(0, &params);
 		//
 		//// Medium (22)
-		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 5; 
-		//params.adaptiveRings = 2;
-		//params.adaptiveDepth = 2;
+		//params.sampleOriginScale = 0.5f;
+		//params.sampleSectorsCount = 5; 
+		//params.sampleRingsCount = 2;
+		//params.sampleLevelsCount = 2;
 		//crowd->setObstacleAvoidanceParams(1, &params);
 		//
 		//// Good (45)
-		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 7;
-		//params.adaptiveRings = 2;
-		//params.adaptiveDepth = 3;
+		//params.sampleOriginScale = 0.5f;
+		//params.sampleSectorsCount = 7;
+		//params.sampleRingsCount = 2;
+		//params.sampleLevelsCount = 3;
 		//crowd->setObstacleAvoidanceParams(2, &params);
 		//
 		//// High (66)
-		//params.velBias = 0.5f;
-		//params.adaptiveDivs = 7;
-		//params.adaptiveRings = 3;
-		//params.adaptiveDepth = 3;
+		//params.sampleOriginScale = 0.5f;
+		//params.sampleSectorsCount = 7;
+		//params.sampleRingsCount = 3;
+		//params.sampleLevelsCount = 3;
 		//
 		//crowd->setObstacleAvoidanceParams(3, &params);
 	}
@@ -509,20 +509,10 @@ void CrowdToolState::addAgent(const float* p)
 		ag.height = m_sample->getAgentHeight();
 		ag.maxAcceleration = 8.0f;
 		ag.maxSpeed = 3.5f;
-		ag.updateFlags = 0; 
-
-		if (m_toolParams.m_anticipateTurns)
-			ag.updateFlags |= DT_CROWD_ANTICIPATE_TURNS;
-		if (m_toolParams.m_optimizeVis)
-			ag.updateFlags |= DT_CROWD_OPTIMIZE_VIS;
-		if (m_toolParams.m_optimizeTopo)
-			ag.updateFlags |= DT_CROWD_OPTIMIZE_TOPO;
-		if (m_toolParams.m_obstacleAvoidance)
-			ag.updateFlags |= DT_CROWD_OBSTACLE_AVOIDANCE;
-		if (m_toolParams.m_separation)
-			ag.updateFlags |= DT_CROWD_SEPARATION;
+        
+        // TODO take into account m_toolParams.m_anticipateTurns, m_toolParams.m_optimizeVis, m_toolParams.m_optimizeTopo, m_toolParams.m_obstacleAvoidance, m_toolParams.m_separation
 		
-		crowd->applyAgent(ag);
+		crowd->pushAgent(ag);
 
 		// Init trail
 		AgentTrail* trail = &m_trails[ag.id];
@@ -588,7 +578,7 @@ void CrowdToolState::setMoveTarget(const float* p, bool adjust)
 		{
 			const dtCrowdAgent* ag = crowd->getAgent(i);
 			if (!ag->active) continue;
-			m_pf->requestMoveTarget(ag->id, m_targetRef, m_targetPos);
+			m_pf->getBehaviorParams(ag->id)->submitTarget(m_targetPos, m_targetRef);
 		}
 	}
 }
@@ -627,23 +617,7 @@ void CrowdToolState::updateAgentParams()
 	dtCrowd* crowd = m_sample->getCrowd();
 	if (!crowd) return;
 	
-	unsigned char updateFlags = 0;
-	unsigned char obstacleAvoidanceType = 0;
-	
-	if (m_toolParams.m_anticipateTurns)
-		updateFlags |= DT_CROWD_ANTICIPATE_TURNS;
-	if (m_toolParams.m_optimizeVis)
-		updateFlags |= DT_CROWD_OPTIMIZE_VIS;
-	if (m_toolParams.m_optimizeTopo)
-		updateFlags |= DT_CROWD_OPTIMIZE_TOPO;
-	if (m_toolParams.m_obstacleAvoidance)
-		updateFlags |= DT_CROWD_OBSTACLE_AVOIDANCE;
-	if (m_toolParams.m_obstacleAvoidance)
-		updateFlags |= DT_CROWD_OBSTACLE_AVOIDANCE;
-	if (m_toolParams.m_separation)
-		updateFlags |= DT_CROWD_SEPARATION;
-	
-	obstacleAvoidanceType = (unsigned char)m_toolParams.m_obstacleAvoidanceType;
+	// TODO take into account m_toolParams.m_anticipateTurns, m_toolParams.m_optimizeVis, m_toolParams.m_optimizeTopo, m_toolParams.m_obstacleAvoidance, m_toolParams.m_separation, m_toolParams.m_obstacleAvoidanceType
 	
 	for (int i = 0; i < crowd->getAgentCount(); ++i)
 	{
@@ -653,8 +627,7 @@ void CrowdToolState::updateAgentParams()
 		if (!ag.active) 
 			continue;
 
-		ag.updateFlags = updateFlags;
-		crowd->applyAgent(ag);
+		crowd->pushAgent(ag);
 	}	
 }
 

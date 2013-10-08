@@ -47,7 +47,7 @@ struct dtCrowdNeighbour
 /// @ingroup crowd
 enum CrowdAgentState
 {
-	DT_CROWDAGENT_STATE_INVALID,		///< The agent is not in a valid state.
+	DT_CROWDAGENT_STATE_INVALID = 0,		///< The agent is not in a valid state.
 	DT_CROWDAGENT_STATE_WALKING,		///< The agent is traversing a normal navigation mesh polygon.
 	DT_CROWDAGENT_STATE_OFFMESH,		///< The agent is traversing an off-mesh connection.
 };
@@ -78,18 +78,16 @@ struct dtCrowdAgent
 	unsigned char state;			///< The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
 	
 	float position[3];				///< The current agent position. [(x, y, z)]
-	float desiredVelocity[3];		///< The desired velocity of the agent. [(x, y, z)]
+	float desiredVelocity[3];		///< The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update. [(x, y, z)]
 	float velocity[3];				///< The actual velocity of the agent. [(x, y, z)]
 			
 	dtBehavior* behavior;			///< The behavior used by the agent
 
-	float radius;				///< Agent radius. [Limit: >= 0]
-	float height;				///< Agent height. [Limit: > 0]
-	float maxAcceleration;		///< Maximum allowed acceleration. [Limit: >= 0]
-	float maxSpeed;				///< Maximum allowed speed. [Limit: >= 0]
-	float perceptionDistance;	///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
-
-	unsigned char updateFlags;		///< Flags that impact steering behavior. (See: #UpdateFlags)
+	float radius;                   ///< Agent radius. [Limit: >= 0]
+	float height;                   ///< Agent height. [Limit: > 0]
+	float maxAcceleration;          ///< Maximum allowed acceleration. [Limit: >= 0]
+	float maxSpeed;                 ///< Maximum allowed speed. [Limit: >= 0]
+	float perceptionDistance;       ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
 
 	float offmeshInitPos[3];
 	float offmeshStartPos[3];
@@ -99,18 +97,13 @@ struct dtCrowdAgent
 	float offmeshStartToEndTime;	///< How long to cross the connection?
 
 	void* userData;					///< User defined data attached to the agent.
-};
-
-/// Crowd agent update flags.
-/// @ingroup crowd
-/// @see dtCrowdAgent::updateFlags
-enum UpdateFlags
-{
-	DT_CROWD_ANTICIPATE_TURNS = 1,
-	DT_CROWD_OBSTACLE_AVOIDANCE = 2,
-	DT_CROWD_SEPARATION = 4,
-	DT_CROWD_OPTIMIZE_VIS = 8,			///< Use #dtPathCorridor::optimizePathVisibility() to optimize the agent path.
-	DT_CROWD_OPTIMIZE_TOPO = 16,		///< Use dtPathCorridor::optimizePathTopology() to optimize the agent path.
+    
+    /// Initialize the value of the agent.
+    ///
+    /// Set all the attributes to valid 'nil' values except the given ones.
+    ///
+    /// @remark No memory allocation is performed.
+    void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float perceptionDistance = 4.f);
 };
 
 /// Utility class used to get access to some useful elements of the crowd
@@ -205,7 +198,7 @@ class dtCrowd
 	float** m_disp;							///< Used to prevent agents from bumping into each other
 	
 	/// Returns the index of the given agent
-	inline unsigned getAgentIndex(const dtCrowdAgent* agent) const  { return agent - m_agents; }
+	inline unsigned getAgentIndex(const dtCrowdAgent* agent) const { return static_cast<unsigned>(agent - m_agents); }
 
 	/// Fetch the agent of the given id if he is active.
 	/// param[out]	ag	The agent corresponding to the given id
@@ -276,36 +269,36 @@ public:
 
 	/// @name Data modifiers
 	/// @{
-
-	/// Copies the data of the given agent into its equivalent in the crowd
-	/// In order to know which agent must receive the data, we refer to the id of the given agent
-	/// @return False if the id of the agent could not be matched or if there are some inconsistencies 
-	/// with the data of the given agent. False otherwise.
-	bool applyAgent(const dtCrowdAgent& ag);
-
-	/// Sets the behavior of the agent referenced by the given id
-	/// @param[in]	behavior	The behavior to affect
-	/// @param[in]	id			the agent of the agent to edit
-	bool setAgentBehavior(unsigned id, dtBehavior* behavior);
-
 	/// Adds a new agent to the crowd.
-	/// The data of the given agent will be copied into the crowd's pool.
-	/// The position of the agent in the pool will be determined according to its id.
-	///  @param[out]	agent	The agent whose data should be copied.
-	///  @param[in]		pos		The requested position of the agent. [(x, y, z)]
-	/// @return False if the id of the agent is incorrect, True otherwise.
+	///
+	/// @param[out]	agent Where the created agent data will be copied, if the addition is successful.
+	/// @param[in] pos The desired position for the agent. [(x, y, z)]
+	/// @return True if the addition is succesful, it might fail if the crowd is full (i.e. if the current agent count is equal to the given maximum).
 	bool addAgent(dtCrowdAgent& agent, const float* pos);
 
 	/// Removes the agent of the given id from the crowd.
 	///  @param[in]		id		The agent id.
 	void removeAgent(unsigned id);
 
+    /// Copies the data of the given agent into its equivalent in the crowd.
+    ///
+	/// In order to know which agent must receive the data, we refer to the id of the given agent
+	/// @return False if the id of the agent could not be matched or if there are some inconsistencies
+	/// with the data of the given agent. False otherwise.
+	bool pushAgent(const dtCrowdAgent& ag);
+    
+	/// Sets the behavior of the agent referenced by the given id
+    ///
+	/// @param[in]	behavior	The behavior to affect
+	/// @param[in]	id			the agent of the agent to edit
+	bool pushAgentBehavior(unsigned id, dtBehavior* behavior);
+    
 	/// Moves the agent to the given position if possible.
 	/// 
 	/// @param[in]	id			The id of the agent.
 	/// @param[in]	position	The new desired position.
 	/// @return		False if the position is outside the navigation mesh or if the index is out of bound. True otherwise.
-	bool updateAgentPosition(unsigned id, const float* position);
+	bool pushAgentPosition(unsigned id, const float* position);
 	/// @}
 
 	/// Indicates whether the agent is moving or not.
@@ -483,7 +476,7 @@ ag.height = 500;
 // ...
 
 // You can now send the changes to the crowd
-crowd.applyAgent(ag);
+crowd.pushAgent(ag);
 @endcode
 
 @warning `dtCrowd` uses the id when looking for and editing an agent, therefore be careful not the change the id property of an agent, 
@@ -550,12 +543,12 @@ You can individually call these updates using the following methods:
 
 Of course the position of an agent will be updated trough its behavior(s), but sometimes you might want to 
 set your agent at a given position instantly, without the constraints of a behavior (for instance your agent 
-have walked on a teleporter). This can be done using the `dtCrowd::updateAgentPosition()` method:
+have walked on a teleporter). This can be done using the `dtCrowd::pushAgentPosition()` method:
 
 @code
 float newPosition[] = {10, 0, 0};
 
-if (crowd.updateAgentPosition(agentId, newPosition))
+if (crowd.pushAgentPosition(agentId, newPosition))
 	// Done, your agent has moved
 else
 	// Something went wrong, either the position is invalid or the given id was out of bounds

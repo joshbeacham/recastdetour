@@ -97,6 +97,19 @@ The Detour Crowd module provides you with features for agents handling and behav
 
 # Release Notes #
 
+## Recast/Detour 2.0.2 ##
+**Released October _soon_, 2013**
+
+- Overhaul of `dtCollisionAvoidance`: parameters moved to the behavior itself and better documentation.
+- Overhaul of `dtPathFollowing`: parameters moved to the behavior itself, target setting moved to the params and better documentation.
+- Clearer lifetime for agents desired velocity.
+- Renaming of dtVperp2D tp dtVCross2D for better consistency.
+- Renaming `dtCrowd::setAgentBehavior` to `dtCrowd::pushAgentBehavior`.
+- Renaming `dtCrowd::updateAgentPosition` to `dtCrowd::pushAgentPosition`.
+- Renaming `dtCrowd::applyAgent` to `dtCrowd::pushAgent`.
+- Addition of the *mazy hall* DetourCrowd sample.
+- Additional DetourCrowd unit tests.
+
 ## Recast/Detour 2.0.1 ##
 **Released August 22nd, 2013**
 

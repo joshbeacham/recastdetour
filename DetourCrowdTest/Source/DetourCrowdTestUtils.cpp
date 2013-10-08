@@ -71,11 +71,10 @@ bool TestScene::defaultInitializeAgent(dtCrowd& crowd, int index) const
 	ag.height = 1.7;
 	ag.maxSpeed = 2.0;
 	ag.maxAcceleration = 10.0;
-	ag.updateFlags = DT_CROWD_OBSTACLE_AVOIDANCE;
 	ag.behavior = 0;
 	ag.perceptionDistance = 4.f;
 
-	crowd.applyAgent(ag);
+	crowd.pushAgent(ag);
 
 	return true;
 }

@@ -32,7 +32,18 @@
 #include "DetourNavMeshQuery.h"
 #include "DetourPathFollowing.h"
 
-
+void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float maxSpeed, float perceptionDistance)
+{
+    memset(this, 0, sizeof(dtCrowdAgent));
+    this->id = UINT_MAX;
+    this->radius = radius;
+    this->height = height;
+    this->maxAcceleration = maxAcceleration;
+    this->maxSpeed = maxSpeed;
+    this->perceptionDistance = perceptionDistance;
+    dtVset(this->desiredVelocity, 0.f, 0.f, 0.f);
+	dtVset(this->velocity, 0.f, 0.f, 0.f);
+}
 
 dtCrowd* dtAllocCrowd()
 {
@@ -278,9 +289,6 @@ const dtCrowdAgentEnvironment* dtCrowd::getAgentEnvironment(unsigned id) const
 	return m_crowdQuery->getAgentEnvironment(id);
 }
 
-/// @par
-///
-/// The agent's position will be constrained to the surface of the navigation mesh.
 bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 {
 	// Find empty slot.
@@ -296,28 +304,26 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 
 	if (idx == -1)
 		return false;
-	
-	dtCrowdAgent* ag = &m_agents[idx];
-
+    
+    agent.init();
+    agent.id = idx;
+    
 	// Find nearest position on navmesh and place the agent there.
 	float nearest[3];
 	dtPolyRef ref;
 	m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos, m_crowdQuery->getQueryExtents(), 
 												 m_crowdQuery->getQueryFilter(), &ref, nearest);
 	
-	dtVset(ag->desiredVelocity, 0, 0, 0);
-	dtVset(ag->velocity, 0, 0, 0);
-	dtVcopy(ag->position, nearest);
+	dtVcopy(agent.position, nearest);
 	
 	if (ref)
-		ag->state = DT_CROWDAGENT_STATE_WALKING;
+		agent.state = DT_CROWDAGENT_STATE_WALKING;
 	else
-		ag->state = DT_CROWDAGENT_STATE_INVALID;
+		agent.state = DT_CROWDAGENT_STATE_INVALID;
 		
-	ag->active = 1;
+	agent.active = 1;
 
-	agent = *ag;
-	
+	m_agents[idx] = agent;
 
 	return true;
 }
@@ -382,6 +388,9 @@ void dtCrowd::updateVelocity(const float dt, unsigned* agentsIdx, unsigned nbIdx
 		if (!getActiveAgent(&ag, agentsIdx[i]))
 			continue;
 		
+        // Reinitialize the desired velocity to 0. as it needs to be set by the behaviors.
+        dtVset(ag->desiredVelocity, 0.f, 0.f, 0.f);
+        
 		if (ag->behavior)
 			ag->behavior->update(*m_crowdQuery, *ag, *ag, dt);
 	}
@@ -647,33 +656,6 @@ void dtCrowd::update(const float dt, unsigned* indexList, unsigned nbIndex)
 	updatePosition(dt, indexList, nbIndex);
 }
 
-bool dtCrowd::updateAgentPosition(unsigned id, const float* position)
-{
-	if (id < m_maxAgents)
-	{
-		dtCrowdAgent& ag = m_agents[id];
-		dtPolyRef ref = 0;
-		float nearestPosition[] = {0, 0, 0};
-
-		if (dtStatusFailed(m_crowdQuery->getNavMeshQuery()->findNearestPoly(position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), &ref, nearestPosition)))
-			return false;
-
-		// If no polygons have been found, it's a failure
-		if (ref == 0)
-			return false;
-		
-		dtVset(ag.desiredVelocity, 0, 0, 0);
-		dtVset(ag.velocity, 0, 0, 0);
-		dtVcopy(ag.position, nearestPosition);
-
-		ag.state = DT_CROWDAGENT_STATE_WALKING;
-		
-		return true;
-	}
-
-	return false;
-}
-
 bool dtCrowd::agentIsMoving(const dtCrowdAgent& ag) const
 {
 	if (ag.id >= m_maxAgents)
@@ -682,7 +664,7 @@ bool dtCrowd::agentIsMoving(const dtCrowdAgent& ag) const
 	return (dtVlen(m_agents[ag.id].velocity) > EPSILON);
 }
 
-bool dtCrowd::applyAgent(const dtCrowdAgent& ag)
+bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 {
 	if (ag.id >= m_maxAgents)
 		return false;
@@ -708,7 +690,7 @@ bool dtCrowd::applyAgent(const dtCrowdAgent& ag)
 	return true;
 }
 
-bool dtCrowd::setAgentBehavior(unsigned id, dtBehavior* behavior)
+bool dtCrowd::pushAgentBehavior(unsigned id, dtBehavior* behavior)
 {
 	if (id < m_maxAgents)
 	{
@@ -716,6 +698,33 @@ bool dtCrowd::setAgentBehavior(unsigned id, dtBehavior* behavior)
 		return true;
 	}
 
+	return false;
+}
+
+bool dtCrowd::pushAgentPosition(unsigned id, const float* position)
+{
+	if (id < m_maxAgents)
+	{
+		dtCrowdAgent& ag = m_agents[id];
+		dtPolyRef ref = 0;
+		float nearestPosition[] = {0, 0, 0};
+        
+		if (dtStatusFailed(m_crowdQuery->getNavMeshQuery()->findNearestPoly(position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), &ref, nearestPosition)))
+			return false;
+        
+		// If no polygons have been found, it's a failure
+		if (ref == 0)
+			return false;
+		
+		dtVset(ag.desiredVelocity, 0, 0, 0);
+		dtVset(ag.velocity, 0, 0, 0);
+		dtVcopy(ag.position, nearestPosition);
+        
+		ag.state = DT_CROWDAGENT_STATE_WALKING;
+		
+		return true;
+	}
+    
 	return false;
 }
 
