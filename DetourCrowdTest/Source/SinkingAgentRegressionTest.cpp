@@ -18,6 +18,11 @@
 
 #include "DetourCrowdTestUtils.h"
 
+#include <DetourCollisionAvoidance.h>
+#include <DetourCrowd.h>
+#include <DetourPathFollowing.h>
+#include <DetourPipelineBehavior.h>
+
 SCENARIO("Regression/SinkingAgent", "[regression]")
 {
 	GIVEN("The computed navmesh for the map 'generation bug #1'")
