@@ -34,14 +34,14 @@
 
 void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float maxSpeed, float perceptionDistance)
 {
-    memset(this, 0, sizeof(dtCrowdAgent));
-    this->id = UINT_MAX;
-    this->radius = radius;
-    this->height = height;
-    this->maxAcceleration = maxAcceleration;
-    this->maxSpeed = maxSpeed;
-    this->perceptionDistance = perceptionDistance;
-    dtVset(this->desiredVelocity, 0.f, 0.f, 0.f);
+	memset(this, 0, sizeof(dtCrowdAgent));
+	this->id = UINT_MAX;
+	this->radius = radius;
+	this->height = height;
+	this->maxAcceleration = maxAcceleration;
+	this->maxSpeed = maxSpeed;
+	this->perceptionDistance = perceptionDistance;
+	dtVset(this->desiredVelocity, 0.f, 0.f, 0.f);
 	dtVset(this->velocity, 0.f, 0.f, 0.f);
 }
 
@@ -304,10 +304,10 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 
 	if (idx == -1)
 		return false;
-    
-    agent.init();
-    agent.id = idx;
-    
+	
+	agent.init();
+	agent.id = idx;
+	
 	// Find nearest position on navmesh and place the agent there.
 	float nearest[3];
 	dtPolyRef ref;
@@ -388,9 +388,9 @@ void dtCrowd::updateVelocity(const float dt, unsigned* agentsIdx, unsigned nbIdx
 		if (!getActiveAgent(&ag, agentsIdx[i]))
 			continue;
 		
-        // Reinitialize the desired velocity to 0. as it needs to be set by the behaviors.
-        dtVset(ag->desiredVelocity, 0.f, 0.f, 0.f);
-        
+		// Reinitialize the desired velocity to 0. as it needs to be set by the behaviors.
+		dtVset(ag->desiredVelocity, 0.f, 0.f, 0.f);
+		
 		if (ag->behavior)
 			ag->behavior->update(*m_crowdQuery, *ag, *ag, dt);
 	}
@@ -663,16 +663,19 @@ bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 
 	// Find nearest position on navmesh and place the agent there.
 	float nearest[3];
-	dtPolyRef ref;
+	dtPolyRef nearestRef;
 	m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag.position, m_crowdQuery->getQueryExtents(), 
-		m_crowdQuery->getQueryFilter(), &ref, nearest);
+		m_crowdQuery->getQueryFilter(), &nearestRef, nearest);
 
 	// If a position could not be found on the navigation mesh, then we do not apply the changes
-	if (!ref)
+	if (!nearestRef)
 		return false;
 
 	m_agents[ag.id] = ag;
 
+	// Apply the nearest position
+	dtVcopy(m_agents[ag.id].position, nearest);
+	
 	// Checking out of bound limits
 	m_agents[ag.id].radius = (m_agents[ag.id].radius < 0) ? 0 : m_agents[ag.id].radius;
 	m_agents[ag.id].height = (m_agents[ag.id].height <= 0) ? 0.01f : m_agents[ag.id].height;
@@ -684,40 +687,25 @@ bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 
 bool dtCrowd::pushAgentBehavior(unsigned id, dtBehavior* behavior)
 {
-	if (id < m_maxAgents)
-	{
-		m_agents[id].behavior = behavior;
-		return true;
-	}
-
-	return false;
+	if (id >= m_maxAgents)
+		return false;
+	
+	m_agents[id].behavior = behavior;
+	return true;
 }
 
 bool dtCrowd::pushAgentPosition(unsigned id, const float* position)
 {
-	if (id < m_maxAgents)
-	{
-		dtCrowdAgent& ag = m_agents[id];
-		dtPolyRef ref = 0;
-		float nearestPosition[] = {0, 0, 0};
-        
-		if (dtStatusFailed(m_crowdQuery->getNavMeshQuery()->findNearestPoly(position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), &ref, nearestPosition)))
-			return false;
-        
-		// If no polygons have been found, it's a failure
-		if (ref == 0)
-			return false;
-		
-		dtVset(ag.desiredVelocity, 0, 0, 0);
-		dtVset(ag.velocity, 0, 0, 0);
-		dtVcopy(ag.position, nearestPosition);
-        
-		ag.state = DT_CROWDAGENT_STATE_WALKING;
-		
-		return true;
-	}
-    
-	return false;
+	if (id >= m_maxAgents)
+		return false;
+	
+	dtCrowdAgent ag = m_agents[id];
+	dtVset(ag.desiredVelocity, 0, 0, 0);
+	dtVset(ag.velocity, 0, 0, 0);
+	dtVcopy(ag.position, position);
+	ag.state = DT_CROWDAGENT_STATE_WALKING;
+	
+	return pushAgent(ag);
 }
 
 unsigned dtCrowd::getAgents(const unsigned* ids, unsigned size, const dtCrowdAgent** agents) const
