@@ -19,31 +19,32 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(
-  detourcrowdtest_SRCS
-  Source/DetourBehaviorsTests.cpp
-  Source/DetourCollisionAvoidanceTest.cpp
-  Source/DetourCrowdTest.cpp
-  Source/DetourCrowdTestUtils.cpp
-  Source/DetourOffMeshConnectionsTest.cpp
-  Source/DetourPathFollowingTest.cpp
-  Source/DetourPipelineTest.cpp
-  )
-  
+	detourcrowdtest_SRCS
+	Source/DetourBehaviorsTests.cpp
+	Source/DetourCollisionAvoidanceTest.cpp
+	Source/DetourCrowdTest.cpp
+	Source/DetourCrowdTestUtils.cpp
+	Source/DetourOffMeshConnectionsTest.cpp
+	Source/DetourPathFollowingTest.cpp
+	Source/DetourPipelineTest.cpp
+	Source/SinkingAgentRegressionTest.cpp
+	)
+	
 SET(
-  detourcrowdtest_HDRS
-  Include/DetourCrowdTestUtils.h
-  )
-  
+	detourcrowdtest_HDRS
+	Include/DetourCrowdTestUtils.h
+	)
+	
 SET(catch_INC Contrib/catch/include)
 
-  
+	
 INCLUDE_DIRECTORIES(
 	Include
-    ../Detour/Include
-    ../Recast/Include
-    ../DetourCrowd/Include
-    ../DetourSceneCreator/Include
-    ../DetourTileCache/Include
+		../Detour/Include
+		../Recast/Include
+		../DetourCrowd/Include
+		../DetourSceneCreator/Include
+		../DetourTileCache/Include
 	${catch_INC}
 	)
 	
@@ -57,48 +58,53 @@ SET_PROPERTY(TARGET DetourCrowdTest PROPERTY DEBUG_POSTFIX -gd)
 SET(DETOURCROWDTEST_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Bin)
 SET_PROPERTY(TARGET DetourCrowdTest PROPERTY RUNTIME_OUTPUT_DIRECTORY ${DETOURCROWDTEST_BIN_DIR})
 IF(MSVC)
-  # Enable some linker optimisations
-  SET_PROPERTY(TARGET DetourCrowdTest PROPERTY LINK_FLAGS_RELEASE "/OPT:REF /OPT:ICF")
-  SET_PROPERTY(TARGET DetourCrowdTest PROPERTY LINK_FLAGS_MINSIZEREL "/OPT:REF /OPT:ICF")
-  SET_PROPERTY(TARGET DetourCrowdTest PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
+	# Enable some linker optimisations
+	SET_PROPERTY(TARGET DetourCrowdTest PROPERTY LINK_FLAGS_RELEASE "/OPT:REF /OPT:ICF")
+	SET_PROPERTY(TARGET DetourCrowdTest PROPERTY LINK_FLAGS_MINSIZEREL "/OPT:REF /OPT:ICF")
+	SET_PROPERTY(TARGET DetourCrowdTest PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
 ENDIF(MSVC)
 
 TARGET_LINK_LIBRARIES(
-  DetourCrowdTest
-  DetourCrowd
-  DetourSceneCreator
-  Detour
-  RecastDetourDebugUtils
-  Recast
-  )
+	DetourCrowdTest
+	DetourCrowd
+	DetourSceneCreator
+	Detour
+	RecastDetourDebugUtils
+	Recast
+	)
 
 ADD_TEST(
-  NAME DetourCollisionAvoidance
-  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCollisionAvoidance])
-  
+	NAME DetourCollisionAvoidance
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCollisionAvoidance])
+	
 ADD_TEST(
-  NAME DetourCrowd
-  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCrowd])
+	NAME DetourCrowd
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCrowd])
 
 ADD_TEST(
-  NAME DetourBehavior
-  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> DetourBehaviorsTests/*)
+	NAME DetourBehavior
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> DetourBehaviorsTests/*)
 
 ADD_TEST(
-  NAME DetourPipelineBehavior
-  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> DetourPipelineTest/*)
+	NAME DetourPipelineBehavior
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> DetourPipelineTest/*)
 
 ADD_TEST(
-  NAME DetourPathFollowing
-  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> [detourPathFollowing])
-    
+	NAME DetourPathFollowing
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> [detourPathFollowing])
+		
 ADD_TEST(
-  NAME OffMeshConnections
-  WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
-  COMMAND $<TARGET_FILE:DetourCrowdTest> [offmesh])
+	NAME OffMeshConnections
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> [offmesh])
+
+ADD_TEST(
+	NAME Regression
+	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourCrowdTest> [regression])
 

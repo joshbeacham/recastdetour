@@ -87,4 +87,10 @@ private:
 	dtCrowd* m_crowd;
 };
 
+/// Creates a tiled navigation mesh from the contents of a file.
+/// @note DT_TILE_FREE_DATA is used as an option to the initialization process.
+bool loadTiledNavMesh(dtNavMesh* navmesh, const char* path);
+
+bool saveTileNavmesh(const char* path, const dtNavMesh* navmesh, unsigned* tileIndices, unsigned tileCount);
+
 #endif
