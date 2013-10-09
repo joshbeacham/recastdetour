@@ -253,17 +253,29 @@ public:
 	/// @}
 	/// @name Local Query Functions
 	///@{
-
-	/// Finds the polygon nearest to the specified center point.
-	///  @param[in]		center		The center of the search box. [(x, y, z)]
-	///  @param[in]		extents		The search distance along each axis. [(x, y, z)]
-	///  @param[in]		filter		The polygon filter to apply to the query.
-	///  @param[out]	nearestRef	The reference id of the nearest polygon.
-	///  @param[out]	nearestPt	The nearest point on the polygon. [opt] [(x, y, z)]
+	
+	/// Find the nearest to the given position navmesh polygon
+	///
+	/// @param[in]  position The position [(x, y, z)].
+	/// @param[in]  extents The search distance along each axis [(x, y, z)].
+	/// @param[in]  filter The polygon filter to apply to the query.
+	/// @param[out]	nearestPolygon The nearest polygon.
+	/// @param[out]	nearestPosition	The nearest position on the polygon [opt] [(x, y, z)].
+	///
 	/// @returns The status flags for the query.
-	dtStatus findNearestPoly(const float* center, const float* extents,
+	///
+	/// @note If the search box does not intersect any polygons the search will
+	/// return #DT_SUCCESS, but `nearestPolygon` will be zero. So if in doubt, check
+	/// `nearestPolygon` before using `nearestPosition`.
+	///
+	/// @warning This function is not suitable for large area searches.  If the
+	/// search extents overlaps more than 128 polygons it may return an invalid
+	/// result.
+	dtStatus findNearestPoly(const float* position,
+							 const float* extents,
 							 const dtQueryFilter* filter,
-							 dtPolyRef* nearestRef, float* nearestPt) const;
+							 dtPolyRef* nearestPolygon,
+							 float* nearestPosition) const;
 	
 	/// Finds polygons that overlap the search box.
 	///  @param[in]		center		The center of the search box. [(x, y, z)]
@@ -430,9 +442,14 @@ private:
 	/// Queries polygons within a tile.
 	int queryPolygonsInTile(const dtMeshTile* tile, const float* qmin, const float* qmax, const dtQueryFilter* filter,
 							dtPolyRef* polys, const int maxPolys) const;
+
 	/// Find nearest polygon within a tile.
-	dtPolyRef findNearestPolyInTile(const dtMeshTile* tile, const float* center, const float* extents,
-									const dtQueryFilter* filter, float* nearestPt) const;
+	dtPolyRef findNearestPolyInTile(const dtMeshTile* tile,
+									const float* position,
+									const float* extents,
+									const dtQueryFilter* filter,
+									float* nearestPosition) const;
+	
 	/// Returns closest point on polygon.
 	void closestPointOnPolyInTile(const dtMeshTile* tile, const dtPoly* poly, const float* pos, float* closest) const;
 	

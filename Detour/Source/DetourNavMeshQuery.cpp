@@ -717,27 +717,19 @@ dtStatus dtNavMeshQuery::getPolyHeight(dtPolyRef ref, const float* pos, float* h
 	return DT_FAILURE | DT_INVALID_PARAM;
 }
 
-/// @par 
-///
-/// @note If the search box does not intersect any polygons the search will 
-/// return #DT_SUCCESS, but @p nearestRef will be zero. So if in doubt, check 
-/// @p nearestRef before using @p nearestPt.
-///
-/// @warning This function is not suitable for large area searches.  If the search
-/// extents overlaps more than 128 polygons it may return an invalid result.
-///
-dtStatus dtNavMeshQuery::findNearestPoly(const float* center, const float* extents,
+dtStatus dtNavMeshQuery::findNearestPoly(const float* position,
+										 const float* extents,
 										 const dtQueryFilter* filter,
-										 dtPolyRef* nearestRef, float* nearestPt) const
+										 dtPolyRef* nearestPolygon,
+										 float* nearestPosition) const
 {
 	dtAssert(m_nav);
-
-	*nearestRef = 0;
+	dtAssert(nearestPolygon);
 	
 	// Get nearby polygons from proximity grid.
 	dtPolyRef polys[128];
 	int polyCount = 0;
-	if (dtStatusFailed(queryPolygons(center, extents, filter, polys, &polyCount, 128)))
+	if (dtStatusFailed(queryPolygons(position, extents, filter, polys, &polyCount, 128)))
 		return DT_FAILURE | DT_INVALID_PARAM;
 	
 	// Find nearest polygon amongst the nearby polygons.
@@ -746,32 +738,34 @@ dtStatus dtNavMeshQuery::findNearestPoly(const float* center, const float* exten
 	for (int i = 0; i < polyCount; ++i)
 	{
 		dtPolyRef ref = polys[i];
-		float closestPtPoly[3];
-		closestPointOnPoly(ref, center, closestPtPoly);
-		float d = dtVdistSqr(center, closestPtPoly);
+		float nearestPositionPoly[3];
+		closestPointOnPoly(ref, position, nearestPositionPoly);
+		float d = dtVdistSqr(position, nearestPositionPoly);
 		if (d < nearestDistanceSqr)
 		{
-			if (nearestPt)
-				dtVcopy(nearestPt, closestPtPoly);
+			if (nearestPosition)
+				dtVcopy(nearestPosition, nearestPositionPoly);
 			nearestDistanceSqr = d;
 			nearest = ref;
 		}
 	}
 	
-	if (nearestRef)
-		*nearestRef = nearest;
+	*nearestPolygon = nearest;
 	
 	return DT_SUCCESS;
 }
 
-dtPolyRef dtNavMeshQuery::findNearestPolyInTile(const dtMeshTile* tile, const float* center, const float* extents,
-												const dtQueryFilter* filter, float* nearestPt) const
+dtPolyRef dtNavMeshQuery::findNearestPolyInTile(const dtMeshTile* tile,
+												const float* position,
+												const float* extents,
+												const dtQueryFilter* filter,
+												float* nearestPosition) const
 {
 	dtAssert(m_nav);
 	
 	float bmin[3], bmax[3];
-	dtVsub(bmin, center, extents);
-	dtVadd(bmax, center, extents);
+	dtVsub(bmin, position, extents);
+	dtVadd(bmax, position, extents);
 	
 	// Get nearby polygons from proximity grid.
 	dtPolyRef polys[128];
@@ -785,13 +779,13 @@ dtPolyRef dtNavMeshQuery::findNearestPolyInTile(const dtMeshTile* tile, const fl
 		dtPolyRef ref = polys[i];
 		const dtPoly* poly = &tile->polys[m_nav->decodePolyIdPoly(ref)];
 		float closestPtPoly[3];
-		closestPointOnPolyInTile(tile, poly, center, closestPtPoly);
+		closestPointOnPolyInTile(tile, poly, position, closestPtPoly);
 			
-		float d = dtVdistSqr(center, closestPtPoly);
+		float d = dtVdistSqr(position, closestPtPoly);
 		if (d < nearestDistanceSqr)
 		{
-			if (nearestPt)
-				dtVcopy(nearestPt, closestPtPoly);
+			if (nearestPosition)
+				dtVcopy(nearestPosition, closestPtPoly);
 			nearestDistanceSqr = d;
 			nearest = ref;
 		}
@@ -2006,7 +2000,7 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 				const float distSqr = dtDistancePtSegSqr2D(endPos, vj, vi, tseg);
 				if (distSqr < bestDist)
 				{
-                    // Update nearest distance.
+					// Update nearest distance.
 					dtVlerp(bestPos, vj,vi, tseg);
 					bestDist = distSqr;
 					bestNode = curNode;

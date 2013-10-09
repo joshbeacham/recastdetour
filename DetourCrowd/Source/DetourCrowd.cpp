@@ -299,16 +299,15 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 	
 	agent.init();
 	agent.id = idx;
+	dtPolyRef poly;
 	
-	// Find nearest position on navmesh and place the agent there.
-	float nearest[3];
-	dtPolyRef ref;
-	m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos, m_crowdQuery->getQueryExtents(), 
-												 m_crowdQuery->getQueryFilter(), &ref, nearest);
-	
-	dtVcopy(agent.position, nearest);
-	
-	if (ref)
+	dtStatus status = m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos,
+																	   m_crowdQuery->getQueryExtents(),
+																	   m_crowdQuery->getQueryFilter(),
+																	   &poly,
+																	   agent.position);
+
+	if (dtStatusSucceed(status) && poly)
 		agent.state = DT_CROWDAGENT_STATE_WALKING;
 	else
 		agent.state = DT_CROWDAGENT_STATE_INVALID;
@@ -575,7 +574,12 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 			{
 				// Prepare agent for walking.
 				ag->state = DT_CROWDAGENT_STATE_WALKING;
-				continue;
+				dtPolyRef poly;
+				m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position,
+																 m_crowdQuery->getQueryExtents(),
+																 m_crowdQuery->getQueryFilter(),
+																 &poly,
+																 ag->position);
 			}
 
 			// Update position
@@ -659,19 +663,21 @@ bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 		return false;
 
 	// Find nearest position on navmesh and place the agent there.
-	float nearest[3];
-	dtPolyRef nearestRef;
-	m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag.position, m_crowdQuery->getQueryExtents(), 
-		m_crowdQuery->getQueryFilter(), &nearestRef, nearest);
-
-	// If a position could not be found on the navigation mesh, then we do not apply the changes
-	if (!nearestRef)
+	float nearestPosition[3];
+	dtPolyRef nearestPoly;
+	if (dtStatusFailed(m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag.position,
+																		m_crowdQuery->getQueryExtents(),
+																		m_crowdQuery->getQueryFilter(),
+																		&nearestPoly,
+																		nearestPosition))
+		|| !nearestPoly)
+		// If a position could not be found on the navigation mesh, then we do not apply the changes
 		return false;
 
 	m_agents[ag.id] = ag;
 
 	// Apply the nearest position
-	dtVcopy(m_agents[ag.id].position, nearest);
+	dtVcopy(m_agents[ag.id].position, nearestPosition);
 	
 	// Checking out of bound limits
 	m_agents[ag.id].radius = (m_agents[ag.id].radius < 0) ? 0 : m_agents[ag.id].radius;
