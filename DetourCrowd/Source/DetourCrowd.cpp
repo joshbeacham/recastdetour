@@ -22,6 +22,7 @@
 #include <float.h>
 #include <stdlib.h>
 #include <new>
+#include <climits>
 
 #include "DetourAlloc.h"
 #include "DetourAssert.h"
@@ -30,7 +31,6 @@
 #include "DetourCrowd.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
-#include "DetourPathFollowing.h"
 
 void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float maxSpeed, float perceptionDistance)
 {
@@ -527,13 +527,11 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 
 		// Move along navmesh.
 		float newPos[3];
-		dtPolyRef visited[dtPathCorridor::MAX_VISITED];
-		int visitedCount;
-		m_crowdQuery->getNavMeshQuery()->moveAlongSurface(ag->poly, currentPos + (i * 3), ag->position, m_crowdQuery->getQueryFilter(), newPos,
-			visited, &visitedCount, dtPathCorridor::MAX_VISITED);
+		dtPolyRef newPoly;
+		m_crowdQuery->getNavMeshQuery()->moveAlongSurface(ag->poly, currentPos + (i * 3), ag->position, m_crowdQuery->getQueryFilter(), &newPoly, newPos,
+			0, 0, 0);
 		
-		if (visitedCount > 0)
-			ag->poly = visited[visitedCount-1];
+		ag->poly = newPoly;
 		
 		float detailHeight = newPos[1];
 		m_crowdQuery->getNavMeshQuery()->getPolyHeight(ag->poly,

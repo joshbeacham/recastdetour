@@ -1859,39 +1859,23 @@ dtStatus dtNavMeshQuery::findStraightPath(const float* startPos, const float* en
 	return DT_SUCCESS | ((*straightPathCount >= maxStraightPath) ? DT_BUFFER_TOO_SMALL : 0);
 }
 
-/// @par
-///
-/// This method is optimized for small delta movement and a small number of 
-/// polygons. If used for too great a distance, the result set will form an 
-/// incomplete path.
-///
-/// @p resultPos will equal the @p endPos if the end is reached. 
-/// Otherwise the closest reachable position will be returned.
-/// 
-/// @p resultPos is not projected onto the surface of the navigation 
-/// mesh. Use #getPolyHeight if this is needed.
-///
-/// This method treats the end position in the same manner as 
-/// the #raycast method. (As a 2D point.) See that method's documentation 
-/// for details.
-/// 
-/// If the @p visited array is too small to hold the entire result set, it will 
-/// be filled as far as possible from the start position toward the end 
-/// position.
-///
-dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* startPos, const float* endPos,
+dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startPoly,
+										  const float* startPos,
+										  const float* desiredEndPos,
 										  const dtQueryFilter* filter,
-										  float* resultPos, dtPolyRef* visited, int* visitedCount, const int maxVisitedSize) const
+										  dtPolyRef* endPoly,
+										  float* endPos,
+										  dtPolyRef* visited,
+										  int* visitedCount,
+										  const int visitedSize) const
 {
 	dtAssert(m_nav);
 	dtAssert(m_tinyNodePool);
 
-	*visitedCount = 0;
-	
 	// Validate input
-	if (!startRef)
+	if (!startPoly)
 		return DT_FAILURE | DT_INVALID_PARAM;
-	if (!m_nav->isValidPolyRef(startRef))
+	if (!m_nav->isValidPolyRef(startPoly))
 		return DT_FAILURE | DT_INVALID_PARAM;
 	
 	dtStatus status = DT_SUCCESS;
@@ -1902,11 +1886,11 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 	
 	m_tinyNodePool->clear();
 	
-	dtNode* startNode = m_tinyNodePool->getNode(startRef);
+	dtNode* startNode = m_tinyNodePool->getNode(startPoly);
 	startNode->pidx = 0;
 	startNode->cost = 0;
 	startNode->total = 0;
-	startNode->id = startRef;
+	startNode->id = startPoly;
 	startNode->flags = DT_NODE_CLOSED;
 	stack[nstack++] = startNode;
 	
@@ -1917,8 +1901,8 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 	
 	// Search constraints
 	float searchPos[3], searchRadSqr;
-	dtVlerp(searchPos, startPos, endPos, 0.5f);
-	searchRadSqr = dtSqr(dtVdist(startPos, endPos)/2.0f + 0.001f);
+	dtVlerp(searchPos, startPos, desiredEndPos, 0.5f);
+	searchRadSqr = dtSqr(dtVdist(startPos, desiredEndPos)/2.0f + 0.001f);
 	
 	float verts[DT_VERTS_PER_POLYGON*3];
 	
@@ -1943,10 +1927,10 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 			dtVcopy(&verts[i*3], &curTile->verts[curPoly->verts[i]*3]);
 		
 		// If target is inside the poly, stop search.
-		if (dtPointInPolygon(endPos, verts, nverts))
+		if (dtPointInPolygon(desiredEndPos, verts, nverts))
 		{
 			bestNode = curNode;
-			dtVcopy(bestPos, endPos);
+			dtVcopy(bestPos, desiredEndPos);
 			break;
 		}
 		
@@ -1997,7 +1981,7 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 				const float* vj = &verts[j*3];
 				const float* vi = &verts[i*3];
 				float tseg;
-				const float distSqr = dtDistancePtSegSqr2D(endPos, vj, vi, tseg);
+				const float distSqr = dtDistancePtSegSqr2D(desiredEndPos, vj, vi, tseg);
 				if (distSqr < bestDist)
 				{
 					// Update nearest distance.
@@ -2040,7 +2024,7 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 	}
 	
 	int n = 0;
-	if (bestNode)
+	if (bestNode && visited)
 	{
 		// Reverse the path.
 		dtNode* prev = 0;
@@ -2059,7 +2043,7 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 		do
 		{
 			visited[n++] = node->id;
-			if (n >= maxVisitedSize)
+			if (n >= visitedSize)
 			{
 				status |= DT_BUFFER_TOO_SMALL;
 				break;
@@ -2069,9 +2053,14 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 		while (node);
 	}
 	
-	dtVcopy(resultPos, bestPos);
+	if (visitedCount && visited)
+		*visitedCount = n;
 	
-	*visitedCount = n;
+	if(bestNode && endPoly)
+		*endPoly = bestNode->id;
+	
+	if (endPos)
+		dtVcopy(endPos, bestPos);
 	
 	return status;
 }

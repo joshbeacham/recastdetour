@@ -305,19 +305,41 @@ public:
 									dtPolyRef* resultRef, dtPolyRef* resultParent,
 									int* resultCount, const int maxResult) const;
 
-	/// Moves from the start to the end position constrained to the navigation mesh.
-	///  @param[in]		startRef		The reference id of the start polygon.
-	///  @param[in]		startPos		A position of the mover within the start polygon. [(x, y, x)]
-	///  @param[in]		endPos			The desired end position of the mover. [(x, y, z)]
-	///  @param[in]		filter			The polygon filter to apply to the query.
-	///  @param[out]	resultPos		The result position of the mover. [(x, y, z)]
-	///  @param[out]	visited			The reference ids of the polygons visited during the move.
-	///  @param[out]	visitedCount	The number of polygons visited during the move.
-	///  @param[in]		maxVisitedSize	The maximum number of polygons the @p visited array can hold.
+	/// Move a *point*, constrained by the navigation mesh from the given start
+	/// to end positions.
+	///
+	/// @param[in]  startPoly The movement start polygon.
+	/// @param[in]  startPos The movement start position, within the start polygon. [(x, y, x)]
+	/// @param[in]  desiredEndPos The movement desired end position. [(x, y, z)]
+	/// @param[in]  filter The polygon filter to apply to the query.
+	/// @param[out] endPoly The movement actual end polygon [opt].
+	/// @param[out] endPos The movement actual end position, the closest to `desiredEndPos`
+	/// reachable position [(x, y, z)] [opt].
+	/// @param[out] visited The polygons visited while computing the movement [opt].
+	/// @param[out] visitedCount he number of polygons visited during the movement [opt].
+	/// @param[in]  visitedSize The size of the `visited` array (ie the number of polygon it can
+	/// hold). If too small to hold the entire result set, the array will be filled as far as
+	/// possible from the start position toward the end position.[opt].
 	/// @returns The status flags for the query.
-	dtStatus moveAlongSurface(dtPolyRef startRef, const float* startPos, const float* endPos,
+	///
+	/// @note  This method treats the end position in the same manner as
+	/// the #raycast method (ie as a 2D point). See that method's documentation
+	/// for details. As a result `endPos` is not projected onto the surface of the
+	/// navigation mesh. Use #getPolyHeight if this is needed.
+	///
+	/// @warning This method is optimized for small delta movement and a small number of
+	/// polygons. If used for too great a distance, the result set will form an
+	/// incomplete path.
+	///
+	dtStatus moveAlongSurface(dtPolyRef startPoly,
+							  const float* startPos,
+							  const float* desiredEndPos,
 							  const dtQueryFilter* filter,
-							  float* resultPos, dtPolyRef* visited, int* visitedCount, const int maxVisitedSize) const;
+							  dtPolyRef* endPoly,
+							  float* endPos,
+							  dtPolyRef* visited,
+							  int* visitedCount,
+							  const int visitedSize) const;
 	
 	/// Casts a 'walkability' ray along the surface of the navigation mesh from 
 	/// the start position toward the end position.

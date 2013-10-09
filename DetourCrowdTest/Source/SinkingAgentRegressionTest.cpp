@@ -83,6 +83,7 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 					
 					CHECK(crowd.getCrowdQuery()->getNavMeshQuery()->getAttachedNavMesh()->isValidPolyRef(ag.poly));
 					
+					
 					float navmeshPositionCheck[3];
 					CHECK(dtStatusSucceed(crowd.getCrowdQuery()->getNavMeshQuery()->closestPointOnPoly(ag.poly, ag.position, navmeshPositionCheck)));
 					CHECK(ag.position[0] == navmeshPositionCheck[0]);
@@ -102,11 +103,11 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 			dtCollisionAvoidance::free(collisionAvoidance);
 		}
 		
-		WHEN("An agent is created at (13896.3, 11.2105, -12574.5) with a velocity of (-1.08234, 0, -1.68183)")
+		WHEN("An agent is created at (13896.5, 13.6869, -12574.2) with a velocity of (-1.0824, 0, -1.68179)")
 		{
-			const float from[] = {13896.3, 11.2105, -12574.5};
-			const dtPolyRef fromPoly = 0x4b800a;
-			const float velocity[] = {-1.08234, 0, -1.68183};
+			const float from[] = {13896.5, 13.6869, -12574.2};
+			const dtPolyRef fromPoly = 4980805;
+			const float velocity[] = {-1.0824, 0, -1.68179};
 			
 			dtCrowd crowd;
 			crowd.init(5, 1.f, &navmesh);
@@ -117,7 +118,7 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 			CHECK(dtVdist(ag.position, from) < 0.0001f);
 
 			dtVcopy(ag.velocity, velocity);
-			crowd.pushAgent(ag);
+			CHECK(crowd.pushAgent(ag));
 			
 			THEN("The position is well updated")
 			{
@@ -149,6 +150,86 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 				CHECK(dtVdist2D(ag.position, ag.position) < EPSILON);
 				CHECK(dtVdist2D(expectedPosition, ag.position) < 0.001f);
 				CHECK(fabs(expectedPosition[1] - ag.position[1]) < 0.01f);
+			}
+		}
+		
+		WHEN("Moving along navmesh surface from (13896.5, 13.6869, -12574.2) to (13896.4, 13.6869, -12574.4)")
+		{
+			const float from[] = {13896.5, 13.6869, -12574.2};
+			const dtPolyRef fromPoly = 4980805;
+			const float to[] = {13896.4, 13.6869, -12574.4};
+			
+			dtCrowd crowd;
+			crowd.init(5, 1.f, &navmesh);
+			
+			const dtCrowdQuery* crowdQuery = crowd.getCrowdQuery();
+			REQUIRE(crowdQuery);
+			
+			const dtNavMeshQuery* navmeshQuery = crowdQuery->getNavMeshQuery();
+			REQUIRE(navmeshQuery);
+
+			float actualTo[3];
+			dtPolyRef actualToPoly;
+			const int maxVisited = 5;
+			dtPolyRef visited[maxVisited];
+			memset(visited, 0, maxVisited * sizeof(dtPolyRef));
+			int visitedCount;
+			
+			CHECK(dtStatusSucceed(navmeshQuery->moveAlongSurface(fromPoly,
+																 from,
+																 to,
+																 crowdQuery->getQueryFilter(),
+																 &actualToPoly,
+																 actualTo,
+																 visited,
+																 &visitedCount,
+																 maxVisited)));
+			CAPTURE(visitedCount);
+			CAPTURE(visited[0]);
+			CAPTURE(visited[1]);
+			CAPTURE(visited[2]);
+			CAPTURE(visited[3]);
+			CAPTURE(visited[4]);
+			CAPTURE(visited[5]);
+			
+			navmeshQuery->getPolyHeight(actualToPoly, actualTo, &actualTo[1]);
+			CAPTURE(actualTo[0]);
+			CAPTURE(actualTo[1]);
+			CAPTURE(actualTo[2]);
+			CAPTURE(actualToPoly);
+			
+			THEN("The located origin is the expected one")
+			{
+				dtPolyRef locatedFromPoly;
+				float locatedFrom[3];
+				
+				REQUIRE(dtStatusSucceed(navmeshQuery->findNearestPoly(from,
+																	  crowdQuery->getQueryExtents(),
+																	  crowdQuery->getQueryFilter(),
+																	  &locatedFromPoly,
+																	  locatedFrom)));
+				CAPTURE(locatedFrom[0]);
+				CAPTURE(locatedFrom[1]);
+				CAPTURE(locatedFrom[2]);
+				CHECK(dtVdist(from, locatedFrom) < 0.0001f);
+				CHECK(locatedFromPoly == fromPoly);
+			}
+			
+			THEN("The actual arrival position is (close to) the expected one")
+			{
+				CHECK(dtVdist2D(actualTo, to) < 0.0001f);
+				CHECK(fabs(actualTo[1] - to[1]) < 0.1f);
+			}
+			
+			THEN("The arrival position and poly are coherent")
+			{
+				float checkTo[3];
+				CHECK(dtStatusSucceed(crowd.getCrowdQuery()->getNavMeshQuery()->closestPointOnPoly(actualToPoly, actualTo, checkTo)));
+				CAPTURE(checkTo[0]);
+				CAPTURE(checkTo[1]);
+				CAPTURE(checkTo[2]);
+				
+				CHECK(dtVdist(actualTo, checkTo) < 0.0001f);
 			}
 		}
 	}
