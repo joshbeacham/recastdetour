@@ -68,14 +68,6 @@ inline float tween(const float t, const float t0, const float t1)
 	return dtClamp((t-t0) / (t1-t0), 0.0f, 1.0f);
 }
 
-static void integrate(dtCrowdAgent* ag, const float dt)
-{
-	if (dtVlen(ag->velocity) > EPSILON)
-		dtVmad(ag->position, ag->position, ag->velocity, dt);
-	else
-		dtVset(ag->velocity,0,0,0);
-}
-
 static int addNeighbour(const int idx, const float dist,
 						dtCrowdNeighbour* neis, const int nneis, const int maxNeis)
 {
@@ -442,8 +434,8 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 
 		m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), currentPosPoly + i, currentPos + (i * 3));
 	}
-
-	// Integrate.
+	
+	// Compute the new agent's position according to its velocity.
 	for (unsigned i = 0; i < nbIdx; ++i)
 	{
 		dtCrowdAgent* ag = 0;
@@ -453,7 +445,12 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 
 		if (ag->state != DT_CROWDAGENT_STATE_WALKING)
 			continue;
-		integrate(ag, dt);
+		
+		// Update the agent's position according to its velocity
+		if (dtVlenSqr(ag->velocity) > EPSILON * EPSILON)
+			dtVmad(ag->position, ag->position, ag->velocity, dt);
+		else
+			dtVset(ag->velocity,0,0,0);
 	}
 
 	// Handle collisions.
