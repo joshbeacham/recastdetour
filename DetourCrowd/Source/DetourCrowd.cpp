@@ -299,15 +299,14 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 	
 	agent.init();
 	agent.id = idx;
-	dtPolyRef poly;
 	
 	dtStatus status = m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos,
 																	   m_crowdQuery->getQueryExtents(),
 																	   m_crowdQuery->getQueryFilter(),
-																	   &poly,
+																	   &agent.poly,
 																	   agent.position);
 
-	if (dtStatusSucceed(status) && poly)
+	if (dtStatusSucceed(status) && agent.poly)
 		agent.state = DT_CROWDAGENT_STATE_WALKING;
 	else
 		agent.state = DT_CROWDAGENT_STATE_INVALID;
@@ -420,8 +419,7 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 	
 	nbIdx = (nbIdx < m_maxAgents) ? nbIdx : m_maxAgents;
 
-	// The current start position of the agent (not yet modified)
-	dtPolyRef* currentPosPoly = (dtPolyRef*) dtAlloc(sizeof(dtPolyRef) * nbIdx, DT_ALLOC_TEMP);
+	// Save the start position of the agent
 	float* currentPos = (float*) dtAlloc(sizeof(float) * 3 * nbIdx, DT_ALLOC_TEMP);
 
 	for (unsigned i = 0; i < nbIdx; ++i)
@@ -430,8 +428,8 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 
 		if (!getActiveAgent(&ag, agentsIdx[i]))
 			continue;
-
-		m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), currentPosPoly + i, currentPos + (i * 3));
+		
+		dtVcopy(currentPos + (i * 3), ag->position);
 	}
 	
 	// Compute the new agent's position according to its velocity.
@@ -452,7 +450,7 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 			dtVset(ag->velocity,0,0,0);
 	}
 
-	// Handle collisions.
+	// Collisions detection
 	static const float COLLISION_RESOLVE_FACTOR = 0.7f;
 
 	for (unsigned iter = 0; iter < 4; ++iter)
@@ -515,21 +513,6 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 				dtVscale(disp, disp, iw);
 			}
 		}
-		
-		for (unsigned i = 0; i < nbIdx; ++i)
-		{
-			dtCrowdAgent* ag = 0;
-
-			if (!getActiveAgent(&ag, agentsIdx[i]))
-				continue;
-
-			if (ag->state != DT_CROWDAGENT_STATE_WALKING)
-				continue;
-
-			float* disp = m_disp[agentsIdx[i]];
-
-			dtVadd(ag->position, ag->position, disp);
-		}
 	}
 	
 	for (unsigned i = 0; i < nbIdx; ++i)
@@ -546,15 +529,20 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 		float newPos[3];
 		dtPolyRef visited[dtPathCorridor::MAX_VISITED];
 		int visitedCount;
-		m_crowdQuery->getNavMeshQuery()->moveAlongSurface(currentPosPoly[i], currentPos + (i * 3), ag->position, m_crowdQuery->getQueryFilter(), newPos, 
+		m_crowdQuery->getNavMeshQuery()->moveAlongSurface(ag->poly, currentPos + (i * 3), ag->position, m_crowdQuery->getQueryFilter(), newPos,
 			visited, &visitedCount, dtPathCorridor::MAX_VISITED);
-
-		// Get valid constrained position back.
-		float newHeight = *(currentPos + (i * 3) + 1);
-		m_crowdQuery->getNavMeshQuery()->getPolyHeight(currentPosPoly[i], newPos, &newHeight);
-		newPos[1] = newHeight;
-
-		dtVcopy(ag->position, newPos);
+		
+		if (visitedCount > 0)
+			ag->poly = visited[visitedCount-1];
+		
+		float detailHeight = newPos[1];
+		m_crowdQuery->getNavMeshQuery()->getPolyHeight(ag->poly,
+													   newPos,
+													   &detailHeight);
+		dtVset(ag->position,
+			   newPos[0],
+			   detailHeight,
+			   newPos[2]);
 	}
 
 	// Update agents using off-mesh connection.
@@ -574,33 +562,34 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 			{
 				// Prepare agent for walking.
 				ag->state = DT_CROWDAGENT_STATE_WALKING;
-				dtPolyRef poly;
 				m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position,
 																 m_crowdQuery->getQueryExtents(),
 																 m_crowdQuery->getQueryFilter(),
-																 &poly,
+																 &ag->poly,
 																 ag->position);
-			}
-
-			// Update position
-			if (ag->offmeshElaspedTime < ag->offmeshInitToStartTime)
-			{
-				const float u = tween(ag->offmeshElaspedTime, 0.0, ag->offmeshInitToStartTime);
-				dtVlerp(ag->position, ag->offmeshInitPos, ag->offmeshStartPos, u);
 			}
 			else
 			{
-				const float u = tween(ag->offmeshElaspedTime, ag->offmeshInitToStartTime, offmeshTotalTime);
-				dtVlerp(ag->position, ag->offmeshStartPos, ag->offmeshEndPos, u);
+				// Update position
+				if (ag->offmeshElaspedTime < ag->offmeshInitToStartTime)
+				{
+					const float u = tween(ag->offmeshElaspedTime, 0.0, ag->offmeshInitToStartTime);
+					dtVlerp(ag->position, ag->offmeshInitPos, ag->offmeshStartPos, u);
+				}
+				else
+				{
+					const float u = tween(ag->offmeshElaspedTime, ag->offmeshInitToStartTime, offmeshTotalTime);
+					dtVlerp(ag->position, ag->offmeshStartPos, ag->offmeshEndPos, u);
+				}
+				
+				// Update navmesh location
+				ag->poly = 0;
+				// Update velocity.
+				dtVset(ag->velocity, 0,0,0);
+				dtVset(ag->desiredVelocity, 0,0,0);
 			}
-
-			// Update velocity.
-			dtVset(ag->velocity, 0,0,0);
-			dtVset(ag->desiredVelocity, 0,0,0);
 		}
 	}
-
-	dtFree(currentPosPoly);
 	dtFree(currentPos);
 }
 
@@ -672,12 +661,13 @@ bool dtCrowd::pushAgent(const dtCrowdAgent& ag)
 																		nearestPosition))
 		|| !nearestPoly)
 		// If a position could not be found on the navigation mesh, then we do not apply the changes
-		return false;
+		return false; 
 
 	m_agents[ag.id] = ag;
 
 	// Apply the nearest position
 	dtVcopy(m_agents[ag.id].position, nearestPosition);
+	m_agents[ag.id].poly = nearestPoly;
 	
 	// Checking out of bound limits
 	m_agents[ag.id].radius = (m_agents[ag.id].radius < 0) ? 0 : m_agents[ag.id].radius;

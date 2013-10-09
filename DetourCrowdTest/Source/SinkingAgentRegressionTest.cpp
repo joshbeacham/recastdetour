@@ -71,11 +71,23 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 					CAPTURE(previousPosition[0]);
 					CAPTURE(previousPosition[1]);
 					CAPTURE(previousPosition[2]);
+					dtPolyRef previousNavmeshPoly;
+					previousNavmeshPoly = ag.poly;
+					CAPTURE(previousNavmeshPoly);
 					
 					crowd.fetchAgent(ag, ag.id);
 					CAPTURE(ag.position[0]);
 					CAPTURE(ag.position[1]);
 					CAPTURE(ag.position[2]);
+					CAPTURE(ag.poly);
+					
+					CHECK(crowd.getCrowdQuery()->getNavMeshQuery()->getAttachedNavMesh()->isValidPolyRef(ag.poly));
+					
+					float navmeshPositionCheck[3];
+					CHECK(dtStatusSucceed(crowd.getCrowdQuery()->getNavMeshQuery()->closestPointOnPoly(ag.poly, ag.position, navmeshPositionCheck)));
+					CHECK(ag.position[0] == navmeshPositionCheck[0]);
+					CHECK(ag.position[1] == navmeshPositionCheck[1]);
+					CHECK(ag.position[2] == navmeshPositionCheck[2]);
 					
 					CAPTURE(ag.velocity[0]);
 					CAPTURE(ag.velocity[1]);
@@ -93,6 +105,7 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 		WHEN("An agent is created at (13896.3, 11.2105, -12574.5) with a velocity of (-1.08234, 0, -1.68183)")
 		{
 			const float from[] = {13896.3, 11.2105, -12574.5};
+			const dtPolyRef fromPoly = 0x4b800a;
 			const float velocity[] = {-1.08234, 0, -1.68183};
 			
 			dtCrowd crowd;
@@ -100,7 +113,9 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 			
 			dtCrowdAgent ag;
 			CHECK(crowd.addAgent(ag, from));
-			
+			CHECK(ag.poly == fromPoly);
+			CHECK(dtVdist(ag.position, from) < 0.0001f);
+
 			dtVcopy(ag.velocity, velocity);
 			crowd.pushAgent(ag);
 			
@@ -115,6 +130,9 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 				CAPTURE(previousPosition[0]);
 				CAPTURE(previousPosition[1]);
 				CAPTURE(previousPosition[2]);
+				dtPolyRef previousNavmeshPoly;
+				previousNavmeshPoly = ag.poly;
+				CAPTURE(previousNavmeshPoly);
 				
 				float expectedPosition[3];
 				dtVmad(expectedPosition, previousPosition, velocity, dt);
@@ -126,7 +144,9 @@ SCENARIO("Regression/SinkingAgent", "[regression]")
 				CAPTURE(ag.position[0]);
 				CAPTURE(ag.position[1]);
 				CAPTURE(ag.position[2]);
+				CAPTURE(ag.poly);
 				
+				CHECK(dtVdist2D(ag.position, ag.position) < EPSILON);
 				CHECK(dtVdist2D(expectedPosition, ag.position) < 0.001f);
 				CHECK(fabs(expectedPosition[1] - ag.position[1]) < 0.01f);
 			}
