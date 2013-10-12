@@ -19,9 +19,62 @@
 #ifndef DETOURMESH_H
 #define DETOURMESH_H
 
+/// A triangle mesh.
+///
+/// @ingroup navmeshCreator
 class dtMesh
 {
+public:
+	dtMesh();
+	~dtMesh();
 
+	/// @name Vertices
+	//@{
+	inline const float* getVertices() const { return m_vertices; }
+	inline unsigned countVertices() const { return m_verticesCount; }
+	void addVertex(float x, float y, float z, unsigned& index);
+	//@}
+
+	/// @name Faces
+	//@{
+	inline const unsigned* getFaces() const { return m_faces; }
+	inline const float* getNormals() const { return m_normals; }
+	inline unsigned countFaces() const { return m_facesCount; }
+	void addFace(unsigned a, unsigned b, unsigned c, unsigned& index);
+	void addFace(unsigned a, unsigned b, unsigned c, float nx, float ny, float nz, unsigned& index);
+	//@}
+
+	/// @name Capacity
+	//@{
+	/// Reserve memory to be able to fit the given amount of vertices and faces.
+	void reserve(unsigned verticesCount, unsigned facesCount);
+	inline unsigned getVerticesCapacity() const { return m_verticesCapacity; }
+	inline unsigned getFacesCapacity() const { return m_facesCapacity; }
+	//@}
+
+	/// Set the content of the mesh from the given data.
+	///
+	/// @param vertices The vertices as a array of float of size 3*`verticesCount`.
+	/// @param verticesCount The number of vertices.
+	/// @param faces The faces as a array of unsigned of size 3*`facesCount`.
+	/// @param normals The face normals as a array of float of size 3*`facesCount` [opt].
+	/// @param facesCount The number of faces.
+	void set(const float* vertices, unsigned verticesCount, const unsigned* faces, const float* normals, unsigned facesCount);
+
+private:
+	dtMesh(const dtMesh&);
+	dtMesh& operator=(const dtMesh&);
+
+	void computeNormals(unsigned from, unsigned to);
+
+	float* m_vertices;
+	unsigned m_verticesCount;
+	unsigned m_verticesCapacity;
+
+	unsigned* m_faces;
+	float* m_normals;
+	unsigned m_facesCount;
+	unsigned m_facesCapacity;
 };
 
 #endif
