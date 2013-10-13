@@ -61,6 +61,9 @@ public:
 	/// @param facesCount The number of faces.
 	void set(const float* vertices, unsigned verticesCount, const unsigned* faces, const float* normals, unsigned facesCount);
 
+	/// Clear the content of the mesh (do not free memory)
+	void clear();
+
 private:
 	dtMesh(const dtMesh&);
 	dtMesh& operator=(const dtMesh&);
@@ -76,5 +79,16 @@ private:
 	unsigned m_facesCount;
 	unsigned m_facesCapacity;
 };
+
+/// Load the content of the given `.obj` file to a mesh.
+///
+/// @ingroup navmeshCreator
+bool loadObjFile(const char* filePath, dtMesh& mesh);
+
+/// Load the content of the given `.obj` buffer to a mesh.
+///
+/// @ingroup navmeshCreator
+bool loadObjBuffer(const char* buffer, unsigned bufferSize, dtMesh& mesh);
+
 
 #endif

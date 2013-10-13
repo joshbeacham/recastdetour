@@ -22,6 +22,8 @@
 
 #include <DetourCommon.h>
 
+#include <cstring>
+
 SCENARIO("DetourMesh/Basics", "[mesh]")
 {
 	GIVEN("A default mesh")
@@ -330,6 +332,65 @@ SCENARIO("DetourMesh/Basics", "[mesh]")
 				CHECK(mesh.getNormals()[4] == 1.f);
 				CHECK(mesh.getNormals()[5] == 0.f);
 			}
+		}
+	}
+}
+
+SCENARIO("DetourMesh/Obj", "[mesh]")
+{
+	const char* sampleObj = 	"# vertices \n\
+								v 5.0 0.0 6.0 \n\
+								v 5.0 0.0 -6.0 \n\
+								v -5.0 0.0 -6.0 \n\
+								v -5.0 0.0 6.0 \n\
+								# faces \n\
+								f 3 4 1 \n\
+								f 1 2 3";
+	unsigned sampleObjSize = strlen(sampleObj);
+
+	dtMesh mesh;
+
+	WHEN("Loading an .obj from a buffer")
+	{
+		CHECK(loadObjBuffer(sampleObj, sampleObjSize, mesh));
+
+		THEN("The content of the .obj is in the mesh")
+		{
+			CHECK(mesh.countVertices() == 4);
+
+			CHECK(mesh.getVertices()[0] == 5.f);
+			CHECK(mesh.getVertices()[1] == 0.f);
+			CHECK(mesh.getVertices()[2] == 6.f);
+
+			CHECK(mesh.getVertices()[3] == 5.f);
+			CHECK(mesh.getVertices()[4] == 0.f);
+			CHECK(mesh.getVertices()[5] == -6.f);
+
+			CHECK(mesh.getVertices()[6] == -5.f);
+			CHECK(mesh.getVertices()[7] == 0.f);
+			CHECK(mesh.getVertices()[8] == -6.f);
+
+			CHECK(mesh.getVertices()[9] == -5.f);
+			CHECK(mesh.getVertices()[10] == 0.f);
+			CHECK(mesh.getVertices()[11] == 6.f);
+
+			CHECK(mesh.countFaces() == 2);
+
+			CHECK(mesh.getFaces()[0] == 2);
+			CHECK(mesh.getFaces()[1] == 3);
+			CHECK(mesh.getFaces()[2] == 0);
+
+			CHECK(mesh.getFaces()[3] == 0);
+			CHECK(mesh.getFaces()[4] == 1);
+			CHECK(mesh.getFaces()[5] == 2);
+
+			CHECK(mesh.getNormals()[0] == 0.f);
+			CHECK(mesh.getNormals()[1] == 1.f);
+			CHECK(mesh.getNormals()[2] == 0.f);
+
+			CHECK(mesh.getNormals()[3] == 0.f);
+			CHECK(mesh.getNormals()[4] == 1.f);
+			CHECK(mesh.getNormals()[5] == 0.f);
 		}
 	}
 }

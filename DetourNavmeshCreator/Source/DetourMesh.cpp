@@ -22,7 +22,9 @@
 #include <DetourAssert.h>
 #include <DetourCommon.h>
 
+#include <cstdio>
 #include <cstring>
+#include <cstdlib>
 
 dtMesh::dtMesh()
 : m_vertices(0)
@@ -134,9 +136,7 @@ void dtMesh::set(const float* vertices, unsigned verticesCount, const unsigned* 
 	dtAssert(vertices);
 	dtAssert(faces);
 
-	// Clearing the data structure
-	m_verticesCount = m_facesCount = 0;
-
+	clear();
 	reserve(verticesCount, facesCount);
 
 	memcpy(m_vertices, vertices, 3*verticesCount*sizeof(float));
@@ -153,6 +153,11 @@ void dtMesh::set(const float* vertices, unsigned verticesCount, const unsigned* 
 	{
 		computeNormals(0, m_facesCount);
 	}
+}
+
+void dtMesh::clear()
+{
+	m_verticesCount = m_facesCount = 0;
 }
 
 void dtMesh::computeNormals(unsigned from, unsigned to)
@@ -175,4 +180,135 @@ void dtMesh::computeNormals(unsigned from, unsigned to)
 		dtVcross(&m_normals[3*i], ab, ac);
 		dtVnormalize(&m_normals[3*i]);
 	}
+}
+
+bool loadObjFile(const char* filePath, dtMesh& mesh)
+{
+	char* buffer = 0;
+	FILE* fp = fopen(filePath, "rb");
+	if (!fp)
+		return false;
+	fseek(fp, 0, SEEK_END);
+	unsigned bufferSize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	buffer = (char*)dtAlloc(bufferSize * sizeof(char), DT_ALLOC_PERM);
+	if (!buffer)
+	{
+		fclose(fp);
+		return false;
+	}
+	fread(buffer, bufferSize, 1, fp);
+	fclose(fp);
+	if (!loadObjBuffer(buffer, bufferSize, mesh))
+	{
+		dtFree(buffer);
+		return false;
+	}
+	dtFree(buffer);
+	return true;
+}
+
+namespace
+{
+	const char* parseRow(const char* bufferIt, const char* bufferEnd, char* row, unsigned rowLen)
+	{
+		bool start = true;
+		bool done = false;
+		int n = 0;
+		while (!done && bufferIt != bufferEnd)
+		{
+			char c = *bufferIt;
+			bufferIt++;
+			// multirow
+			switch (c)
+			{
+				case '\\':
+					break;
+				case '\n':
+					if (start) break;
+					done = true;
+					break;
+				case '\r':
+					break;
+				case '\t':
+				case ' ':
+					if (start) break;
+				default:
+					start = false;
+					row[n++] = c;
+					if (n >= rowLen-1)
+						done = true;
+					break;
+			}
+		}
+		row[n] = '\0';
+		return bufferIt;
+	}
+
+	static int parseFace(char* row, int* data, int n, unsigned verticesCount)
+	{
+		int j = 0;
+		while (*row != '\0')
+		{
+			// Skip initial white space
+			while (*row != '\0' && (*row == ' ' || *row == '\t'))
+				row++;
+			char* s = row;
+			// Find vertex delimiter and terminated the string there for conversion.
+			while (*row != '\0' && *row != ' ' && *row != '\t')
+			{
+				if (*row == '/') *row = '\0';
+				row++;
+			}
+			if (*s == '\0')
+				continue;
+			int vi = atoi(s);
+			data[j++] = vi < 0 ? vi+verticesCount : vi-1;
+			if (j >= n) return j;
+		}
+		return j;
+	}
+}
+
+bool loadObjBuffer(const char* buffer, unsigned bufferSize, dtMesh& mesh)
+{
+	const char* bufferIt = buffer;
+	const char* bufferEnd = buffer + bufferSize;
+	char row[512];
+	int face[32];
+	float x,y,z;
+	int nv;
+	unsigned vIndex, fIndex;
+
+	mesh.clear();
+
+	while (bufferIt != bufferEnd)
+	{
+		// Parse one row
+		row[0] = '\0';
+		bufferIt = parseRow(bufferIt, bufferEnd, row, sizeof(row)/sizeof(char));
+		// Skip comments
+		if (row[0] == '#') continue;
+		if (row[0] == 'v' && row[1] != 'n' && row[1] != 't')
+		{
+			// Vertex pos
+			sscanf(row+1, "%f %f %f", &x, &y, &z);
+			mesh.addVertex(x, y, z, vIndex);
+		}
+		if (row[0] == 'f')
+		{
+			// Faces
+			nv = parseFace(row+1, face, 32, mesh.countVertices());
+			for (int i = 2; i < nv; ++i)
+			{
+				const int a = face[0];
+				const int b = face[i-1];
+				const int c = face[i];
+				if ((unsigned)a < mesh.countVertices() && (unsigned)b < mesh.countVertices() && (unsigned)c < mesh.countVertices())
+					mesh.addFace(a, b, c, fIndex);
+			}
+		}
+	}
+
+	return true;
 }
