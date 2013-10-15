@@ -23,17 +23,6 @@
 
 #include <vector>
 
-#ifdef _MSC_VER
-#pragma warning(push, 0)
-#include <catch.hpp>
-#pragma warning(pop)
-#else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wall"
-#include <catch.hpp>
-#pragma GCC diagnostic pop
-#endif
-
 TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 {
 	TestScene ts;

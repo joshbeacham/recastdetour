@@ -500,7 +500,7 @@ void NavMeshTesterTool::handleToggle()
 	float result[3];
 	dtPolyRef visited[16];
 	int nvisited = 0;
-	m_navQuery->moveAlongSurface(m_pathIterPolys[0], m_iterPos, moveTgt, &m_filter,
+	m_navQuery->moveAlongSurface(m_pathIterPolys[0], m_iterPos, moveTgt, &m_filter, 0,
 								 result, visited, &nvisited, 16);
 	m_pathIterPolyCount = fixupCorridor(m_pathIterPolys, m_pathIterPolyCount, MAX_POLYS, visited, nvisited);
 	float h = 0;
@@ -696,7 +696,7 @@ void NavMeshTesterTool::recalc()
 					float result[3];
 					dtPolyRef visited[16];
 					int nvisited = 0;
-					m_navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &m_filter,
+					m_navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &m_filter, 0,
 												 result, visited, &nvisited, 16);
 															   
 					npolys = fixupCorridor(polys, npolys, MAX_POLYS, visited, nvisited);

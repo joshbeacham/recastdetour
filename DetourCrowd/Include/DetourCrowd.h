@@ -77,7 +77,8 @@ struct dtCrowdAgent
 	unsigned char active;			///< 1 if the agent is active, or 0 if the agent is in an unused slot in the agent pool.
 	unsigned char state;			///< The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
 	
-	float position[3];				///< The current agent position. [(x, y, z)]
+	float position[3];				///< The current agent position (on the detailed mesh). [(x, y, z)]
+	dtPolyRef poly;                 ///< The navmesh polygon to which the agent belong.
 	float desiredVelocity[3];		///< The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update. [(x, y, z)]
 	float velocity[3];				///< The actual velocity of the agent. [(x, y, z)]
 			
@@ -97,13 +98,13 @@ struct dtCrowdAgent
 	float offmeshStartToEndTime;	///< How long to cross the connection?
 
 	void* userData;					///< User defined data attached to the agent.
-    
-    /// Initialize the value of the agent.
-    ///
-    /// Set all the attributes to valid 'nil' values except the given ones.
-    ///
-    /// @remark No memory allocation is performed.
-    void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float perceptionDistance = 4.f);
+	
+	/// Initialize the value of the agent.
+	///
+	/// Set all the attributes to valid 'nil' values except the given ones.
+	///
+	/// @remark No memory allocation is performed.
+	void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float perceptionDistance = 4.f);
 };
 
 /// Utility class used to get access to some useful elements of the crowd
@@ -122,12 +123,13 @@ public:
 
 	/// @name Data access
 	/// @{
-	float* getQueryExtents();
 	dtNavMeshQuery* getNavMeshQuery();
-	dtQueryFilter* getQueryFilter();
-
-	const float* getQueryExtents() const;
 	const dtNavMeshQuery* getNavMeshQuery() const;
+	
+	float* getQueryExtents();
+	const float* getQueryExtents() const;
+	
+	dtQueryFilter* getQueryFilter();
 	const dtQueryFilter* getQueryFilter() const;
 
 	/// Gets a const access to the specified agent from the pool.
@@ -280,19 +282,19 @@ public:
 	///  @param[in]		id		The agent id.
 	void removeAgent(unsigned id);
 
-    /// Copies the data of the given agent into its equivalent in the crowd.
-    ///
+	/// Copies the data of the given agent into its equivalent in the crowd.
+	///
 	/// In order to know which agent must receive the data, we refer to the id of the given agent
 	/// @return False if the id of the agent could not be matched or if there are some inconsistencies
 	/// with the data of the given agent. False otherwise.
 	bool pushAgent(const dtCrowdAgent& ag);
-    
+	
 	/// Sets the behavior of the agent referenced by the given id
-    ///
+	///
 	/// @param[in]	behavior	The behavior to affect
 	/// @param[in]	id			the agent of the agent to edit
 	bool pushAgentBehavior(unsigned id, dtBehavior* behavior);
-    
+	
 	/// Moves the agent to the given position if possible.
 	/// 
 	/// @param[in]	id			The id of the agent.
@@ -300,12 +302,6 @@ public:
 	/// @return		False if the position is outside the navigation mesh or if the index is out of bound. True otherwise.
 	bool pushAgentPosition(unsigned id, const float* position);
 	/// @}
-
-	/// Indicates whether the agent is moving or not.
-	/// An agent is moving when:
-	/// - its desired speed is > 0
-	/// - its velocity is not a nil vector
-	bool agentIsMoving(const dtCrowdAgent& ag) const;
 	
 	/// @name Updating the crowd
 	/// @{
@@ -332,7 +328,7 @@ public:
 	void updatePosition(const float dt, unsigned* agentsIdx = 0, unsigned nbIdx = 0);
 
 	/// Updates the environment of the given agents. 
-    /// Updates the proximity grid and registers every agent's neighbor.
+	/// Updates the proximity grid and registers every agent's neighbor.
 	/// If no indices are given, then the method updates every agent.
 	///  @param[in]		agentsIdx	The list of the indices of the agents we want to update. [Opt]
 	///  @param[in]		nbIdx		Size of the list of indices. [Opt]

@@ -479,7 +479,7 @@ void dtPathCorridor::movePosition(const float* npos, const dtNavMeshQuery* navqu
 	dtPolyRef visited[MAX_VISITED];
 	int nvisited = 0;
 	navquery->moveAlongSurface(m_path[0], m_pos, npos, filter,
-							   result, visited, &nvisited, MAX_VISITED);
+							   0, result, visited, &nvisited, MAX_VISITED);
 	
 	m_npath = dtMergeCorridorStartMoved(m_path, m_npath, m_maxPath, visited, nvisited);
 	
@@ -514,7 +514,7 @@ void dtPathCorridor::moveTargetPosition(const float* npos, dtNavMeshQuery* navqu
 	dtPolyRef visited[MAX_VISITED];
 	int nvisited = 0;
 	navquery->moveAlongSurface(m_path[m_npath-1], m_target, npos, filter,
-							   result, visited, &nvisited, MAX_VISITED);
+							   0, result, visited, &nvisited, MAX_VISITED);
 	m_npath = dtMergeCorridorEndMoved(m_path, m_npath, m_maxPath, visited, nvisited);
 	
 	// TODO: should we do that?

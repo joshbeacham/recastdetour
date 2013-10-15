@@ -25,6 +25,16 @@
 #include "InputGeom.h"
 #include "DetourSceneCreator.h"
 
+#ifdef _MSC_VER
+#   pragma warning(push, 0)
+#   include <catch.hpp>
+#   pragma warning(pop)
+#else
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wall"
+#   include <catch.hpp>
+#   pragma GCC diagnostic pop
+#endif
 
 /// These are just sample areas to use consistent values across the samples.
 /// The use should specify these base on his needs.
@@ -76,5 +86,11 @@ private:
 	BuildContext m_bc;
 	dtCrowd* m_crowd;
 };
+
+/// Creates a tiled navigation mesh from the contents of a file.
+/// @note DT_TILE_FREE_DATA is used as an option to the initialization process.
+bool loadTiledNavMesh(dtNavMesh* navmesh, const char* path);
+
+bool saveTileNavmesh(const char* path, const dtNavMesh* navmesh, unsigned* tileIndices, unsigned tileCount);
 
 #endif
