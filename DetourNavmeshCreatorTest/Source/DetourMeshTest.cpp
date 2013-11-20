@@ -41,6 +41,13 @@ SCENARIO("DetourMesh/Basics", "[mesh]")
 			CHECK(mesh.getFacesCapacity() == 0);
 		}
 
+		THEN("Its bbox is safe to compute")
+		{
+			float bmin[3];
+			float bmax[3];
+			mesh.computeAABB(bmin, bmax);
+		}
+
 		WHEN("Reserving memory")
 		{
 			const unsigned verticesCount = 119;
@@ -182,6 +189,20 @@ SCENARIO("DetourMesh/Basics", "[mesh]")
 					CHECK(mesh.getNormals()[0] == nx);
 					CHECK(mesh.getNormals()[1] == ny);
 					CHECK(mesh.getNormals()[2] == nz);
+				}
+
+				THEN("Its bbox can be retrieved")
+				{
+					float bmin[3];
+					float bmax[3];
+					mesh.computeAABB(bmin, bmax);
+					CHECK(bmin[0] == std::min(ax, std::min(bx, cx)));
+					CHECK(bmin[1] == std::min(ay, std::min(by, cy)));
+					CHECK(bmin[2] == std::min(az, std::min(bz, cz)));
+
+					CHECK(bmax[0] == std::max(ax, std::max(bx, cx)));
+					CHECK(bmax[1] == std::max(ay, std::max(by, cy)));
+					CHECK(bmax[2] == std::max(az, std::max(bz, cz)));
 				}
 			}
 

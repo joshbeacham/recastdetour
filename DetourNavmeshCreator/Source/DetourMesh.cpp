@@ -22,6 +22,8 @@
 #include <DetourAssert.h>
 #include <DetourCommon.h>
 
+#include <Recast.h>
+
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -158,6 +160,11 @@ void dtMesh::set(const float* vertices, unsigned verticesCount, const unsigned* 
 void dtMesh::clear()
 {
 	m_verticesCount = m_facesCount = 0;
+}
+
+void dtMesh::computeAABB(float* bmin, float* bmax) const
+{
+	rcCalcBounds(m_vertices, m_verticesCount, bmin, bmax);
 }
 
 void dtMesh::computeNormals(unsigned from, unsigned to)

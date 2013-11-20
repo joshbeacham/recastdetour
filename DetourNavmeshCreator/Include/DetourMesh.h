@@ -64,6 +64,9 @@ public:
 	/// Clear the content of the mesh (do not free memory)
 	void clear();
 
+	// Compute the axis-aligned bounding box of the the mesh
+	void computeAABB(float* bmin, float* bmax) const;
+
 private:
 	dtMesh(const dtMesh&);
 	dtMesh& operator=(const dtMesh&);
