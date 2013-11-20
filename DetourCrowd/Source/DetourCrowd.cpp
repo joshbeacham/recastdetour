@@ -197,7 +197,7 @@ void dtCrowd::purge()
 /// @par
 ///
 /// May be called more than once to purge and re-initialize the crowd.
-bool dtCrowd::init(const unsigned maxAgents, const float maxAgentRadius, dtNavMesh* nav)
+bool dtCrowd::init(const unsigned maxAgents, const float maxAgentRadius, const dtNavMesh* nav)
 {
 	purge();
 
@@ -296,6 +296,10 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 
 	if (idx == -1)
 		return false;
+	
+	agent.init();
+	agent.id = idx;
+	
 	
 	agent.init();
 	agent.id = idx;
@@ -689,6 +693,8 @@ bool dtCrowd::pushAgentPosition(unsigned id, const float* position)
 {
 	if (id >= m_maxAgents)
 		return false;
+		
+		
 	
 	dtCrowdAgent ag = m_agents[id];
 	dtVset(ag.desiredVelocity, 0, 0, 0);
