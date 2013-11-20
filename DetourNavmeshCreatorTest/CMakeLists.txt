@@ -19,6 +19,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(DetourNavmeshCreatorTest_SRCS
+	Source/DetourChunkyTriMeshTest.cpp
 	Source/DetourMeshTest.cpp
 	Source/Utils.cpp
 	)
@@ -63,4 +64,9 @@ ADD_TEST(
 	NAME DetourMesh
 	WORKING_DIRECTORY ${DETOURNAVMESHCREATORTEST_BIN_DIR}
 	COMMAND $<TARGET_FILE:DetourNavmeshCreatorTest> [mesh])
+
+ADD_TEST(
+	NAME DetourChunkyTriMesh
+	WORKING_DIRECTORY ${DETOURNAVMESHCREATORTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourNavmeshCreatorTest> [chunkyTriMesh])
 

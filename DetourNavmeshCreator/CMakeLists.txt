@@ -19,10 +19,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(DetourNavmeshCreator_SRCS
+	Source/DetourChunkyTriMesh.cpp
 	Source/DetourMesh.cpp
 )
 
 SET(DetourNavmeshCreator_HDRS
+	Include/DetourChunkyTriMesh.h
 	Include/DetourMesh.h
 )
 
