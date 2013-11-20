@@ -22,6 +22,7 @@ SET(DetourNavmeshCreatorTest_SRCS
 	Source/DetourChunkyTriMeshTest.cpp
 	Source/DetourMeshTest.cpp
 	Source/DetourNavmeshCfgTest.cpp
+	Source/DetourNavmeshCreatorTest.cpp
 	Source/Utils.cpp
 	)
 	
@@ -75,4 +76,9 @@ ADD_TEST(
 	NAME DetourNavmeshCfg
 	WORKING_DIRECTORY ${DETOURNAVMESHCREATORTEST_BIN_DIR}
 	COMMAND $<TARGET_FILE:DetourNavmeshCreatorTest> [navmeshCfg])
+
+ADD_TEST(
+	NAME DetourNavmeshCreator
+	WORKING_DIRECTORY ${DETOURNAVMESHCREATORTEST_BIN_DIR}
+	COMMAND $<TARGET_FILE:DetourNavmeshCreatorTest> [navmeshCreator])
 

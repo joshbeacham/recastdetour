@@ -22,12 +22,14 @@ SET(DetourNavmeshCreator_SRCS
 	Source/DetourChunkyTriMesh.cpp
 	Source/DetourMesh.cpp
 	Source/DetourNavmeshCfg.cpp
+	Source/DetourNavmeshCreator.cpp
 )
 
 SET(DetourNavmeshCreator_HDRS
 	Include/DetourChunkyTriMesh.h
 	Include/DetourMesh.h
 	Include/DetourNavmeshCfg.h
+	Include/DetourNavmeshCreator.h
 )
 
 SOURCE_GROUP(sources FILES ${DetourNavmeshCreator_SRCS} ${DetourNavmeshCreator_HDRS})

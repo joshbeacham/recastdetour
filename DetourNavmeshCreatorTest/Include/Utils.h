@@ -19,6 +19,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <Recast.h>
+
 #ifdef _MSC_VER
 #   pragma warning(push, 0)
 #   include <catch.hpp>
@@ -30,4 +32,12 @@
 #   pragma GCC diagnostic pop
 #endif
 
+class TestBuildContext : public rcContext
+{
+private:
+	virtual void doLog(const rcLogCategory /*category*/, const char* msg, const int len)
+	{
+		INFO(std::string(msg,len));
+	}
+};
 #endif
