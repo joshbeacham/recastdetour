@@ -130,6 +130,29 @@ struct dtNavmeshPolygonsCfg
 	unsigned char obstacleArea; ///< Obstacle area id.
 };
 
+/// Navmesh offmesh connection configuration.
+///
+/// @ingroup navmeshCreator
+struct dtOffmeshConnectionCfg
+{
+	// Default constructor
+	//
+	// - start = {0.f, 0.f, 0.f}
+	// - end = {0.f, 0.f, 0.f}
+	// - radius = 1.f
+	// - isBidirectionnal = false
+	// - areaType = 2
+	// - flags = 1 << 1 (matchs the default walkable flag)
+	dtOffmeshConnectionCfg();
+
+	float start[3]; ///< Start position for the offmesh connection.
+	float end[3];   ///< End position.
+	float radius;   ///< Radius under which agents can use the connection
+	bool isBidirectionnal;	///< Is the connection bi directional?
+	unsigned char areaType; ///< Area type for the connection.
+	unsigned short flags; ///< Flags for the connection.
+};
+
 /// Tiled navmesh generation configuration.
 ///
 /// @ingroup navmeshCreator
@@ -145,6 +168,8 @@ struct dtTiledNavmeshCfg
 	// - regions = dtNavmeshRegionCfg()
 	// - polyMeshCfg = dtNavmeshPolymeshCfg()
 	// - polygons = dtNavmeshPolygonsCfg()
+	// - offmeshConnections = {}
+	// - offmeshConnectionsCount = 0
 	dtTiledNavmeshCfg();
 
 	/// Compute the needed count of tiles.
@@ -184,6 +209,10 @@ struct dtTiledNavmeshCfg
 	dtNavmeshRegionCfg regions;
 	dtNavmeshPolymeshCfg polyMesh;
 	dtNavmeshPolygonsCfg polygons;
+
+	static const unsigned offmeshConnectionsCapacity = 512;
+	dtOffmeshConnectionCfg offmeshConnections[offmeshConnectionsCapacity];
+	unsigned offmeshConnectionsCount;
 };
 
 #endif

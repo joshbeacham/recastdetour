@@ -323,13 +323,29 @@ namespace
 		params.detailVertsCount = intermediateResults.detailedMesh->nverts;
 		params.detailTris = intermediateResults.detailedMesh->tris;
 		params.detailTriCount = intermediateResults.detailedMesh->ntris;
-		params.offMeshConVerts = 0;
-		params.offMeshConRad = 0;
-		params.offMeshConDir = 0;
-		params.offMeshConAreas = 0;
-		params.offMeshConFlags = 0;
-		params.offMeshConUserID = 0;
-		params.offMeshConCount = 0;
+		float offmeshVertices[dtTiledNavmeshCfg::offmeshConnectionsCapacity * 6];
+		float offmeshRadii[dtTiledNavmeshCfg::offmeshConnectionsCapacity];
+		unsigned char offmeshBidirectional[dtTiledNavmeshCfg::offmeshConnectionsCapacity];
+		unsigned char offmeshAreas[dtTiledNavmeshCfg::offmeshConnectionsCapacity];
+		unsigned short offmeshFlags[dtTiledNavmeshCfg::offmeshConnectionsCapacity];
+		unsigned int offmeshIds[dtTiledNavmeshCfg::offmeshConnectionsCapacity];
+		for (unsigned iOffmesh(0); iOffmesh < configuration.offmeshConnectionsCount ; ++iOffmesh)
+		{
+			dtVcopy(&offmeshVertices[6*iOffmesh], configuration.offmeshConnections[iOffmesh].start);
+			dtVcopy(&offmeshVertices[6*iOffmesh + 3], configuration.offmeshConnections[iOffmesh].end);
+			offmeshRadii[iOffmesh] = configuration.offmeshConnections[iOffmesh].radius;
+			offmeshBidirectional[iOffmesh] = configuration.offmeshConnections[iOffmesh].isBidirectionnal ? DT_OFFMESH_CON_BIDIR : 0;
+			offmeshAreas[iOffmesh] = configuration.offmeshConnections[iOffmesh].areaType;
+			offmeshFlags[iOffmesh] = configuration.offmeshConnections[iOffmesh].flags;
+			offmeshIds[iOffmesh] = iOffmesh;
+		}
+		params.offMeshConVerts = offmeshVertices;
+		params.offMeshConRad = offmeshRadii;
+		params.offMeshConDir = offmeshBidirectional;
+		params.offMeshConAreas = offmeshAreas;
+		params.offMeshConFlags = offmeshFlags;
+		params.offMeshConUserID = offmeshIds;
+		params.offMeshConCount = configuration.offmeshConnectionsCount;
 		params.walkableHeight = configuration.navigation.minimumCeilingClearance;
 		params.walkableRadius = configuration.navigation.minimumObstacleClearance;
 		params.walkableClimb = configuration.navigation.maximumStepHeight;

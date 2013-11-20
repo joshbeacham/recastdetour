@@ -63,6 +63,11 @@ SCENARIO("DetourNavmeshCreator/Basics", "[navmeshCreator]")
 		configuration.voxels.size = 0.5f;
 		configuration.computeTileCount(geometry.bmin, geometry.bmax, 10);
 
+		configuration.offmeshConnectionsCount = 1;
+		configuration.offmeshConnections[0] = dtOffmeshConnectionCfg();
+		dtVset(configuration.offmeshConnections[0].start, 1.f, 0.f, 1.f);
+		dtVset(configuration.offmeshConnections[0].end, 3.f, 0.f, 3.f);
+
 		THEN("The configuration is well initialized")
 		{
 			CHECK(configuration.bmin[0] == geometry.bmin[0]);

@@ -77,6 +77,7 @@ dtNavmeshPolymeshCfg::dtNavmeshPolymeshCfg()
 }
 
 /*** dtNavmeshPolygonsCfg ***/
+
 dtNavmeshPolygonsCfg::dtNavmeshPolygonsCfg()
 : walkableFlag(1 << 1)
 , nonWalkableFlag(1 << 0)
@@ -84,6 +85,20 @@ dtNavmeshPolygonsCfg::dtNavmeshPolygonsCfg()
 , obstacleArea(0)
 {
 	// NOTHING
+};
+
+/*** dtOffmeshConnectionCfg ***/
+
+dtOffmeshConnectionCfg::dtOffmeshConnectionCfg()
+: start()
+, end()
+, radius(1.f)
+, isBidirectionnal(false)
+, areaType(2)
+, flags(1 << 1)
+{
+	dtVset(start, 0.f, 0.f, 0.f);
+	dtVset(end, 0.f, 0.f, 0.f);
 };
 
 /*** dtTiledNavmeshCfg ***/
@@ -97,6 +112,8 @@ dtTiledNavmeshCfg::dtTiledNavmeshCfg()
 , regions()
 , polyMesh()
 , polygons()
+, offmeshConnections()
+, offmeshConnectionsCount(0)
 {
 	dtVset(bmin, 0.f, 0.f, 0.f);
 	dtVset(bmax, 0.f, 0.f, 0.f);

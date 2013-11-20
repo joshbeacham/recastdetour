@@ -60,6 +60,8 @@ SCENARIO("DetourNavmeshCfg/Basics", "[navmeshCfg]")
 			CHECK(configuration.polyMesh.polyMaxNbVertices == 6);
 			CHECK(configuration.polyMesh.sampleDist == 6);
 			CHECK(configuration.polyMesh.sampleMaxError == 1);
+
+			CHECK(configuration.offmeshConnectionsCount == 0);
 		}
 
 		WHEN("Computing the tile count")

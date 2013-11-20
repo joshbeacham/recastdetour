@@ -37,55 +37,55 @@ struct dtTiledNavmeshCreatorIntermediateResults
 	dtTiledNavmeshCreatorIntermediateResults();
 	~dtTiledNavmeshCreatorIntermediateResults();
 
-		rcHeightfield* heightfield;
-		unsigned char* triAreas;
-		rcCompactHeightfield* compactHeightfield;
-		rcContourSet* contourSet;
-		rcPolyMesh* mesh;
-		rcPolyMeshDetail* detailedMesh;
+	rcHeightfield* heightfield;
+	unsigned char* triAreas;
+	rcCompactHeightfield* compactHeightfield;
+	rcContourSet* contourSet;
+	rcPolyMesh* mesh;
+	rcPolyMeshDetail* detailedMesh;
 
-		void reset();
+	void reset();
 };
 
 struct dtNavmeshInputGeometry
 {
-		// Default constructor
+	// Default constructor
 	//
 	// - mesh = dtMesh()
 	// - maximumFacesPerTreeNode = 256
-		// - bmin = {0.f, 0.f, 0.f}
-		// - bmax = {0.f, 0.f, 0.f}
-		// - tree = dtChunkyTriMesh()
-		dtNavmeshInputGeometry();
+	// - bmin = {0.f, 0.f, 0.f}
+	// - bmax = {0.f, 0.f, 0.f}
+	// - tree = dtChunkyTriMesh()
+	dtNavmeshInputGeometry();
 
-		dtMesh mesh;
-		unsigned maximumFacesPerTreeNode;
+	dtMesh mesh;
+	unsigned maximumFacesPerTreeNode;
 
-		float bmin[3];
-		float bmax[3];
-		dtChunkyTriMesh tree;
+	float bmin[3];
+	float bmax[3];
+	dtChunkyTriMesh tree;
 
-		// Compute the bounding box and the tree from current mesh.
-		bool initialize();
+	// Compute the bounding box and the tree from current mesh.
+	bool initialize();
 };
 
 bool dtCreateTiledNavmesh(const dtNavmeshInputGeometry& geometry,
-													const dtTiledNavmeshCfg& configuration,
-													dtTiledNavmeshCreatorIntermediateResults& intermediateResults,
-													dtNavMesh& navmesh,
-													rcContext* context);
+						  const dtTiledNavmeshCfg& configuration,
+						  dtTiledNavmeshCreatorIntermediateResults& intermediateResults,
+						  dtNavMesh& navmesh,
+						  rcContext* context);
 
 bool dtCreateTiledNavmesh(const dtNavmeshInputGeometry& geometry,
-													const dtTiledNavmeshCfg& configuration,
-													dtNavMesh& navmesh,
-													rcContext* context);
+						  const dtTiledNavmeshCfg& configuration,
+						  dtNavMesh& navmesh,
+						  rcContext* context);
 
 bool dtCreateTiledNavmeshTile(const dtNavmeshInputGeometry& geometry,
-															const dtTiledNavmeshCfg& configuration,
-															dtTiledNavmeshCreatorIntermediateResults& intermediateResults,
-															dtNavMesh& navmesh,
-															unsigned row,
-															unsigned column,
-															rcContext* context);
+							  const dtTiledNavmeshCfg& configuration,
+							  dtTiledNavmeshCreatorIntermediateResults& intermediateResults,
+							  dtNavMesh& navmesh,
+							  unsigned row,
+							  unsigned column,
+							  rcContext* context);
 
 #endif
