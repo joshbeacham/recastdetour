@@ -20,27 +20,27 @@
 #define APPLICATION_H
 
 #include "Visualization.h"
-#include "InputGeom.h"
 #include "BuildContext.h"
-#include "NavMeshCreator.h"
 #include "DebugInfo.h"
 
 #include <DetourCrowd.h>
+
+#include <DetourMesh.h>
 
 #include <DetourNavMeshQuery.h>
 
 class Application
 {
 public:
-    Application();
-    ~Application();
-    
+	Application();
+	~Application();
+	
 	bool init(const char* fileName);
-    bool run();
-        
+	bool run();
+		
 private:
-    BuildContext m_context;
-	InputGeom m_scene;
+	BuildContext m_context;
+	dtMesh m_scene;
 	dtNavMesh m_navMesh;
 	dtCrowd m_crowd;
 	Visualization m_visu;

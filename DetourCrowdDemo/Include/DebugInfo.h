@@ -30,30 +30,30 @@
 class DebugInfo
 {
 public:
-    DebugInfo();
-    ~DebugInfo();
-    
-    bool initialize();
-    bool terminate();
-    bool startUpdate(); //To be called just before the call to crowd->update.
-    bool endUpdate(float dt); //To be called just ater the call to crowd->update.
-    
-    bool isInitialized() const;
-    
-    dtCrowd* m_crowd;
-    
-    ValueHistory m_crowdTotalTime;
-    ValueHistory m_crowdSampleCount;
+	DebugInfo();
+	~DebugInfo();
+	
+	bool initialize();
+	bool terminate();
+	bool startUpdate(); //To be called just before the call to crowd->update.
+	bool endUpdate(float dt); //To be called just ater the call to crowd->update.
+	
+	bool isInitialized() const;
+	
+	dtCrowd* m_crowd;
+	
+	ValueHistory m_crowdTotalTime;
+	ValueHistory m_crowdSampleCount;
 	
 	struct AgentTrail
 	{
 		float trail[maxAgentTrailLen*3];
 		int htrail;
 	} m_agentTrails[maxAgentCount];
-    
+	
 private:
-    bool m_initialized;
-    TimeVal m_lastStart;
+	bool m_initialized;
+	TimeVal m_lastStart;
 };
 
 #endif

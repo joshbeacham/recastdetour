@@ -17,26 +17,28 @@
 //
 
 #include "Application.h"
-#include "DetourSceneCreator.h"
+#include "CrowdSample.h"
 
 Application::Application()
-:  m_context()
+: m_context()
 {
+	// NOTHING
 }
 
 Application::~Application()
 {
-    
+	// NOTHING
 }
 
 bool Application::init(const char* fileName)
 {
-	dtSceneCreator sc;
+	CrowdSample loader;
+	loader.m_context = &m_context;
 
-	if (!sc.createFromFile(fileName))
+	if (!loader.loadFromFile(fileName))
 		return false;
 
-	if (!sc.initialize(&m_scene, &m_navMesh, &m_crowd))
+	if (!loader.initialize(m_scene, m_navMesh, m_crowd))
 		return false;
 
 	m_debug.m_crowd = &m_crowd;
@@ -55,18 +57,18 @@ bool Application::init(const char* fileName)
 
 bool Application::run()
 {
-    while (!m_visu.m_stopRequested)
-    {
-        if (!m_visu.update())
-        {
-            return false;
-        }
-    }
-    
-    if (!m_visu.terminate())
-    {
-        return false;
-    }
-    
-    return false;
+	while (!m_visu.m_stopRequested)
+	{
+		if (!m_visu.update())
+		{
+			return false;
+		}
+	}
+	
+	if (!m_visu.terminate())
+	{
+		return false;
+	}
+	
+	return false;
 }

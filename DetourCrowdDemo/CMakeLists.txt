@@ -24,103 +24,104 @@ INCLUDE(CMakeDependentOption)
 
 # Options
 CMAKE_DEPENDENT_OPTION(BUILD_DETOURCROWD_DEMO "Build DetourCrowd graphical demo applications" 
-    ON "OPENGL_FOUND;OPENGL_GLU_FOUND;SDL_FOUND"
-    OFF)
+	ON "OPENGL_FOUND;OPENGL_GLU_FOUND;SDL_FOUND"
+	OFF)
 
 IF(BUILD_DETOURCROWD_DEMO)
-    SET(detourcrowddemo_SRCS
-        Source/Application.cpp
-        Source/DebugInfo.cpp
-        Source/Filelist.cpp
-        Source/imgui.cpp
-        Source/imguiRenderGL.cpp
-        Source/main.cpp
-        Source/SampleInterfaces.cpp
-        Source/ValueHistory.cpp
-        Source/Visualization.cpp
-    )
+	SET(detourcrowddemo_SRCS
+		Source/Application.cpp
+		Source/DebugInfo.cpp
+		Source/Filelist.cpp
+		Source/imgui.cpp
+		Source/imguiRenderGL.cpp
+		Source/main.cpp
+		Source/SampleInterfaces.cpp
+		Source/ValueHistory.cpp
+		Source/Visualization.cpp
+	)
 
-    SET(detourcrowddemo_HDRS
-        Include/Application.h
-        Include/DebugInfo.h
-        Include/Filelist.h
-        Include/imgui.h
-        Include/imguiRenderGL.h
-        Include/SampleInterfaces.h
-        Include/SDLMain.h
-        Include/ValueHistory.h
-        Include/Visualization.h
-    )
+	SET(detourcrowddemo_HDRS
+		Include/Application.h
+		Include/DebugInfo.h
+		Include/Filelist.h
+		Include/imgui.h
+		Include/imguiRenderGL.h
+		Include/SampleInterfaces.h
+		Include/SDLMain.h
+		Include/ValueHistory.h
+		Include/Visualization.h
+	)
 
-    SET(fastlz_DIR Contrib/fastlz)
-    SET(fastlz_SRCS 
-        ${fastlz_DIR}/fastlz.c
-    )
+	SET(fastlz_DIR Contrib/fastlz)
+	SET(fastlz_SRCS 
+		${fastlz_DIR}/fastlz.c
+	)
 
-    SET(sdl_DIR Contrib/SDL)
+	SET(sdl_DIR Contrib/SDL)
 
-    SOURCE_GROUP(sources FILES ${detourcrowddemo_HDRS} ${detourcrowddemo_SRCS})
-    SOURCE_GROUP(externals\\fastlz FILES ${fastlz_SRCS})
-    SOURCE_GROUP(cmake FILES CMakeLists.txt)
+	SOURCE_GROUP(sources FILES ${detourcrowddemo_HDRS} ${detourcrowddemo_SRCS})
+	SOURCE_GROUP(externals\\fastlz FILES ${fastlz_SRCS})
+	SOURCE_GROUP(cmake FILES CMakeLists.txt)
 
-    IF(MSVC)
-        # Look in the Contrib directory for SDL when building with MSVC
-        SET(CMAKE_PREFIX_PATH ${sdl_DIR})
-    ENDIF()
+	IF(MSVC)
+		# Look in the Contrib directory for SDL when building with MSVC
+		SET(CMAKE_PREFIX_PATH ${sdl_DIR})
+	ENDIF()
 
-    INCLUDE_DIRECTORIES(Include 
-        ${fastlz_DIR}
-        ${SDL_INCLUDE_DIR}
-        ../Detour/Include
-        ../DetourCrowd/Include
-        ../DetourSceneCreator/Include
-        ../DetourTileCache/Include
-        ../Recast/Include
-        ../RecastDetourDebugUtils/Include
-        Contrib
-    )
+	INCLUDE_DIRECTORIES(Include 
+		${fastlz_DIR}
+		${SDL_INCLUDE_DIR}
+		../Detour/Include
+		../DetourCrowd/Include
+		../DetourSceneCreator/Include
+		../DetourNavmeshCreator/Include
+		../DetourTileCache/Include
+		../Recast/Include
+		../RecastDetourDebugUtils/Include
+		Contrib
+	)
 
-    IF(MSVC)
-        ADD_EXECUTABLE(DetourCrowdDemo WIN32 ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS})
-    ELSE()
-        ADD_EXECUTABLE(DetourCrowdDemo ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS})
-    ENDIF()
+	IF(MSVC)
+		ADD_EXECUTABLE(DetourCrowdDemo WIN32 ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS})
+	ELSE()
+		ADD_EXECUTABLE(DetourCrowdDemo ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS})
+	ENDIF()
 
-    SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY DEBUG_POSTFIX -gd)
-    SET(DETOURCROWDDEMO_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Bin)
-    SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY RUNTIME_OUTPUT_DIRECTORY_DEBUG ${DETOURCROWDDEMO_BIN_DIR})
-    SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY RUNTIME_OUTPUT_DIRECTORY_RELEASE ${DETOURCROWDDEMO_BIN_DIR})
-    IF(MSVC)
-        # Enable some linker optimisations
-        SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_RELEASE "/OPT:REF /OPT:ICF")
-    	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_MINSIZEREL "/OPT:REF /OPT:ICF")
-    	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
-    ENDIF()
+	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY DEBUG_POSTFIX -gd)
+	SET(DETOURCROWDDEMO_BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Bin)
+	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY RUNTIME_OUTPUT_DIRECTORY_DEBUG ${DETOURCROWDDEMO_BIN_DIR})
+	SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY RUNTIME_OUTPUT_DIRECTORY_RELEASE ${DETOURCROWDDEMO_BIN_DIR})
+	IF(MSVC)
+		# Enable some linker optimisations
+		SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_RELEASE "/OPT:REF /OPT:ICF")
+		SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_MINSIZEREL "/OPT:REF /OPT:ICF")
+		SET_PROPERTY(TARGET DetourCrowdDemo PROPERTY LINK_FLAGS_RELWITHDEBINFO "/OPT:REF /OPT:ICF")
+	ENDIF()
 
-    TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+	TARGET_LINK_LIBRARIES(DetourCrowdDemo RecastDetourDebugUtils Detour DetourCrowd DetourNavmeshCreator DetourSceneCreator DetourTileCache Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
-    INSTALL(DIRECTORY Bin/Meshes Bin/Samples
-        DESTINATION run/${PLATFORM_STR}
-    )
+	INSTALL(DIRECTORY Bin/Meshes Bin/Samples
+		DESTINATION run/${PLATFORM_STR}
+	)
 
-    IF(MSVC)
-        # Retrieve the SDL dll directory
-        GET_FILENAME_COMPONENT(SDL_LIB_DIR ${SDLMAIN_LIBRARY} PATH)
-        INSTALL(
-            FILES Bin/DroidSans.ttf ${SDL_LIB_DIR}/SDL.dll
-            DESTINATION run/${PLATFORM_STR}
-        )
-    ELSE()
-        INSTALL(
-            FILES Bin/DroidSans.ttf
-            DESTINATION run/${PLATFORM_STR}
-        )
-    ENDIF()
+	IF(MSVC)
+		# Retrieve the SDL dll directory
+		GET_FILENAME_COMPONENT(SDL_LIB_DIR ${SDLMAIN_LIBRARY} PATH)
+		INSTALL(
+			FILES Bin/DroidSans.ttf ${SDL_LIB_DIR}/SDL.dll
+			DESTINATION run/${PLATFORM_STR}
+		)
+	ELSE()
+		INSTALL(
+			FILES Bin/DroidSans.ttf
+			DESTINATION run/${PLATFORM_STR}
+		)
+	ENDIF()
 
-    INSTALL(TARGETS DetourCrowdDemo 
-        RUNTIME DESTINATION run/${PLATFORM_STR}
-        BUNDLE DESTINATION run/${PLATFORM_STR}
-        LIBRARY DESTINATION lib/${PLATFORM_STR}
-        ARCHIVE DESTINATION lib/${PLATFORM_STR}
-    )
+	INSTALL(TARGETS DetourCrowdDemo 
+		RUNTIME DESTINATION run/${PLATFORM_STR}
+		BUNDLE DESTINATION run/${PLATFORM_STR}
+		LIBRARY DESTINATION lib/${PLATFORM_STR}
+		ARCHIVE DESTINATION lib/${PLATFORM_STR}
+	)
 ENDIF()

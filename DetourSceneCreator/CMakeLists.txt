@@ -19,53 +19,44 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(DetourSceneCreator_SRCS
-    Source/DetourSceneCreator.cpp
-    Source/ChunkyTriMesh.cpp
-    Source/InputGeom.cpp
-    Source/NavMeshCreator.cpp
-    Source/MeshLoaderObj.cpp
-    Source/CrowdSample.cpp
+	Source/CrowdSample.cpp
 	Source/BuildContext.cpp
 	Source/PerfTimer.cpp
 )
 
 SET(DetourSceneCreator_HDRS
-    Include/DetourSceneCreator.h
-    Include/ChunkyTriMesh.h
-    Include/InputGeom.h
-    Include/MeshLoaderObj.h
-    Include/NavMeshCreator.h
-    Include/CrowdSample.h
-    Include/StaticConfiguration.h
+	Include/CrowdSample.h
+	Include/StaticConfiguration.h
 	Include/BuildContext.h
 	Include/PerfTimer.h
 )
 
 SET(simplejson_DIR Contrib/SimpleJSON)
 SET(simplejson_SRCS 
-    ${simplejson_DIR}/JSON.cpp
-    ${simplejson_DIR}/JSONValue.cpp
+	${simplejson_DIR}/JSON.cpp
+	${simplejson_DIR}/JSONValue.cpp
 )
 SET(simplejson_HDRS
-    ${simplejson_DIR}/JSON.h
-    ${simplejson_DIR}/JSONValue.h
+	${simplejson_DIR}/JSON.h
+	${simplejson_DIR}/JSONValue.h
 )
 
 INCLUDE_DIRECTORIES(Include 
-    ${simplejson_DIR}
-    ../RecastDetourDebugUtils/Include
-    ../Detour/Include
-    ../DetourCrowd/Include
-    ../DetourTileCache/Include
-    ../Recast/Include
+	${simplejson_DIR}
+	../RecastDetourDebugUtils/Include
+	../Detour/Include
+	../DetourCrowd/Include
+	../DetourNavmeshCreator/Include
+	../DetourTileCache/Include
+	../Recast/Include
 )
 
 ADD_LIBRARY(DetourSceneCreator ${DetourSceneCreator_SRCS} ${DetourSceneCreator_HDRS} ${simplejson_SRCS} ${simplejson_HDRS})
 IF(IOS)
-    # workaround a bug forbidding to install the built library (cf. http://www.cmake.org/Bug/view.php?id=12506)
-    SET_TARGET_PROPERTIES(DetourSceneCreator PROPERTIES 
-        ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_BINARY_DIR}/Debug"
-        ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/Release")
+	# workaround a bug forbidding to install the built library (cf. http://www.cmake.org/Bug/view.php?id=12506)
+	SET_TARGET_PROPERTIES(DetourSceneCreator PROPERTIES 
+		ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_BINARY_DIR}/Debug"
+		ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/Release")
 ENDIF()
 
 INCLUDE(CMakeDependentOption)
@@ -73,23 +64,23 @@ CMAKE_DEPENDENT_OPTION(BUILD_RECASTDETOUR_FAT_LIBRARIES "Building binaries conta
   ON "APPLE;NOT IOS" 
   OFF)
 IF (BUILD_RECASTDETOUR_FAT_LIBRARIES)
-    SET_TARGET_PROPERTIES(DetourSceneCreator PROPERTIES OSX_ARCHITECTURES "i386;x86_64")
+	SET_TARGET_PROPERTIES(DetourSceneCreator PROPERTIES OSX_ARCHITECTURES "i386;x86_64")
 ENDIF()
 
 INSTALL(FILES ${DetourSceneCreator_HDRS}
-    DESTINATION include/DetourSceneCreator
+	DESTINATION include/DetourSceneCreator
 )
 
 INSTALL(TARGETS DetourSceneCreator EXPORT "RecastDetourTargets-${PLATFORM_STR}"
-    RUNTIME DESTINATION bin/${PLATFORM_STR}
-    LIBRARY DESTINATION lib/${PLATFORM_STR}
-    ARCHIVE DESTINATION lib/${PLATFORM_STR}
+	RUNTIME DESTINATION bin/${PLATFORM_STR}
+	LIBRARY DESTINATION lib/${PLATFORM_STR}
+	ARCHIVE DESTINATION lib/${PLATFORM_STR}
 )
 
-TARGET_LINK_LIBRARIES(DetourSceneCreator Detour DetourCrowd)
+TARGET_LINK_LIBRARIES(DetourSceneCreator Detour DetourNavmeshCreator DetourCrowd)
 
 if(WIN32)
-    set(CMAKE_CXX_FLAGS "/EHsc /GR- /W4")
+	set(CMAKE_CXX_FLAGS "/EHsc /GR- /W4")
 else(WIN32)
-    set(CMAKE_CXX_FLAGS "-Wall -ansi -O3")
+	set(CMAKE_CXX_FLAGS "-Wall -ansi -O3")
 endif(WIN32)

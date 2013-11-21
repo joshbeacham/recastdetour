@@ -22,10 +22,10 @@
 
 #include "StaticConfiguration.h"
 
+#include <DetourNavmeshCreator.h>
+
 #include <DetourCrowd.h>
 #include <DetourFlockingBehavior.h>
-
-#include "NavMeshCreator.h"
 
 #include <map>
 #include <vector>
@@ -39,15 +39,15 @@ class JSONValue;
 
 struct AgentConfiguration
 {
-    int index;
-    float position[3];
-    float destination[3];
-    dtPolyRef destinationPoly;
+	int index;
+	float position[3];
+	float destination[3];
+	dtPolyRef destinationPoly;
 
-	float radius;			
-	float height;			
-	float maxAcceleration;	
-	float maxSpeed;			
+	float radius;
+	float height;
+	float maxAcceleration;
+	float maxSpeed;
 
 	dtBehavior* steeringBehavior;
 
@@ -58,33 +58,28 @@ struct AgentConfiguration
 class CrowdSample
 {
 public:
-    CrowdSample();
-    ~CrowdSample();
-    
-    bool loadFromBuffer(const char* data);
-    bool loadFromFile(const char* fileName);
+	CrowdSample();
+	~CrowdSample();
+	
+	bool loadFromBuffer(const char* data);
+	bool loadFromFile(const char* fileName);
 
 	char* getSceneFile();
 	void parseCrowd(dtCrowd* crowd);
 	void parseAgentsInfo();
 
-    bool initialize(InputGeom* scene, dtCrowd* crowd, dtNavMesh* navMesh);
+	bool initialize(dtMesh& mesh, dtNavMesh& navMesh, dtCrowd& crowd);
 
-	/// Method to call when we want to create a scene without using a JSON file.
-	/// The vertices and triangles of the scene are passed directly.
-	bool initializeScene(InputGeom* scene, float* vert, unsigned vertCount, int* tris, unsigned triCount);
-
-	bool initializeScene(InputGeom* scene);
-	bool initializeCrowd(dtCrowd* crowd);
-	bool initializeNavmesh(const InputGeom& scene, dtNavMesh* navMesh);
-    
-    AgentConfiguration m_agentCfgs[maxAgentCount];
-    int m_agentCount;
+	bool initializeScene(dtMesh& mesh);
+	bool initializeCrowd(dtCrowd& crowd);
+	bool initializeNavmesh(const dtMesh& mesh, dtNavMesh& navMesh);
+	
+	AgentConfiguration m_agentCfgs[maxAgentCount];
+	int m_agentCount;
 	rcContext* m_context;
 	char m_sceneFileName[maxPathLen];
 	float m_maxRadius;
-	NavMeshCreator m_creator;
-    
+	
 private:
 	void parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd* crowd, bool pipeline);
 	void parsePipeline(JSONValue* pipelineChild, std::size_t iAgent, dtCrowd* crowd);
@@ -98,8 +93,8 @@ private:
 		float alignmentWeight;
 	};
 
-    void computeMaximumRadius();
-    
+	void computeMaximumRadius();
+	
 	JSONValue* m_root;
 	std::vector<Flocking> m_flockingsGroups;
 	std::vector<dtFlockingBehavior*> m_flockingBehaviors;
@@ -109,7 +104,6 @@ private:
 	std::vector<int> m_alignmentTargets;
 	std::vector<int> m_cohesionTargets;
 	std::map<int, std::vector<dtBehavior*> > m_pipeline;
-	dtNavMesh* m_navMesh;
 };
 
 #endif

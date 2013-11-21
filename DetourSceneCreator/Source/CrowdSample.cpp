@@ -18,7 +18,6 @@
 
 #include "CrowdSample.h"
 
-#include "InputGeom.h"
 #include "JSON.h"
 
 #include "DetourParametrizedBehavior.h"
@@ -42,9 +41,8 @@ CrowdSample::CrowdSample()
 , m_sceneFileName()
 , m_maxRadius(0.f)
 , m_root(0)
-, m_navMesh(0)
 {
-    strcpy(m_sceneFileName,"");
+	strcpy(m_sceneFileName,"");
 }
 
 CrowdSample::~CrowdSample()
@@ -182,12 +180,12 @@ bool CrowdSample::loadFromBuffer( const char* data )
 {
 	m_root = JSON::Parse(data);
 
-    if (!m_root)
-    {
-        //Unable to parse the JSON data.
-        return false;
-    }
-        
+	if (!m_root)
+	{
+		//Unable to parse the JSON data.
+		return false;
+	}
+		
 	return true;
 }
 
@@ -225,43 +223,43 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 		{
 			params->debug = 0;
 		}
-        
-        JSONValue* weightDesiredVelocity = behavior->Child(L"weightDesiredVelocity");
+		
+		JSONValue* weightDesiredVelocity = behavior->Child(L"weightDesiredVelocity");
 		if (weightDesiredVelocity && weightDesiredVelocity->IsNumber())
 			ca->weightDesiredVelocity = (float)weightDesiredVelocity->AsNumber();
-        
-        JSONValue* weightCurrentVelocity = behavior->Child(L"weightCurrentVelocity");
+		
+		JSONValue* weightCurrentVelocity = behavior->Child(L"weightCurrentVelocity");
 		if (weightCurrentVelocity && weightCurrentVelocity->IsNumber())
 			ca->weightCurrentVelocity = (float)weightCurrentVelocity->AsNumber();
-        
-        JSONValue* weightCurrentAvoidanceSide = behavior->Child(L"weightCurrentAvoidanceSide");
+		
+		JSONValue* weightCurrentAvoidanceSide = behavior->Child(L"weightCurrentAvoidanceSide");
 		if (weightCurrentAvoidanceSide && weightCurrentAvoidanceSide->IsNumber())
 			ca->weightCurrentAvoidanceSide = (float)weightCurrentAvoidanceSide->AsNumber();
-        
-        JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
+		
+		JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
 		if (weightTimeToCollision && weightTimeToCollision->IsNumber())
 			ca->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
-        
-        JSONValue* sampleOriginScale = behavior->Child(L"sampleOriginScale");
+		
+		JSONValue* sampleOriginScale = behavior->Child(L"sampleOriginScale");
 		if (sampleOriginScale && sampleOriginScale->IsNumber())
 			ca->sampleOriginScale = (float)sampleOriginScale->AsNumber();
-        
-        JSONValue* sampleSectorsCount = behavior->Child(L"sampleSectorsCount");
+		
+		JSONValue* sampleSectorsCount = behavior->Child(L"sampleSectorsCount");
 		if (sampleSectorsCount && sampleSectorsCount->IsNumber())
 			ca->sampleSectorsCount = (float)sampleSectorsCount->AsNumber();
-        
-        JSONValue* sampleRingsCount = behavior->Child(L"sampleRingsCount");
+		
+		JSONValue* sampleRingsCount = behavior->Child(L"sampleRingsCount");
 		if (sampleRingsCount && sampleRingsCount->IsNumber())
 			ca->sampleRingsCount = (float)sampleRingsCount->AsNumber();
-        
-        JSONValue* sampleLevelsCount = behavior->Child(L"sampleLevelsCount");
+		
+		JSONValue* sampleLevelsCount = behavior->Child(L"sampleLevelsCount");
 		if (sampleLevelsCount && sampleLevelsCount->IsNumber())
 			ca->sampleLevelsCount = (float)sampleLevelsCount->AsNumber();
-        
-        JSONValue* horizonTime = behavior->Child(L"horizonTime");
+		
+		JSONValue* horizonTime = behavior->Child(L"horizonTime");
 		if (horizonTime && horizonTime->IsNumber())
 			ca->horizonTime = (float)horizonTime->AsNumber();
-        
+		
 		m_agentCfgs[iAgent].steeringBehavior = ca;
 	}
 
@@ -285,16 +283,16 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 		JSONValue* visibilityPathOptimizationRange = behavior->Child(L"visibilityPathOptimizationRange");
 		if (visibilityPathOptimizationRange && visibilityPathOptimizationRange->IsNumber())
 			pf->visibilityPathOptimizationRange = (float)visibilityPathOptimizationRange->AsNumber();
-        
-        JSONValue* initialPathfindIterCount = behavior->Child(L"initialPathfindIterCount");
+		
+		JSONValue* initialPathfindIterCount = behavior->Child(L"initialPathfindIterCount");
 		if (initialPathfindIterCount && initialPathfindIterCount->IsNumber())
 			pf->initialPathfindIterCount = (unsigned)initialPathfindIterCount->AsNumber();
-        
-        JSONValue* localPathReplanningInterval = behavior->Child(L"localPathReplanningInterval");
+		
+		JSONValue* localPathReplanningInterval = behavior->Child(L"localPathReplanningInterval");
 		if (localPathReplanningInterval && localPathReplanningInterval->IsBool())
 			pf->localPathReplanningInterval = localPathReplanningInterval->AsBool();
-        
-        JSONValue* anticipateTurns = behavior->Child(L"anticipateTurns");
+		
+		JSONValue* anticipateTurns = behavior->Child(L"anticipateTurns");
 		if (anticipateTurns && anticipateTurns->IsBool())
 			pf->anticipateTurns = anticipateTurns->AsBool();
 		
@@ -491,105 +489,94 @@ void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd
 
 bool CrowdSample::loadFromFile(const char* fileName)
 {
-    char* buf = 0;
-    FILE* fp = fopen(fileName, "rb");
-    if (!fp)
-        return false;
-    fseek(fp, 0, SEEK_END);
-    int bufSize = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-    buf = new char[bufSize+1];
-    if (!buf)
-    {
-        fclose(fp);
-        return false;
-    }
-    fread(buf, bufSize, 1, fp);
-    fclose(fp);
-    buf[bufSize]=0;
-    return loadFromBuffer(buf);
+	char* buf = 0;
+	FILE* fp = fopen(fileName, "rb");
+	if (!fp)
+		return false;
+	fseek(fp, 0, SEEK_END);
+	int bufSize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	buf = new char[bufSize+1];
+	if (!buf)
+	{
+		fclose(fp);
+		return false;
+	}
+	fread(buf, bufSize, 1, fp);
+	fclose(fp);
+	buf[bufSize]=0;
+	return loadFromBuffer(buf);
 }
 
-bool CrowdSample::initialize(InputGeom* scene, dtCrowd* crowd, dtNavMesh* navMesh)
+bool CrowdSample::initialize(dtMesh& mesh, dtNavMesh& navMesh, dtCrowd& crowd)
 {
-	m_navMesh = navMesh;
-
 	getSceneFile();
 	parseAgentsInfo();
-    
-    if (!initializeScene(scene))
-        return false;
-    else if (!initializeNavmesh(*scene, navMesh))
-        return false;
+	
+	if (!initializeScene(mesh))
+		return false;
+	else if (!initializeNavmesh(mesh, navMesh))
+		return false;
 
-	crowd->init(m_agentCount, m_maxRadius, navMesh);
-	parseCrowd(crowd);
+	crowd.init(m_agentCount, m_maxRadius, &navMesh);
+	parseCrowd(&crowd);
 
-    if (!initializeCrowd(crowd))
-        return false;
-    else
-        return true;
+	if (!initializeCrowd(crowd))
+		return false;
+	else
+		return true;
 }
 
 void CrowdSample::computeMaximumRadius()
 {
-    m_maxRadius = 0.f;
+	m_maxRadius = 0.f;
 
-    for (int i(0) ; i < m_agentCount ; ++i)
-        m_maxRadius = rcMax(m_maxRadius,m_agentCfgs[i].radius);
+	for (int i(0) ; i < m_agentCount ; ++i)
+		m_maxRadius = rcMax(m_maxRadius,m_agentCfgs[i].radius);
 }
 
-bool CrowdSample::initializeScene(InputGeom* scene, float* vert, unsigned vertCount, int* tris, unsigned triCount)
+bool CrowdSample::initializeScene(dtMesh& mesh)
 {
-	if (vertCount == 0 || triCount == 0)
+	if (strlen(m_sceneFileName) > 0)
+	{
+		mesh.clear();
+		return loadObjFile(m_sceneFileName, mesh);
+	}
+	else
+	{
 		return false;
-
-	return scene->loadMesh(0, vert, vertCount, tris, triCount);
+	}
 }
 
-bool CrowdSample::initializeScene(InputGeom* scene)
-{
-    if (strlen(m_sceneFileName) > 0)
-    {
-        return scene->loadMesh(0, m_sceneFileName);
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool CrowdSample::initializeNavmesh(const InputGeom& scene, dtNavMesh* navMesh)
+bool CrowdSample::initializeNavmesh(const dtMesh& mesh, dtNavMesh& navMesh)
 {
 	if (!m_context)
 		return false;
 
-    m_creator.initParameters();
-    m_creator.m_context = m_context;
-    m_creator.m_inputVertices = scene.getMesh()->getVerts();
-    m_creator.m_inputVerticesCount = scene.getMesh()->getVertCount();
-    m_creator.m_inputTriangles = scene.getMesh()->getTris();
-    m_creator.m_inputTrianglesCount = scene.getMesh()->getTriCount();
-    rcVcopy(m_creator.m_min, scene.getMeshBoundsMin());
-    rcVcopy(m_creator.m_max, scene.getMeshBoundsMax());
-    m_creator.m_minimumObstacleClearance = m_maxRadius;
-    m_creator.allocIntermediateResults();
-    m_creator.computeNavMesh();
-        
-    if (m_creator.m_success)
-    {
-        return dtStatusSucceed(navMesh->init(m_creator.m_outputNavMeshBuffer, m_creator.m_outputNavMeshBufferSize, DT_TILE_FREE_DATA));
-    }
-    else 
-    {
-        return false;
-    }
+	dtNavmeshInputGeometry inputGeometry;
+	inputGeometry.mesh = mesh;
+	if (!inputGeometry.initialize())
+		return false;
+
+	dtTiledNavmeshCfg configuration;
+
+	configuration.navigation.minimumObstacleClearance = m_maxRadius;
+
+	configuration.computeTileCount(inputGeometry.bmin, inputGeometry.bmax, 50);
+
+	if (!dtCreateTiledNavmesh(inputGeometry,
+							  configuration,
+							  navMesh,
+							  m_context))
+		return false;
+
+	return true;
 }
 
-bool CrowdSample::initializeCrowd(dtCrowd* crowd)
+bool CrowdSample::initializeCrowd(dtCrowd& crowd)
 {
 	for (int i(0) ; i < m_agentCount ; ++i)
-    {
+	{
 		// Pipeline behavior
 		if (!m_pipeline[i].empty())
 		{
@@ -602,21 +589,18 @@ bool CrowdSample::initializeCrowd(dtCrowd* crowd)
 		// Adding the agent to the crowd
 		dtCrowdAgent ag;
 
-        if (!crowd->addAgent(ag, m_agentCfgs[i].position))
+		if (!crowd.addAgent(ag, m_agentCfgs[i].position))
 			continue;
 
 		ag.radius = m_agentCfgs[i].radius;
 		ag.maxSpeed = m_agentCfgs[i].maxSpeed;
 		ag.maxAcceleration = m_agentCfgs[i].maxAcceleration;
-		ag.position[0] = m_agentCfgs[i].position[0];
-		ag.position[1] = m_agentCfgs[i].position[1];
-		ag.position[2] = m_agentCfgs[i].position[2];
 		ag.height = m_agentCfgs[i].height;
 		ag.behavior = m_agentCfgs[i].steeringBehavior;
 		ag.perceptionDistance = m_agentCfgs[i].collisionQueryRange;
 
-		crowd->pushAgent(ag);
-    }
+		crowd.pushAgent(ag);
+	}
 	
-    return true; 
+	return true; 
 }
