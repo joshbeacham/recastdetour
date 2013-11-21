@@ -515,7 +515,8 @@ bool CrowdSample::initialize(dtMesh& mesh, dtNavMesh& navMesh, dtCrowd& crowd)
 	
 	if (!initializeScene(mesh))
 		return false;
-	else if (!initializeNavmesh(mesh, navMesh))
+
+	if (!initializeNavmesh(mesh, navMesh))
 		return false;
 
 	crowd.init(m_agentCount, m_maxRadius, &navMesh);
@@ -523,8 +524,8 @@ bool CrowdSample::initialize(dtMesh& mesh, dtNavMesh& navMesh, dtCrowd& crowd)
 
 	if (!initializeCrowd(crowd))
 		return false;
-	else
-		return true;
+
+	return true;
 }
 
 void CrowdSample::computeMaximumRadius()
