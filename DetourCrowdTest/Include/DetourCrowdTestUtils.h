@@ -19,73 +19,42 @@
 #ifndef DETOURCROWDTESTUTILS_H
 #define DETOURCROWDTESTUTILS_H
 
-#include "DetourCrowd.h"
+#include <DetourCrowd.h>
 
-#include "CrowdSample.h"
-#include "InputGeom.h"
-#include "DetourSceneCreator.h"
+#include <DetourMesh.h>
+#include <DetourNavmeshCreator.h>
+
+#include <DetourNavMesh.h>
+
+#include <Recast.h>
+
+#include <string>
 
 #ifdef _MSC_VER
-#   pragma warning(push, 0)
-#   include <catch.hpp>
-#   pragma warning(pop)
+#pragma warning(push, 0)
+#include <catch.hpp>
+#pragma warning(pop)
 #else
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wall"
-#   include <catch.hpp>
-#   pragma GCC diagnostic pop
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wall"
+#include <catch.hpp>
+#pragma GCC diagnostic pop
 #endif
 
-/// These are just sample areas to use consistent values across the samples.
-/// The use should specify these base on his needs.
-enum SamplePolyAreas
+class TestBuildContext : public rcContext
 {
-	SAMPLE_POLYAREA_GROUND,
-	SAMPLE_POLYAREA_WATER,
-	SAMPLE_POLYAREA_ROAD,
-	SAMPLE_POLYAREA_DOOR,
-	SAMPLE_POLYAREA_GRASS,
-	SAMPLE_POLYAREA_JUMP,
-};
-
-enum SamplePolyFlags
-{
-	SAMPLE_POLYFLAGS_WALK		= 0x01,		// Ability to walk (ground, grass, road)
-	SAMPLE_POLYFLAGS_SWIM		= 0x02,		// Ability to swim (water).
-	SAMPLE_POLYFLAGS_DOOR		= 0x04,		// Ability to move through doors.
-	SAMPLE_POLYFLAGS_JUMP		= 0x08,		// Ability to jump.
-	SAMPLE_POLYFLAGS_DISABLED	= 0x10,		// Disabled polygon
-	SAMPLE_POLYFLAGS_ALL		= 0xffff	// All abilities.
-};
-
-/// Class used to create a scene from vertices and triangles.
-class TestScene
-{
-public:
-	TestScene();
-	~TestScene();
-
-	/// Creation of the 3D scene (a square).
-	///
-	/// @param[in]	nbMaxAgents	The maximum number of agents allowed for the crowd
-	/// @param[in]	maxRadius	The radius allowed for the agents of the crowd
-	///
-	/// @return Return the newly created crowd. Return 0 if something went wrong.
-	dtCrowd* createSquareScene(unsigned nbMaxAgents, float maxRadius);
-
-	bool defaultInitializeAgent(dtCrowd& crowd, int index) const;
-
-	OffMeshConnectionCreator* getOffMeshCreator();
-
-	dtNavMesh* getNavMesh() { return &m_navMesh; }
-
 private:
-	CrowdSample m_cs;
-	InputGeom m_scene;
-	dtNavMesh m_navMesh;
-	BuildContext m_bc;
-	dtCrowd* m_crowd;
+	virtual void doLog(const rcLogCategory /*category*/, const char* msg, const int len)
+	{
+		WARN(std::string(msg,len));
+	}
 };
+
+/// Retrieve a square mesh
+const dtNavmeshInputGeometry& getSquareMesh();
+
+/// Square navmesh
+const dtNavMesh& getSquareNavmesh();
 
 /// Creates a tiled navigation mesh from the contents of a file.
 /// @note DT_TILE_FREE_DATA is used as an option to the initialization process.

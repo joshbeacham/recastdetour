@@ -24,33 +24,33 @@
 
 SCENARIO("DetourCollisionAvoidanceTest/DefaultParams", "[detourCollisionAvoidance]")
 {
-    GIVEN("A default constructed collision avoidance parameters")
-    {
-        dtCollisionAvoidanceParams p;
-        
-        THEN("The parameters have the expected default values")
-        {
-            CHECK(p.debug == 0);
-        }
-    }
-    
-    GIVEN("A default constructed collision avoidance")
-    {
-        dtCollisionAvoidance b(34);
-        
-        THEN("The parameters have the expected default values")
-        {
-            CHECK(b.maximumSegmentObstaclesCount == 8);
-            CHECK(b.maximumCircleObstaclesCount == 6);
-            CHECK(b.weightDesiredVelocity == 2.f);
-            CHECK(b.weightCurrentVelocity == 0.75f);
-            CHECK(b.weightCurrentAvoidanceSide == 0.75f);
-            CHECK(b.weightTimeToCollision == 2.5f);
-            CHECK(b.horizonTime == 2.5f);
-            CHECK(b.sampleOriginScale == 0.4f);
-            CHECK(b.sampleSectorsCount == 7);
-            CHECK(b.sampleRingsCount == 2);
-            CHECK(b.sampleLevelsCount == 5);
-        }
-    }
+	GIVEN("A default constructed collision avoidance parameters")
+	{
+		dtCollisionAvoidanceParams p;
+		
+		THEN("The parameters have the expected default values")
+		{
+			CHECK(p.debug == 0);
+		}
+	}
+	
+	GIVEN("A default constructed collision avoidance")
+	{
+		dtCollisionAvoidance b(34);
+		
+		THEN("The parameters have the expected default values")
+		{
+			CHECK(b.maximumSegmentObstaclesCount == 8);
+			CHECK(b.maximumCircleObstaclesCount == 6);
+			CHECK(b.weightDesiredVelocity == 2.f);
+			CHECK(b.weightCurrentVelocity == 0.75f);
+			CHECK(b.weightCurrentAvoidanceSide == 0.75f);
+			CHECK(b.weightTimeToCollision == 2.5f);
+			CHECK(b.horizonTime == 2.5f);
+			CHECK(b.sampleOriginScale == 0.4f);
+			CHECK(b.sampleSectorsCount == 7);
+			CHECK(b.sampleRingsCount == 2);
+			CHECK(b.sampleLevelsCount == 5);
+		}
+	}
 }

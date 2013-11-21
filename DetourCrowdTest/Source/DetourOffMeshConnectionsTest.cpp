@@ -18,89 +18,87 @@
 
 #include "DetourCrowdTestUtils.h"
 
+#include <DetourNavmeshCfg.h>
+
+#include <DetourCommon.h>
+
 SCENARIO("DetourCrowdTest/OffMeshConnections", "[offmesh] Check if the agents know when they are walking on offMesh connections or using them")
 {
 	GIVEN("An offMesh connection at (0, 0, 0) with a radius of 1")
 	{
-		TestScene ts;
+		const dtNavmeshInputGeometry& squareGeometry = getSquareMesh();
 
-		OffMeshConnectionCreator* offmeshCreator = ts.getOffMeshCreator();
-
+		dtTiledNavmeshCfg configuration;
+		configuration.offmeshConnectionsCount = 1;
 		// Creation of the offMesh connection
-		offmeshCreator->vert[0] = 0;
-		offmeshCreator->vert[1] = 0.2;
-		offmeshCreator->vert[2] = 0;
-		offmeshCreator->vert[3] = 5;
-		offmeshCreator->vert[4] = 0.2;
-		offmeshCreator->vert[5] = 5;
+		configuration.offmeshConnections[0] = dtOffmeshConnectionCfg();
+		dtVset( configuration.offmeshConnections[0].start, 0, 0.2, 0);
+		dtVset( configuration.offmeshConnections[0].end, 5, 0.2, 5);
+		configuration.offmeshConnections[0].radius = 1.f;
+		configuration.offmeshConnections[0].isBidirectionnal = true;
+		configuration.computeTileCount(squareGeometry.bmin, squareGeometry.bmax, 20);
 
-		offmeshCreator->radius[0] = 1.f;
-		offmeshCreator->bidir[0] = 1;
-		offmeshCreator->areas[0] = SAMPLE_POLYAREA_JUMP;
-		offmeshCreator->flags[0] = SAMPLE_POLYFLAGS_JUMP;
-		offmeshCreator->ids[0] = 0;
-		offmeshCreator->count++;
-
-		dtCrowd* crowd = ts.createSquareScene(2, 0.5f);
+		dtNavMesh navmesh;
+		TestBuildContext context;
+		dtCreateTiledNavmesh(squareGeometry, configuration, navmesh, &context);
+		dtCrowd crowd;
+		crowd.init(2, 0.5, &navmesh);
+		
 		float posAgt1[] = {0, 0, 0};
 		dtCrowdAgent ag;
 
-		REQUIRE(crowd != 0);
-
 		// Adding the agent to the crowd
-		REQUIRE(crowd->addAgent(ag, posAgt1));
-		REQUIRE(ts.defaultInitializeAgent(*crowd, ag.id));
-		crowd->fetchAgent(ag, ag.id);
+		REQUIRE(crowd.addAgent(ag, posAgt1));
 		
 		WHEN("An agent is placed at (0, 0, 0")
 		{
 			THEN("The agent detects the offMesh connection it is on")
 			{
-				CHECK(crowd->getCrowdQuery()->getOffMeshConnection(ag.id) != 0);
+				CHECK(crowd.getCrowdQuery()->getOffMeshConnection(ag.id) != 0);
 			}			
 		}
 		WHEN("The agent is moved to (-2, 0, 0)")
 		{
 			float pos2[] = {-2, 0, 0};
-			CHECK(crowd->pushAgentPosition(ag.id, pos2));
+			CHECK(crowd.pushAgentPosition(ag.id, pos2));
 
 			THEN("It doesn't detect the offMesh connection anymore")
 			{
-				CHECK(crowd->getCrowdQuery()->getOffMeshConnection(ag.id) == 0);
+				CHECK(crowd.getCrowdQuery()->getOffMeshConnection(ag.id) == 0);
 			}
 		}
 		WHEN("We ask the same to check for a radius of 1.1 around him")
 		{
 			THEN("It detects the offMesh connection again")
 			{
-				CHECK(crowd->getCrowdQuery()->getOffMeshConnection(ag.id, 1.1f) != 0);
+				CHECK(crowd.getCrowdQuery()->getOffMeshConnection(ag.id, 1.1f) != 0);
 			}
 		}
 		WHEN("We try to detect an offMesh connection with wrong parameters")
 		{
 			THEN("We don't find it and it does not crash")
 			{
-				CHECK(crowd->getCrowdQuery()->getOffMeshConnection(9999) == 0);
-				CHECK(crowd->getCrowdQuery()->getOffMeshConnection(ag.id, -5.f) == 0);
+				CHECK(crowd.getCrowdQuery()->getOffMeshConnection(9999) == 0);
+				CHECK(crowd.getCrowdQuery()->getOffMeshConnection(ag.id, -5.f) == 0);
 			}
 		}
 		WHEN("The agent passes over the connection")
 		{
 			float pos[] = {-0.2, 0, -0.2};
 
-			CHECK(crowd->pushAgentPosition(ag.id, pos));
-			CHECK(crowd->getCrowdQuery()->getOffMeshConnection(ag.id) != 0);
+			CHECK(crowd.pushAgentPosition(ag.id, pos));
+			CHECK(crowd.getCrowdQuery()->getOffMeshConnection(ag.id) != 0);
 
-			crowd->fetchAgent(ag, ag.id);
-			crowd->getCrowdQuery()->startOffMeshConnection(ag, 
-				*crowd->getCrowdQuery()->getOffMeshConnection(ag.id));
-			crowd->pushAgent(ag);
+			crowd.fetchAgent(ag, ag.id);
+			crowd.getCrowdQuery()->startOffMeshConnection(ag,
+				*crowd.getCrowdQuery()->getOffMeshConnection(ag.id));
+			crowd.pushAgent(ag);
 
 			THEN("It moves toward the other side of the connection")
 			{
-				crowd->updatePosition(0.1f);
+				crowd.updatePosition(0.1f);
 
-				crowd->fetchAgent(ag, ag.id);
+				crowd.fetchAgent(ag, ag.id);
 				CHECK(ag.position[0] > pos[0]);
 				CHECK(ag.position[2] > pos[2]);
 			}
@@ -108,9 +106,9 @@ SCENARIO("DetourCrowdTest/OffMeshConnections", "[offmesh] Check if the agents kn
 			THEN("After several updates it reaches the other side")
 			{
 				for (unsigned i = 0; i < 100; ++i)
-					crowd->updatePosition(0.1f);
+					crowd.updatePosition(0.1f);
 
-				crowd->fetchAgent(ag, ag.id);
+				crowd.fetchAgent(ag, ag.id);
 				CHECK(ag.position[0] > 4.5f);
 				CHECK(ag.position[2] > 4.5f);
 			}

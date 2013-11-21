@@ -29,25 +29,24 @@ SET(
 	Source/DetourPipelineTest.cpp
 	Source/SinkingAgentRegressionTest.cpp
 	)
-	
+
 SET(
 	detourcrowdtest_HDRS
 	Include/DetourCrowdTestUtils.h
 	)
-	
+
 SET(catch_INC Contrib/catch/include)
 
-	
 INCLUDE_DIRECTORIES(
 	Include
-		../Detour/Include
-		../Recast/Include
-		../DetourCrowd/Include
-		../DetourSceneCreator/Include
-		../DetourTileCache/Include
+	../Detour/Include
+	../DetourCrowd/Include
+	../DetourNavmeshCreator/Include
+	../DetourTileCache/Include
+	../Recast/Include
 	${catch_INC}
 	)
-	
+
 SOURCE_GROUP(sources FILES ${detourcrowdtest_SRCS} ${detourcrowdtest_HDRS})
 SOURCE_GROUP(externals\\catch FILES ${catch_INC})
 SOURCE_GROUP(cmake FILES CMakeLists.txt)
@@ -66,18 +65,18 @@ ENDIF(MSVC)
 
 TARGET_LINK_LIBRARIES(
 	DetourCrowdTest
-	DetourCrowd
-	DetourSceneCreator
 	Detour
-	RecastDetourDebugUtils
+	DetourCrowd
+	DetourNavmeshCreator
 	Recast
+	RecastDetourDebugUtils
 	)
 
 ADD_TEST(
 	NAME DetourCollisionAvoidance
 	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
 	COMMAND $<TARGET_FILE:DetourCrowdTest> [detourCollisionAvoidance])
-	
+
 ADD_TEST(
 	NAME DetourCrowd
 	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
@@ -97,7 +96,7 @@ ADD_TEST(
 	NAME DetourPathFollowing
 	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}
 	COMMAND $<TARGET_FILE:DetourCrowdTest> [detourPathFollowing])
-		
+
 ADD_TEST(
 	NAME OffMeshConnections
 	WORKING_DIRECTORY ${DETOURCROWDTEST_BIN_DIR}

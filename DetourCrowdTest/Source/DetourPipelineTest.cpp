@@ -25,10 +25,9 @@
 
 TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 {
-	TestScene ts;
-	dtCrowd* crowd = ts.createSquareScene(20, 0.5);
-
-	REQUIRE(crowd != 0);
+	const dtNavMesh& square = getSquareNavmesh();
+	dtCrowd crowd;
+	crowd.init(20, 0.5, &square);
 
 	dtPipelineBehavior* pipeline = dtPipelineBehavior::allocate();
 
@@ -38,29 +37,26 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 	dtCrowdAgent ag;
 
 	// Adding the agents to the crowd
-	REQUIRE(crowd->addAgent(ag, posAgt1));
-	ts.defaultInitializeAgent(*crowd, ag.id);
+	REQUIRE(crowd.addAgent(ag, posAgt1));
+	CHECK(crowd.pushAgentBehavior(ag.id, pipeline));
 
-	crowd->pushAgentBehavior(ag.id, pipeline);
+	crowd.update(0.5, 0);
 
-	crowd->update(0.5, 0);
-
-	float agt1NewPos[3];
-	dtVcopy(agt1NewPos, crowd->getAgent(ag.id)->position);
+	dtCrowdAgent updatedAgt;
+	crowd.fetchAgent(updatedAgt, ag.id);
 
 	// Since no behavior is affected to the pipeline, the agent must not have moved
-	CHECK(dtVequal(agt1NewPos, posAgt1));
+	CHECK(dtVequal(updatedAgt.position, ag.position));
 
-    dtPathFollowing* pf = dtPathFollowing::allocate(5);
-    dtPathFollowingParams* pfParams = pf->getBehaviorParams(crowd->getAgent(0)->id);
+	dtPathFollowing* pf = dtPathFollowing::allocate(5);
 
 	// Set the destination
 	dtPolyRef dest;
 	float nearest[3];
-	crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest, nearest);
+	crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(destAgt1, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest, nearest);
 
 	REQUIRE(dest != 0);		
-	REQUIRE(pf->init(*crowd->getCrowdQuery()));
+	REQUIRE(pf->init(*crowd.getCrowdQuery()));
 	pf->getBehaviorParams(ag.id)->submitTarget(destAgt1, dest);
 
 	SECTION("Adding and Removing behaviors to the pipeline", "Trying to add and remove behaviors into the pipeline, should not crash")
@@ -68,39 +64,37 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 		CHECK(pipeline->setBehaviors(0, 1));
 
 		// Still no behavior was given (null pointer), so nothing should have moved.
-		crowd->update(0.5, 0);
-
-		dtVcopy(agt1NewPos, crowd->getAgent(ag.id)->position);	
+		crowd.update(0.5, 0);
 
 		// Since no behavior is affected to the pipeline, the agent must not have moved
-		CHECK(dtVequal(agt1NewPos, posAgt1));
+		crowd.fetchAgent(updatedAgt, ag.id);
+		CHECK(dtVequal(updatedAgt.position, ag.position));
 
 		dtBehavior* behavior = pf;
 
 		// This time we affect the right behavior but with a size of 0
 		CHECK(pipeline->setBehaviors(&behavior, 0));
 
-		crowd->update(0.5, 0);
+		crowd.update(0.5, 0);
 
 		// The agent should not have moved
-		dtVcopy(agt1NewPos, crowd->getAgent(ag.id)->position);	
-		CHECK(dtVequal(agt1NewPos, posAgt1));
+		crowd.fetchAgent(updatedAgt, ag.id);
+		CHECK(dtVequal(updatedAgt.position, ag.position));
 
 		// This time we affect the behavior with the right size
 		CHECK(pipeline->setBehaviors(&behavior, 1));
 
-		crowd->update(0.5, 0);
-
-		dtVcopy(agt1NewPos, crowd->getAgent(ag.id)->position);	
+		crowd.update(0.5, 0);
 
 		// A behavior has been affected to the pipeline, the agent should have moved
-		CHECK(!dtVequal(agt1NewPos, posAgt1));
+		crowd.fetchAgent(updatedAgt, ag.id);
+		CHECK(!dtVequal(updatedAgt.position, ag.position));
 
 	}
 
 	SECTION("Using a container", "Using a container to store behaviors, set them to the pipeline and then destroy the container. The behaviors should still be in the pipeline")
 	{
-		dtCollisionAvoidance* ca = dtCollisionAvoidance::allocate(crowd->getAgentCount());
+		dtCollisionAvoidance* ca = dtCollisionAvoidance::allocate(crowd.getAgentCount());
 		ca->init();
 
 		dtCollisionAvoidanceParams* params = ca->getBehaviorParams(ag.id);
@@ -118,12 +112,12 @@ TEST_CASE("DetourPipelineTest/Pipeline", "Tests about the pipeline behavior")
 
 		behaviors.clear();
 
-		dtVcopy(posAgt1, crowd->getAgent(ag.id)->position);	
-		crowd->update(0.5);
+		dtVcopy(posAgt1, crowd.getAgent(ag.id)->position);	
+		crowd.update(0.5);
 
 		// The agent should have moved
-		dtVcopy(agt1NewPos, crowd->getAgent(ag.id)->position);	
-		CHECK(!dtVequal(agt1NewPos, posAgt1));
+		crowd.fetchAgent(updatedAgt, ag.id);
+		CHECK(!dtVequal(updatedAgt.position, ag.position));
 
 		dtCollisionAvoidance::free(ca);
 	}

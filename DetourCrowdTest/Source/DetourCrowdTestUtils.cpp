@@ -20,47 +20,42 @@
 
 #include "DetourCrowdTestUtils.h"
 
-TestScene::TestScene()
-	: m_crowd(0)
+const dtNavmeshInputGeometry& getSquareMesh()
 {
-	m_crowd = new dtCrowd;
-	m_cs.m_maxRadius = 0.2f;
-	m_cs.m_context = &m_bc;
+	static dtNavmeshInputGeometry square;
+	if (square.mesh.countFaces() == 0)
+	{
+		unsigned v0, v1, v2, v3;
+		square.mesh.addVertex(20.0, 0.0, 20.0, v0);
+		square.mesh.addVertex(20.0, 0.0, -20.0, v1);
+		square.mesh.addVertex(-20.0, 0.0, -20.0, v2);
+		square.mesh.addVertex(-20.0, 0.0, 20.0, v3);
+
+		unsigned f0, f1;
+		square.mesh.addFace(v2, v3, v0, f0);
+		square.mesh.addFace(v0, v1, v2, f1);
+		REQUIRE(square.initialize());
+	}
+	return square;
 }
 
-TestScene::~TestScene()
+const dtNavMesh& getSquareNavmesh()
 {
-	delete m_crowd;
-	m_crowd = 0;
+	static dtNavMesh square;
+	if (square.getParams()->maxPolys == 0)
+{
+		const dtNavmeshInputGeometry& geometry = getSquareMesh();
+
+		dtTiledNavmeshCfg configuration;
+		configuration.computeTileCount(geometry.bmin, geometry.bmax, 20);
+
+		TestBuildContext context;
+		REQUIRE(dtCreateTiledNavmesh(geometry, configuration, square, &context));
+	}
+	return square;
 }
 
-dtCrowd* TestScene::createSquareScene(unsigned nbMaxAgents, float maxRadius)
-{
-	// Creation of a square
-	float* vert = new float[12];
-	int* tri = new int[6];
-
-	vert[0] = 20.0; vert[1] = 0.0; vert[2] = 20.0;
-	vert[3] = 20.0; vert[4] = 0.0; vert[5] = -20.0;
-	vert[6] = -20.0; vert[7] = 0.0; vert[8] = -20.0;
-	vert[9] = -20.0; vert[10] = 0.0; vert[11] = 20.0;
-
-	tri[0] = 0; tri[1] = 1; tri[2] = 2;
-	tri[3] = 2; tri[4] = 3; tri[5] = 0;
-
-	if (!m_cs.initializeScene(&m_scene, vert, 4, tri, 2)) 
-		return 0;
-
-	if (!m_cs.initializeNavmesh(m_scene, &m_navMesh)) 
-		return 0;
-
-	if (!m_crowd->init(nbMaxAgents, maxRadius, &m_navMesh)) 
-		return 0;
-
-	return m_crowd;
-}
-
-bool TestScene::defaultInitializeAgent(dtCrowd& crowd, int index) const
+bool defaultInitializeAgent(dtCrowd& crowd, int index)
 {
 	if (index == -1)
 		return false;
@@ -78,11 +73,6 @@ bool TestScene::defaultInitializeAgent(dtCrowd& crowd, int index) const
 	crowd.pushAgent(ag);
 
 	return true;
-}
-
-OffMeshConnectionCreator* TestScene::getOffMeshCreator()
-{
-	return &m_cs.m_creator.m_offMeshConnectionCreator;
 }
 
 namespace
