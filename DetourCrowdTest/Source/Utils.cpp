@@ -18,7 +18,7 @@
 
 #define CATCH_CONFIG_MAIN // Generate automatically the main (one occurrence only)
 
-#include "DetourCrowdTestUtils.h"
+#include "Utils.h"
 
 const dtNavmeshInputGeometry& getSquareMesh()
 {

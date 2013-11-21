@@ -23,16 +23,16 @@ SET(
 	Source/DetourBehaviorsTests.cpp
 	Source/DetourCollisionAvoidanceTest.cpp
 	Source/DetourCrowdTest.cpp
-	Source/DetourCrowdTestUtils.cpp
 	Source/DetourOffMeshConnectionsTest.cpp
 	Source/DetourPathFollowingTest.cpp
 	Source/DetourPipelineTest.cpp
 	Source/SinkingAgentRegressionTest.cpp
+	Source/Utils.cpp
 	)
 
 SET(
 	detourcrowdtest_HDRS
-	Include/DetourCrowdTestUtils.h
+	Include/Utils.h
 	)
 
 SET(catch_INC Contrib/catch/include)

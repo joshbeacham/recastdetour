@@ -16,8 +16,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef DETOURCROWDTESTUTILS_H
-#define DETOURCROWDTESTUTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <DetourCrowd.h>
 
