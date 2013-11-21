@@ -326,7 +326,7 @@ SCENARIO("DetourMesh/Basics", "[mesh]")
 				CHECK(mesh.countFaces() == 2);
 			}
 
-			THEN("The vertices can be retrieved")
+			THEN("The vertices can be accessed")
 			{
 				for (unsigned i(0) ; i < 12 ; ++i)
 				{
@@ -335,13 +335,37 @@ SCENARIO("DetourMesh/Basics", "[mesh]")
 				}
 			}
 
-			THEN("The faces can be retrieved")
+			THEN("The faces can be accessed")
 			{
 				for (unsigned i(0) ; i < 6 ; ++i)
 				{
 					CAPTURE(i);
 					CHECK(mesh.getFaces()[i] == faces[i]);
 				}
+			}
+
+			THEN("The faces can be retrieved")
+			{
+				float a[3];
+				float b[3];
+				float c[3];
+				float n[3];
+				mesh.retrieveFace(0, a, b, c, n);
+				CHECK(a[0] == 20.f);
+				CHECK(a[1] == 0.f);
+				CHECK(a[2] == 20.f);
+
+				CHECK(b[0] == 20.f);
+				CHECK(b[1] == 0.f);
+				CHECK(b[2] == -20.f);
+
+				CHECK(c[0] == -20.f);
+				CHECK(c[1] == 0.f);
+				CHECK(c[2] == -20.f);
+
+				CHECK(n[0] == 0.f);
+				CHECK(n[1] == 1.f);
+				CHECK(n[2] == 0.f);
 			}
 
 			THEN("The normals are the expected ones")

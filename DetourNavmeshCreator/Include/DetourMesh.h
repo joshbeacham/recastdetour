@@ -25,8 +25,13 @@
 class dtMesh
 {
 public:
+	/// @name Construction/Destruction
+	//@{
 	dtMesh();
+	dtMesh(const dtMesh& other);
 	~dtMesh();
+	dtMesh& operator=(const dtMesh& other);
+	//@}
 
 	/// @name Vertices
 	//@{
@@ -39,6 +44,8 @@ public:
 	//@{
 	inline const unsigned* getFaces() const { return m_faces; }
 	inline const float* getNormals() const { return m_normals; }
+	void retrieveFace(unsigned face, float a[3], float b[3], float c[3], float n[3]) const;
+	const float* getNormal(unsigned face) const;
 	inline unsigned countFaces() const { return m_facesCount; }
 	void addFace(unsigned a, unsigned b, unsigned c, unsigned& index);
 	void addFace(unsigned a, unsigned b, unsigned c, float nx, float ny, float nz, unsigned& index);
@@ -68,8 +75,6 @@ public:
 	void computeAABB(float* bmin, float* bmax) const;
 
 private:
-	dtMesh(const dtMesh&);
-	dtMesh& operator=(const dtMesh&);
 
 	void computeNormals(unsigned from, unsigned to);
 

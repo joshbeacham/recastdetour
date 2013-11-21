@@ -40,11 +40,36 @@ dtMesh::dtMesh()
 	// NOTHING
 }
 
+dtMesh::dtMesh(const dtMesh& other)
+: m_vertices(0)
+, m_verticesCount(0)
+, m_verticesCapacity(0)
+, m_faces(0)
+, m_normals(0)
+, m_facesCount(0)
+, m_facesCapacity(0)
+{
+	*this = other;
+}
+
 dtMesh::~dtMesh()
 {
 	dtFree(m_vertices);
 	dtFree(m_faces);
 	dtFree(m_normals);
+}
+
+dtMesh& dtMesh::operator=(const dtMesh& other)
+{
+	if (this != &other)
+	{
+		set(other.m_vertices,
+			other.m_verticesCount,
+			other.m_faces,
+			other.m_normals,
+			other.m_facesCount);
+	}
+	return *this;
 }
 
 void dtMesh::addVertex(float x, float y, float z, unsigned& index)
@@ -84,6 +109,15 @@ void dtMesh::addFace(unsigned a, unsigned b, unsigned c, float nx, float ny, flo
 	*it++ = c;
 	index = m_facesCount;
 	++m_facesCount;
+}
+
+void dtMesh::retrieveFace(unsigned face, float a[3], float b[3], float c[3], float n[3]) const
+{
+	dtAssert(face < m_facesCount);
+	dtVcopy(n, &m_normals[3*face]);
+	dtVcopy(a, &m_vertices[3*m_faces[3*face]]);
+	dtVcopy(b, &m_vertices[3*m_faces[3*face+1]]);
+	dtVcopy(c, &m_vertices[3*m_faces[3*face+2]]);
 }
 
 namespace
