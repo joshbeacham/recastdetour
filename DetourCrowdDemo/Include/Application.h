@@ -21,6 +21,7 @@
 
 #include "Visualization.h"
 #include "BuildContext.h"
+#include "CrowdSample.h"
 #include "DebugInfo.h"
 
 #include <DetourCrowd.h>
@@ -40,6 +41,7 @@ public:
 		
 private:
 	BuildContext m_context;
+	CrowdSample m_sample;
 	dtMesh m_scene;
 	dtNavMesh m_navMesh;
 	dtCrowd m_crowd;

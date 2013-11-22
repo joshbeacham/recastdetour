@@ -17,10 +17,15 @@
 //
 
 #include "Application.h"
-#include "CrowdSample.h"
 
 Application::Application()
 : m_context()
+, m_sample()
+, m_scene()
+, m_navMesh()
+, m_crowd()
+, m_visu()
+, m_debug()
 {
 	// NOTHING
 }
@@ -32,20 +37,14 @@ Application::~Application()
 
 bool Application::init(const char* fileName)
 {
-	CrowdSample loader;
-	loader.m_context = &m_context;
-
-	if (!loader.loadFromFile(fileName))
+	if (!m_sample.loadFromFile(fileName, m_context))
 		return false;
 
-	if (!loader.initialize(m_scene, m_navMesh, m_crowd))
-		return false;
-
-	m_debug.m_crowd = &m_crowd;
+	m_debug.m_crowd = &m_sample.m_crowd;
 	
-	m_visu.m_scene = &m_scene;
-	m_visu.m_crowd = &m_crowd;
-	m_visu.m_navmesh = &m_navMesh;
+	m_visu.m_scene = &m_sample.m_mesh;
+	m_visu.m_crowd = &m_sample.m_crowd;
+	m_visu.m_navmesh = &m_sample.m_navMesh;
 	m_visu.m_debugInfo = &m_debug;
 
 	//Run the simulation

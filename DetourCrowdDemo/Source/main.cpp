@@ -29,10 +29,12 @@ int main(int argc, char** argv)
 		std::cerr << "Error: One argument has to be provided." << std::endl;
 		return 1;
 	}
-
 	Application app;
 
-	app.init(argv[1]);
+	if(!app.init(argv[1]))
+		return 2;
 
-	return app.run();
+	if(!app.run())
+		return 3;
+	return 0;
 }

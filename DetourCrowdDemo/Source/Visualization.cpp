@@ -268,7 +268,7 @@ bool Visualization::initialize()
 		{	
 			m_winWidth = vi->current_w - 20;
 			m_winHeight = vi->current_h - 80;
-			screen = SDL_SetVideoMode(m_winWidth, m_winHeight, 0, SDL_OPENGL);
+			screen = SDL_SetVideoMode(m_winWidth, m_winHeight, 0, SDL_OPENGL|SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_ANYFORMAT);
 		}
 		
 		if (!screen)

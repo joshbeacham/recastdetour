@@ -20,14 +20,11 @@
 
 #include "JSON.h"
 
-#include "DetourParametrizedBehavior.h"
-#include "DetourAlignmentBehavior.h"
-#include "DetourCohesionBehavior.h"
-#include "DetourCollisionAvoidance.h"
-#include "DetourPathFollowing.h"
-#include "DetourPipelineBehavior.h"
-#include "DetourSeekBehavior.h"
-#include "DetourSeparationBehavior.h"
+#include <DetourCollisionAvoidance.h>
+#include <DetourPathFollowing.h>
+#include <DetourPipelineBehavior.h>
+
+#include <DetourAssert.h>
 
 #include <Recast.h>
 
@@ -35,464 +32,47 @@
 #include <cstring>
 
 CrowdSample::CrowdSample()
-: m_agentCfgs()
-, m_agentCount(0)
-, m_context(0)
-, m_sceneFileName()
-, m_maxRadius(0.f)
-, m_root(0)
+: m_mesh()
+, m_navMesh()
+, m_crowd()
+, m_maxRadius(-1.f)
+, m_agentsCount(0.)
+, m_behaviors()
 {
-	strcpy(m_sceneFileName,"");
+	// NOTHING
 }
 
 CrowdSample::~CrowdSample()
 {
+	// NOTHING
 }
 
-char* CrowdSample::getSceneFile()
+bool CrowdSample::loadFromFile(const char* fileName, rcContext& context)
 {
-	if (m_root)
+	JSONValue* root;
+	bool success = loadJSONFile(fileName, &root, context);
+	if (success) dtAssert(root);
+	success = success && loadScene(*root, context);
+	success = success && retrieveAgentsInfo(*root, context);
+	success = success && computeNavmesh(context);
+	if (m_agentsCount > 0)
 	{
-		JSONValue* scene = m_root->Child(L"scene");
-		if (scene && scene->IsObject())
-		{
-			JSONValue* file = scene->Child(L"file");
-			if (file && file->IsString())
-				wcstombs(m_sceneFileName,file->AsString().c_str(), maxPathLen);
-		}
+		success = success && m_crowd.init(m_agentsCount, m_maxRadius, &m_navMesh);
+		success = success && parseBehaviors(*root, context);
+		success = success && createAgents(*root, context);
 	}
-
-	return m_sceneFileName;
+	return success;
 }
 
-void CrowdSample::parseAgentsInfo()
-{
-	JSONValue* agents = m_root->Child(L"agents");
-	if (agents && agents->IsArray())
-	{
-		m_agentCount = rcMin<int>(agents->CountChildren(),maxAgentCount);
-		for (std::size_t iAgent(0) ; iAgent < (size_t)m_agentCount ; ++iAgent)
-		{
-			JSONValue* agent = agents->Child(iAgent);
-			if (agent && agent->IsObject())
-			{
-				JSONValue* parameters = agent->Child(L"parameters");
-				if (parameters && parameters->IsObject())
-				{
-					JSONValue* radius = parameters->Child(L"radius");
-					if (radius && radius->IsNumber())
-						m_maxRadius = rcMax(m_maxRadius, (float) radius->AsNumber());
-				}
-			}
-		}
-	}
-}
-
-void CrowdSample::parseCrowd(dtCrowd* crowd)
-{
-	JSONValue* flocking = m_root->Child(L"flockings");
-
-	if (flocking && flocking->IsArray())
-	{
-		int nbFlocks = flocking->CountChildren();
-		m_flockingsGroups.resize(nbFlocks);
-
-		for (std::size_t i(0) ; i < (size_t)nbFlocks ; ++i)
-		{
-			JSONValue* flock = flocking->Child(i);
-
-			if (flock && flock->IsObject())
-			{
-				JSONValue* desiredSeparation = flock->Child(L"desiredSeparation");
-				if (desiredSeparation && desiredSeparation->IsNumber())
-					m_flockingsGroups.at(i).desiredSeparation = (float) desiredSeparation->AsNumber();
-
-				JSONValue* separationWeight = flock->Child(L"separationWeight");
-				if (separationWeight && separationWeight->IsNumber())
-					m_flockingsGroups.at(i).separationWeight = (float) separationWeight->AsNumber();
-
-				JSONValue* cohesionWeight = flock->Child(L"cohesionWeight");
-				if (cohesionWeight && cohesionWeight->IsNumber())
-					m_flockingsGroups.at(i).cohesionWeight = (float) cohesionWeight->AsNumber();
-
-				JSONValue* alignmentWeight = flock->Child(L"alignmentWeight");
-				if (alignmentWeight && alignmentWeight->IsNumber())
-					m_flockingsGroups.at(i).alignmentWeight = (float) alignmentWeight->AsNumber();
-			}
-		}
-	}
-
-	JSONValue* agents = m_root->Child(L"agents");
-	if (agents && agents->IsArray())
-	{
-		m_agentCount = rcMin<int>(agents->CountChildren(),maxAgentCount);
-		for (std::size_t iAgent(0) ; iAgent < (size_t)m_agentCount ; ++iAgent)
-		{
-			memset(&m_agentCfgs[iAgent],0,sizeof(m_agentCfgs[iAgent]));
-			JSONValue* agent = agents->Child(iAgent);
-			if (agent && agent->IsObject())
-			{
-				JSONValue* position = agent->Child(L"position");
-				if (position && position->IsArray())
-				{
-					m_agentCfgs[iAgent].position[0] = (float)position->Child((size_t)0)->AsNumber();
-					m_agentCfgs[iAgent].position[1] = (float)position->Child(1)->AsNumber();
-					m_agentCfgs[iAgent].position[2] = (float)position->Child(2)->AsNumber();
-				}
-				
-				JSONValue* parameters = agent->Child(L"parameters");
-				if (parameters && parameters->IsObject())
-				{
-					JSONValue* maxSpeed = parameters->Child(L"maxSpeed");
-					if (maxSpeed && maxSpeed->IsNumber())
-						m_agentCfgs[iAgent].maxSpeed= (float)maxSpeed->AsNumber();
-
-					JSONValue* maxAcceleration = parameters->Child(L"maxAcceleration");
-					if (maxAcceleration && maxAcceleration->IsNumber())
-						m_agentCfgs[iAgent].maxAcceleration = (float)maxAcceleration->AsNumber();
-
-					JSONValue* radius = parameters->Child(L"radius");
-					if (radius && radius->IsNumber())
-						m_agentCfgs[iAgent].radius = (float)radius->AsNumber();
-
-					JSONValue* height = parameters->Child(L"height");
-					if (height && height->IsNumber())
-						m_agentCfgs[iAgent].height = (float)height->AsNumber();
-
-					JSONValue* collisionQueryRange = parameters->Child(L"collisionQueryRange");
-					if (collisionQueryRange && collisionQueryRange->IsNumber())
-						m_agentCfgs[iAgent].collisionQueryRange = (float)collisionQueryRange->AsNumber();
-
-					JSONValue* pipeline = parameters->Child(L"pipeline");
-					if (pipeline && pipeline->IsArray())
-						parsePipeline(pipeline, iAgent, crowd);
-
-					JSONValue* behavior = parameters->Child(L"behavior");
-					if (behavior && behavior->IsObject())
-						parseBehavior(behavior, iAgent, crowd, false);
-				}
-			}
-		}
-	}
-}
-
-bool CrowdSample::loadFromBuffer( const char* data )
-{
-	m_root = JSON::Parse(data);
-
-	if (!m_root)
-	{
-		//Unable to parse the JSON data.
-		return false;
-	}
-		
-	return true;
-}
-
-void CrowdSample::parsePipeline(JSONValue* pipeline, std::size_t iAgent, dtCrowd* crowd)
-{
-	if (pipeline && pipeline->IsArray())
-	{
-		for (std::size_t iFlag(0), size(pipeline->CountChildren()) ; iFlag < size ; ++iFlag)
-		{
-			JSONValue* child = pipeline->Child(iFlag);
-			JSONValue* behavior = child->Child(L"behavior");
-			JSONValue* pipe = child->Child(L"pipeline");
-
-			if (behavior && behavior->IsObject())
-				parseBehavior(behavior, iAgent, crowd, true);
-			else if (pipe && pipe->IsArray())
-				parsePipeline(pipe, iAgent, crowd);
-		}
-	}
-}
-
-void CrowdSample::parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd* crowd, bool pipeline)
-{
-	JSONValue* type = behavior->Child(L"type");
-
-	// Collision Avoidance behavior
-	if (type && type->IsString() && type->AsString() == L"collisionAvoidance")
-	{
-		dtCollisionAvoidance* ca = dtCollisionAvoidance::allocate(m_agentCount);
-		ca->init();
-		
-		dtCollisionAvoidanceParams* params = ca->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (params)
-		{
-			params->debug = 0;
-		}
-		
-		JSONValue* weightDesiredVelocity = behavior->Child(L"weightDesiredVelocity");
-		if (weightDesiredVelocity && weightDesiredVelocity->IsNumber())
-			ca->weightDesiredVelocity = (float)weightDesiredVelocity->AsNumber();
-		
-		JSONValue* weightCurrentVelocity = behavior->Child(L"weightCurrentVelocity");
-		if (weightCurrentVelocity && weightCurrentVelocity->IsNumber())
-			ca->weightCurrentVelocity = (float)weightCurrentVelocity->AsNumber();
-		
-		JSONValue* weightCurrentAvoidanceSide = behavior->Child(L"weightCurrentAvoidanceSide");
-		if (weightCurrentAvoidanceSide && weightCurrentAvoidanceSide->IsNumber())
-			ca->weightCurrentAvoidanceSide = (float)weightCurrentAvoidanceSide->AsNumber();
-		
-		JSONValue* weightTimeToCollision = behavior->Child(L"weightTimeToCollision");
-		if (weightTimeToCollision && weightTimeToCollision->IsNumber())
-			ca->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
-		
-		JSONValue* sampleOriginScale = behavior->Child(L"sampleOriginScale");
-		if (sampleOriginScale && sampleOriginScale->IsNumber())
-			ca->sampleOriginScale = (float)sampleOriginScale->AsNumber();
-		
-		JSONValue* sampleSectorsCount = behavior->Child(L"sampleSectorsCount");
-		if (sampleSectorsCount && sampleSectorsCount->IsNumber())
-			ca->sampleSectorsCount = (float)sampleSectorsCount->AsNumber();
-		
-		JSONValue* sampleRingsCount = behavior->Child(L"sampleRingsCount");
-		if (sampleRingsCount && sampleRingsCount->IsNumber())
-			ca->sampleRingsCount = (float)sampleRingsCount->AsNumber();
-		
-		JSONValue* sampleLevelsCount = behavior->Child(L"sampleLevelsCount");
-		if (sampleLevelsCount && sampleLevelsCount->IsNumber())
-			ca->sampleLevelsCount = (float)sampleLevelsCount->AsNumber();
-		
-		JSONValue* horizonTime = behavior->Child(L"horizonTime");
-		if (horizonTime && horizonTime->IsNumber())
-			ca->horizonTime = (float)horizonTime->AsNumber();
-		
-		m_agentCfgs[iAgent].steeringBehavior = ca;
-	}
-
-	// PathFollowing behavior
-	else if (type && type->IsString() && type->AsString() == L"pathFollowing")
-	{
-		dtPathFollowing* pf = dtPathFollowing::allocate(m_agentCount);
-		if (!pf->init(*crowd->getCrowdQuery()))
-			return;
-
-		m_agentCfgs[iAgent].steeringBehavior = pf;
-		
-		dtPathFollowingParams* params = pf->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (params)
-		{
-			params->debugInfos = 0;
-			params->debugIndex = iAgent;
-		}
-
-		JSONValue* visibilityPathOptimizationRange = behavior->Child(L"visibilityPathOptimizationRange");
-		if (visibilityPathOptimizationRange && visibilityPathOptimizationRange->IsNumber())
-			pf->visibilityPathOptimizationRange = (float)visibilityPathOptimizationRange->AsNumber();
-		
-		JSONValue* initialPathfindIterCount = behavior->Child(L"initialPathfindIterCount");
-		if (initialPathfindIterCount && initialPathfindIterCount->IsNumber())
-			pf->initialPathfindIterCount = (unsigned)initialPathfindIterCount->AsNumber();
-		
-		JSONValue* localPathReplanningInterval = behavior->Child(L"localPathReplanningInterval");
-		if (localPathReplanningInterval && localPathReplanningInterval->IsBool())
-			pf->localPathReplanningInterval = localPathReplanningInterval->AsBool();
-		
-		JSONValue* anticipateTurns = behavior->Child(L"anticipateTurns");
-		if (anticipateTurns && anticipateTurns->IsBool())
-			pf->anticipateTurns = anticipateTurns->AsBool();
-		
-		JSONValue* destination = behavior->Child(L"destination");
-		if (destination && destination->IsArray())
-		{
-			m_agentCfgs[iAgent].destination[0] = (float)destination->Child((size_t)0)->AsNumber();
-			m_agentCfgs[iAgent].destination[1] = (float)destination->Child(1)->AsNumber();
-			m_agentCfgs[iAgent].destination[2] = (float)destination->Child(2)->AsNumber();
-
-			crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(m_agentCfgs[iAgent].destination, crowd->getCrowdQuery()->getQueryExtents(), 
-				crowd->getCrowdQuery()->getQueryFilter(), 
-				&m_agentCfgs[iAgent].destinationPoly, 0);
-
-			pf->getBehaviorParams(iAgent)->submitTarget(m_agentCfgs[iAgent].destination, m_agentCfgs[iAgent].destinationPoly);
-		}
-
-	}
-
-	// Seek behavior
-	else if (type && type->IsString() && type->AsString() == L"seek")
-	{
-		dtSeekBehavior* seekBehavior = dtSeekBehavior::allocate(m_agentCount);
-		dtSeekBehaviorParams* params;
-
-		params = seekBehavior->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (!params)
-			return;
-		
-		m_agentCfgs[iAgent].steeringBehavior = seekBehavior;
-
-		JSONValue* target = behavior->Child(L"targetIdx");
-		if (target && target->IsNumber())
-			params->targetID = (int) target->AsNumber();
-
-		JSONValue* dist = behavior->Child(L"minimalDistance");
-		if (dist && dist->IsNumber())
-			params->distance = (float) dist->AsNumber();
-
-		JSONValue* predict = behavior->Child(L"predictionFactor");
-		if (predict && predict->IsNumber())
-			params->predictionFactor = (float) predict->AsNumber();
-	}
-
-	// Separation behavior
-	else if (type && type->IsString() && type->AsString() == L"separation")
-	{		
-		dtSeparationBehavior* separationBehavior = dtSeparationBehavior::allocate(m_agentCount);
-		dtSeparationBehaviorParams* params;
-
-		params = separationBehavior->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (!params)
-			return;
-		
-		JSONValue* weight = behavior->Child(L"weight");
-		if (weight && weight->IsNumber())
-			params->weight = (float) weight->AsNumber();
-
-		JSONValue* dist = behavior->Child(L"distance");
-		if (dist && dist->IsNumber())
-			params->distance = (float) weight->AsNumber();
-
-		JSONValue* targets = behavior->Child(L"targets");
-		if (targets && targets->IsArray())
-		{
-			for (std::size_t i(0), size(targets->CountChildren()) ; i < size ; ++i)
-			{
-				JSONValue* index = targets->Child(i);
-
-				if (index && index->IsNumber())
-					m_separationTargets.push_back(static_cast<int>(index->AsNumber()));
-			}
-
-			unsigned* targets = (unsigned*) dtAlloc(sizeof(int) * m_separationTargets.size(), DT_ALLOC_PERM);
-			std::copy(m_separationTargets.begin(), m_separationTargets.end(), targets);
-
-			params->targetsID = targets;
-			params->nbTargets = m_separationTargets.size();
-		}
-
-		m_agentCfgs[iAgent].steeringBehavior = separationBehavior;
-	}
-
-	// Alignment behavior
-	else if (type && type->IsString() && type->AsString() == L"alignment")
-	{				
-		dtAlignmentBehavior* alignBehavior = dtAlignmentBehavior::allocate(m_agentCount);
-		dtAlignmentBehaviorParams* params = new dtAlignmentBehaviorParams;
-
-		params = alignBehavior->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (!params)
-			return;
-
-		JSONValue* targets = behavior->Child(L"targets");
-		if (targets && targets->IsArray())
-		{
-			for (std::size_t i(0), size(targets->CountChildren()) ; i < size ; ++i)
-			{
-				JSONValue* index = targets->Child(i);
-
-				if (index && index->IsNumber())
-					m_alignmentTargets.push_back(static_cast<int>(index->AsNumber()));
-			}
-
-			unsigned* targets = (unsigned*) dtAlloc(sizeof(int) * m_alignmentTargets.size(), DT_ALLOC_PERM);
-			std::copy(m_alignmentTargets.begin(), m_alignmentTargets.end(), targets);
-
-			params->targets = targets;
-			params->nbTargets = m_alignmentTargets.size();
-		}
-
-		m_agentCfgs[iAgent].steeringBehavior = alignBehavior;
-	}
-
-	// Cohesion behavior
-	else if (type && type->IsString() && type->AsString() == L"cohesion")
-	{				
-		dtCohesionBehavior* cohesion = dtCohesionBehavior::allocate(m_agentCount);
-		dtCohesionBehaviorParams* params;
-
-		params = cohesion->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (!params)
-			return;
-
-		JSONValue* targets = behavior->Child(L"targets");
-		if (targets && targets->IsArray())
-		{
-			for (std::size_t i(0), size(targets->CountChildren()) ; i < size ; ++i)
-			{
-				JSONValue* index = targets->Child(i);
-
-				if (index && index->IsNumber())
-					m_cohesionTargets.push_back(static_cast<int>(index->AsNumber()));
-			}
-
-			unsigned* targets = (unsigned*) dtAlloc(sizeof(int) * m_cohesionTargets.size(), DT_ALLOC_PERM);
-			std::copy(m_cohesionTargets.begin(), m_cohesionTargets.end(), targets);
-
-			params->targets = targets;
-			params->nbTargets = m_cohesionTargets.size();
-		}
-
-		m_agentCfgs[iAgent].steeringBehavior = cohesion;
-	}
-
-	// Flocking behavior
-	else if (type && type->IsString() && type->AsString() == L"flocking")
-	{				
-		dtFlockingBehavior* fb = dtFlockingBehavior::allocate(m_agentCount, 1.f, 1.f, 1.f, 1.f);
-		dtFlockingBehaviorParams* params;
-
-		params = fb->getBehaviorParams(crowd->getAgent(iAgent)->id);
-
-		if (!params)
-			return;
-
-		if (m_flockingsGroups.empty() == false)
-		{
-			fb->alignmentWeight = m_flockingsGroups.at(0).alignmentWeight;
-			fb->cohesionWeight = m_flockingsGroups.at(0).cohesionWeight;
-			fb->separationWeight = m_flockingsGroups.at(0).separationWeight;
-			fb->separationDistance = m_flockingsGroups.at(0).desiredSeparation;
-		}
-
-		JSONValue* targets = behavior->Child(L"targets");
-		if (targets && targets->IsArray())
-		{
-			for (std::size_t i(0), size(targets->CountChildren()) ; i < size ; ++i)
-			{
-				JSONValue* index = targets->Child(i);
-
-				if (index && index->IsNumber())
-					m_agentsFlockingNeighbors[iAgent].push_back(static_cast<int>(index->AsNumber()));
-
-				unsigned* targets = (unsigned*) dtAlloc(sizeof(int) * m_agentsFlockingNeighbors[iAgent].size(), DT_ALLOC_PERM);
-				std::copy(m_agentsFlockingNeighbors[iAgent].begin(), m_agentsFlockingNeighbors[iAgent].end(), targets);
-
-				params->toFlockWith = targets;
-				params->nbflockingTargets = m_agentsFlockingNeighbors[iAgent].size();
-			}
-		}
-
-		m_agentCfgs[iAgent].steeringBehavior = fb;
-	}
-
-	if (pipeline)
-		m_pipeline[iAgent].push_back(m_agentCfgs[iAgent].steeringBehavior);
-}
-
-
-bool CrowdSample::loadFromFile(const char* fileName)
+bool CrowdSample::loadJSONFile(const char* fileName, JSONValue** root, rcContext& context)
 {
 	char* buf = 0;
 	FILE* fp = fopen(fileName, "rb");
 	if (!fp)
+	{
+		context.log(RC_LOG_ERROR, "Unable to load the crowd sample from '%s', error while opening the file.",fileName);
 		return false;
+	}
 	fseek(fp, 0, SEEK_END);
 	int bufSize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -500,108 +80,330 @@ bool CrowdSample::loadFromFile(const char* fileName)
 	if (!buf)
 	{
 		fclose(fp);
+		context.log(RC_LOG_ERROR, "Unable to load the crowd sample from '%s', error while allocating the buffer.",fileName);
 		return false;
 	}
 	fread(buf, bufSize, 1, fp);
 	fclose(fp);
 	buf[bufSize]=0;
-	return loadFromBuffer(buf);
-}
 
-bool CrowdSample::initialize(dtMesh& mesh, dtNavMesh& navMesh, dtCrowd& crowd)
-{
-	getSceneFile();
-	parseAgentsInfo();
-	
-	if (!initializeScene(mesh))
+	*root = JSON::Parse(buf);
+
+	if (!(*root))
+	{
+		context.log(RC_LOG_ERROR, "Unable to load the crowd sample from '%s', error while parsing the JSON.",fileName);
 		return false;
-
-	if (!initializeNavmesh(mesh, navMesh))
-		return false;
-
-	crowd.init(m_agentCount, m_maxRadius, &navMesh);
-	parseCrowd(&crowd);
-
-	if (!initializeCrowd(crowd))
-		return false;
+	}
 
 	return true;
 }
 
-void CrowdSample::computeMaximumRadius()
+bool CrowdSample::loadScene(JSONValue& root, rcContext& context)
 {
-	m_maxRadius = 0.f;
-
-	for (int i(0) ; i < m_agentCount ; ++i)
-		m_maxRadius = rcMax(m_maxRadius,m_agentCfgs[i].radius);
+	JSONValue* scene = root.Child(L"scene");
+	if (scene && scene->IsObject())
+	{
+		JSONValue* file = scene->Child(L"file");
+		if (file && file->IsString())
+		{
+			char sceneFileName[maxStringLen + 1];
+			wcstombs(sceneFileName,file->AsString().c_str(), maxStringLen);
+			m_mesh.clear();
+			if (!loadObjFile(sceneFileName, m_mesh))
+			{
+				context.log(RC_LOG_ERROR, "Unable to load the scene, error loading '%s'.",sceneFileName);
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
-bool CrowdSample::initializeScene(dtMesh& mesh)
+bool CrowdSample::retrieveAgentsInfo(JSONValue& root, rcContext& context)
 {
-	if (strlen(m_sceneFileName) > 0)
+	m_maxRadius = 0.2f;
+	m_agentsCount = 0;
+	JSONValue* agents = root.Child(L"agents");
+	if (agents && agents->IsArray())
 	{
-		mesh.clear();
-		return loadObjFile(m_sceneFileName, mesh);
+		m_agentsCount = rcMin<unsigned>(agents->CountChildren(),maxAgentCount);
+		for (std::size_t iAgent(0) ; iAgent < m_agentsCount ; ++iAgent)
+		{
+			JSONValue* agent = agents->Child(iAgent);
+			if (agent && agent->IsObject())
+			{
+				JSONValue* radius = agent->Child(L"radius");
+				if (radius && radius->IsNumber())
+					m_maxRadius = rcMax(m_maxRadius, (float) radius->AsNumber());
+			}
+		}
 	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
-bool CrowdSample::initializeNavmesh(const dtMesh& mesh, dtNavMesh& navMesh)
+bool CrowdSample::computeNavmesh(rcContext& context)
 {
-	if (!m_context)
-		return false;
-
 	dtNavmeshInputGeometry inputGeometry;
-	inputGeometry.mesh = mesh;
+	inputGeometry.mesh = m_mesh;
 	if (!inputGeometry.initialize())
+	{
+		context.log(RC_LOG_ERROR, "Unable to compute the navmesh, error while initialization the input geometry.");
 		return false;
+	}
 
 	dtTiledNavmeshCfg configuration;
 
+	dtAssert(m_maxRadius > 0.f);
+	configuration.voxels.size = m_maxRadius * 0.25f;
 	configuration.navigation.minimumObstacleClearance = m_maxRadius;
 
-	configuration.computeTileCount(inputGeometry.bmin, inputGeometry.bmax, 50);
+	configuration.computeTileCount(inputGeometry.bmin, inputGeometry.bmax, 512);
 
 	if (!dtCreateTiledNavmesh(inputGeometry,
 							  configuration,
-							  navMesh,
-							  m_context))
+							  m_navMesh,
+							  &context))
+	{
+		context.log(RC_LOG_ERROR, "Unable to compute the navmesh, error during the computation.");
 		return false;
+	}
+	
+	return true;
+}
+
+bool CrowdSample::parseBehaviors(JSONValue& root, rcContext& context)
+{
+	JSONValue* behaviors = root.Child(L"behaviors");
+	if (behaviors && behaviors->IsObject())
+	{
+		const JSONObject& behaviorsObject = behaviors->AsObject();
+		for (JSONObject::const_iterator it(behaviorsObject.begin()), end(behaviorsObject.end()) ; it != end ; ++it)
+		{
+			char behaviorName[maxStringLen + 1];
+			wcstombs(behaviorName,it->first.c_str(), maxStringLen);
+			JSONValue* behaviorPipeline = it->second;
+			BehaviorCfg behaviorCfg;
+			memset(&behaviorCfg, 0, sizeof(behaviorCfg));
+			if (behaviorPipeline && behaviorPipeline->IsArray())
+			{
+				for (std::size_t i(0), size(behaviorPipeline->CountChildren()) ; i < size ; ++i)
+				{
+					JSONValue* behavior = behaviorPipeline->Child(i);
+					if (behavior && behavior->IsObject())
+					{
+						JSONValue* type = behavior->Child(L"type");
+						if (type && type->IsString() && type->AsString() == L"collisionAvoidance")
+						{
+							if (behaviorCfg.collisionAvoidance)
+							{
+								context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', can't have duplicate collision avoidance behavior.", behaviorName);
+								return false;
+							}
+							if (!parseCollisionAvoidance(*behavior, &behaviorCfg.collisionAvoidance, context))
+							{
+								context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', error while parsing the collision avoidance behavior.", behaviorName);
+								return false;
+							}
+
+							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.collisionAvoidance;
+							behaviorCfg.activeBehaviorsCount++;
+						}
+						else if (type && type->IsString() && type->AsString() == L"pathFollowing")
+						{
+							if (behaviorCfg.pathFollowing)
+							{
+								context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', can't have duplicate path following behavior.", behaviorName);
+								return false;
+							}
+							if (!parsePathFollowing(*behavior, &behaviorCfg.pathFollowing, context))
+							{
+								context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', error while parsing the path following behavior.", behaviorName);
+								return false;
+							}
+
+							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.pathFollowing;
+							behaviorCfg.activeBehaviorsCount++;
+						}
+						else if (type && type->IsString())
+						{
+							context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', '%s' is an unknown behavior type.", behaviorName, type->AsString().c_str());
+							return false;
+						}
+					}
+				}
+
+			}
+			behaviorCfg.pipeline = dtPipelineBehavior::allocate();
+			behaviorCfg.pipeline->setBehaviors(behaviorCfg.activeBehaviors, behaviorCfg.activeBehaviorsCount);
+			m_behaviors.insert(std::make_pair(behaviorName, behaviorCfg));
+		}
+	}
+	return true;
+}
+
+bool CrowdSample::parseCollisionAvoidance(JSONValue& behavior, dtCollisionAvoidance** collisionAvoidance, rcContext& /*context*/)
+{
+	*collisionAvoidance = dtCollisionAvoidance::allocate(m_agentsCount);
+	(*collisionAvoidance)->init();
+
+	JSONValue* weightDesiredVelocity = behavior.Child(L"weightDesiredVelocity");
+	if (weightDesiredVelocity && weightDesiredVelocity->IsNumber())
+		(*collisionAvoidance)->weightDesiredVelocity = (float)weightDesiredVelocity->AsNumber();
+
+	JSONValue* weightCurrentVelocity = behavior.Child(L"weightCurrentVelocity");
+	if (weightCurrentVelocity && weightCurrentVelocity->IsNumber())
+		(*collisionAvoidance)->weightCurrentVelocity = (float)weightCurrentVelocity->AsNumber();
+
+	JSONValue* weightCurrentAvoidanceSide = behavior.Child(L"weightCurrentAvoidanceSide");
+	if (weightCurrentAvoidanceSide && weightCurrentAvoidanceSide->IsNumber())
+		(*collisionAvoidance)->weightCurrentAvoidanceSide = (float)weightCurrentAvoidanceSide->AsNumber();
+
+	JSONValue* weightTimeToCollision = behavior.Child(L"weightTimeToCollision");
+	if (weightTimeToCollision && weightTimeToCollision->IsNumber())
+		(*collisionAvoidance)->weightTimeToCollision = (float)weightTimeToCollision->AsNumber();
+
+	JSONValue* sampleOriginScale = behavior.Child(L"sampleOriginScale");
+	if (sampleOriginScale && sampleOriginScale->IsNumber())
+		(*collisionAvoidance)->sampleOriginScale = (float)sampleOriginScale->AsNumber();
+
+	JSONValue* sampleSectorsCount = behavior.Child(L"sampleSectorsCount");
+	if (sampleSectorsCount && sampleSectorsCount->IsNumber())
+		(*collisionAvoidance)->sampleSectorsCount = (float)sampleSectorsCount->AsNumber();
+
+	JSONValue* sampleRingsCount = behavior.Child(L"sampleRingsCount");
+	if (sampleRingsCount && sampleRingsCount->IsNumber())
+		(*collisionAvoidance)->sampleRingsCount = (float)sampleRingsCount->AsNumber();
+
+	JSONValue* sampleLevelsCount = behavior.Child(L"sampleLevelsCount");
+	if (sampleLevelsCount && sampleLevelsCount->IsNumber())
+		(*collisionAvoidance)->sampleLevelsCount = (float)sampleLevelsCount->AsNumber();
+
+	JSONValue* horizonTime = behavior.Child(L"horizonTime");
+	if (horizonTime && horizonTime->IsNumber())
+		(*collisionAvoidance)->horizonTime = (float)horizonTime->AsNumber();
 
 	return true;
 }
 
-bool CrowdSample::initializeCrowd(dtCrowd& crowd)
+bool CrowdSample::parsePathFollowing(JSONValue& behavior, dtPathFollowing** pathFollowing, rcContext& /*context*/)
 {
-	for (int i(0) ; i < m_agentCount ; ++i)
+	*pathFollowing = dtPathFollowing::allocate(1);
+	(*pathFollowing)->init(*m_crowd.getCrowdQuery());
+
+	JSONValue* visibilityPathOptimizationRange = behavior.Child(L"visibilityPathOptimizationRange");
+	if (visibilityPathOptimizationRange && visibilityPathOptimizationRange->IsNumber())
+		(*pathFollowing)->visibilityPathOptimizationRange = (float)visibilityPathOptimizationRange->AsNumber();
+
+	JSONValue* initialPathfindIterCount = behavior.Child(L"initialPathfindIterCount");
+	if (initialPathfindIterCount && initialPathfindIterCount->IsNumber())
+		(*pathFollowing)->initialPathfindIterCount = (unsigned)initialPathfindIterCount->AsNumber();
+
+	JSONValue* localPathReplanningInterval = behavior.Child(L"localPathReplanningInterval");
+	if (localPathReplanningInterval && localPathReplanningInterval->IsBool())
+		(*pathFollowing)->localPathReplanningInterval = localPathReplanningInterval->AsBool();
+
+	JSONValue* anticipateTurns = behavior.Child(L"anticipateTurns");
+	if (anticipateTurns && anticipateTurns->IsBool())
+		(*pathFollowing)->anticipateTurns = anticipateTurns->AsBool();
+
+	return true;
+}
+
+bool CrowdSample::createAgents(JSONValue& root, rcContext& context)
+{
+	JSONValue* agents = root.Child(L"agents");
+	if (agents && agents->IsArray())
 	{
-		// Pipeline behavior
-		if (!m_pipeline[i].empty())
+		m_agentsCount = rcMin<unsigned>(agents->CountChildren(),maxAgentCount);
+		for (std::size_t iAgent(0) ; iAgent < m_agentsCount ; ++iAgent)
 		{
-			dtPipelineBehavior* pipeline = dtPipelineBehavior::allocate();
+			JSONValue* agent = agents->Child(iAgent);
+			if (agent && agent->IsObject())
+			{
+				dtCrowdAgent ag;
+				JSONValue* position = agent->Child(L"position");
+				if (position && position->IsArray())
+				{
+					ag.position[0] = (float)position->Child((size_t)0)->AsNumber();
+					ag.position[1] = (float)position->Child(1)->AsNumber();
+					ag.position[2] = (float)position->Child(2)->AsNumber();
+					if (!m_crowd.addAgent(ag, ag.position))
+					{
+						context.log(RC_LOG_ERROR, "Unable to create agent #%d, addition to crowd failed.", iAgent);
+						return false;
+					}
+					if (ag.state == DT_CROWDAGENT_STATE_INVALID)
+					{
+						context.log(RC_LOG_ERROR, "Unable to create agent #%d, its initial position (%.2f, %.2f, %.2f) doesn't belong to the navmesh.", ag.id, (float)position->Child((size_t)0)->AsNumber(), (float)position->Child(1)->AsNumber(), (float)position->Child(2)->AsNumber());
+						return false;
+					}
+				}
 
-			pipeline->setBehaviors(m_pipeline[i].data(), m_pipeline[i].size());
-			m_agentCfgs[i].steeringBehavior = pipeline;
+				JSONValue* maxSpeed = agent->Child(L"maxSpeed");
+				if (maxSpeed && maxSpeed->IsNumber())
+					ag.maxSpeed= (float)maxSpeed->AsNumber();
+
+				JSONValue* maxAcceleration = agent->Child(L"maxAcceleration");
+				if (maxAcceleration && maxAcceleration->IsNumber())
+					ag.maxAcceleration = (float)maxAcceleration->AsNumber();
+
+				JSONValue* radius = agent->Child(L"radius");
+				if (radius && radius->IsNumber())
+					ag.radius = (float)radius->AsNumber();
+
+				JSONValue* height = agent->Child(L"height");
+				if (height && height->IsNumber())
+					ag.height = (float)height->AsNumber();
+
+				JSONValue* perceptionDistance = agent->Child(L"perceptionDistance");
+				if (perceptionDistance && perceptionDistance->IsNumber())
+					ag.perceptionDistance = (float)perceptionDistance->AsNumber();
+
+				JSONValue* behavior = agent->Child(L"behavior");
+				if (behavior && behavior->IsString())
+				{
+					char behaviorName[maxStringLen + 1];
+					wcstombs(behaviorName,behavior->AsString().c_str(), maxStringLen);
+					std::map<std::string, BehaviorCfg>::iterator behaviorIt = m_behaviors.find(behaviorName);
+					if (behaviorIt == m_behaviors.end())
+					{
+						context.log(RC_LOG_ERROR, "Unable to create agent #%d, set behavior (%s) is unknown.", iAgent, behaviorName);
+						return false;
+					}
+					dtAssert(behaviorIt->second.pipeline);
+					ag.behavior = behaviorIt->second.pipeline;
+
+					JSONValue* behaviorParams = agent->Child(L"behaviorParams");
+					if (behaviorParams && behaviorParams->IsObject())
+					{
+						JSONValue* pathFollowingParams = behaviorParams->Child(L"pathFollowing");
+						if (pathFollowingParams && pathFollowingParams->IsObject())
+						{
+							if (!behaviorIt->second.pathFollowing)
+							{
+								context.log(RC_LOG_ERROR, "Unable to create agent #%d, path following parameters provided while its behavior doesn't include path following.", iAgent, behaviorName);
+								return false;
+							}
+							JSONValue* destination = pathFollowingParams->Child(L"destination");
+							if (destination && destination->IsArray())
+							{
+								float dest[3];
+								dest[0] = (float)destination->Child((size_t)0)->AsNumber();
+								dest[1] = (float)destination->Child(1)->AsNumber();
+								dest[2] = (float)destination->Child(2)->AsNumber();
+								behaviorIt->second.pathFollowing->getBehaviorParams(ag.id)->submitTarget(dest);
+							}
+						}
+					}
+				}
+
+				if (!m_crowd.pushAgent(ag))
+				{
+					context.log(RC_LOG_ERROR, "Unable to create agent #%d, update of its parameters failed.", iAgent);
+					return false;
+				}
+			}
 		}
-
-		// Adding the agent to the crowd
-		dtCrowdAgent ag;
-
-		if (!crowd.addAgent(ag, m_agentCfgs[i].position))
-			continue;
-
-		ag.radius = m_agentCfgs[i].radius;
-		ag.maxSpeed = m_agentCfgs[i].maxSpeed;
-		ag.maxAcceleration = m_agentCfgs[i].maxAcceleration;
-		ag.height = m_agentCfgs[i].height;
-		ag.behavior = m_agentCfgs[i].steeringBehavior;
-		ag.perceptionDistance = m_agentCfgs[i].collisionQueryRange;
-
-		crowd.pushAgent(ag);
 	}
-	
-	return true; 
+	return true;
 }

@@ -25,85 +25,53 @@
 #include <DetourNavmeshCreator.h>
 
 #include <DetourCrowd.h>
-#include <DetourFlockingBehavior.h>
 
 #include <map>
 #include <vector>
 #include <string>
 
-#include <map>
+class dtCollisionAvoidance;
+class dtPipelineBehavior;
+class dtPathFollowing;
 
 class rcContext;
-class InputGeom;
+
 class JSONValue;
-
-struct AgentConfiguration
-{
-	int index;
-	float position[3];
-	float destination[3];
-	dtPolyRef destinationPoly;
-
-	float radius;
-	float height;
-	float maxAcceleration;
-	float maxSpeed;
-
-	dtBehavior* steeringBehavior;
-
-	float collisionQueryRange;
-	unsigned char updateFlags;
-};
 
 class CrowdSample
 {
 public:
 	CrowdSample();
 	~CrowdSample();
-	
-	bool loadFromBuffer(const char* data);
-	bool loadFromFile(const char* fileName);
 
-	char* getSceneFile();
-	void parseCrowd(dtCrowd* crowd);
-	void parseAgentsInfo();
+	bool loadFromFile(const char* fileName, rcContext& context);
 
-	bool initialize(dtMesh& mesh, dtNavMesh& navMesh, dtCrowd& crowd);
-
-	bool initializeScene(dtMesh& mesh);
-	bool initializeCrowd(dtCrowd& crowd);
-	bool initializeNavmesh(const dtMesh& mesh, dtNavMesh& navMesh);
-	
-	AgentConfiguration m_agentCfgs[maxAgentCount];
-	int m_agentCount;
-	rcContext* m_context;
-	char m_sceneFileName[maxPathLen];
+	dtMesh m_mesh;
+	dtNavMesh m_navMesh;
+	dtCrowd m_crowd;
 	float m_maxRadius;
+	unsigned m_agentsCount;
 	
 private:
-	void parseBehavior(JSONValue* behavior, std::size_t iAgent, dtCrowd* crowd, bool pipeline);
-	void parsePipeline(JSONValue* pipelineChild, std::size_t iAgent, dtCrowd* crowd);
-
-	struct Flocking
+	struct BehaviorCfg
 	{
-		float distance;
-		float desiredSeparation;
-		float separationWeight;
-		float cohesionWeight;
-		float alignmentWeight;
+		dtBehavior* activeBehaviors[2];
+		unsigned activeBehaviorsCount;
+		dtPipelineBehavior* pipeline;
+		dtCollisionAvoidance* collisionAvoidance;
+		dtPathFollowing* pathFollowing;
 	};
 
-	void computeMaximumRadius();
-	
-	JSONValue* m_root;
-	std::vector<Flocking> m_flockingsGroups;
-	std::vector<dtFlockingBehavior*> m_flockingBehaviors;
-	std::map<int, std::vector<int> > m_agentsFlockingNeighbors;
-	std::map<int, int> m_seekTargets;
-	std::vector<int> m_separationTargets;
-	std::vector<int> m_alignmentTargets;
-	std::vector<int> m_cohesionTargets;
-	std::map<int, std::vector<dtBehavior*> > m_pipeline;
+	bool loadJSONFile(const char* fileName, JSONValue** root, rcContext& context);
+	bool loadScene(JSONValue& root, rcContext& context);
+	bool retrieveAgentsInfo(JSONValue& root, rcContext& context);
+	bool computeNavmesh(rcContext& context);
+	bool parseBehaviors(JSONValue& root, rcContext& context);
+	bool parseCollisionAvoidance(JSONValue& behavior, dtCollisionAvoidance** collisionAvoidance, rcContext& context);
+	bool parsePathFollowing(JSONValue& behavior, dtPathFollowing** pathFollowing, rcContext& context);
+	bool createAgents(JSONValue& root, rcContext& context);
+
+	std::map<std::string, BehaviorCfg> m_behaviors;
 };
 
 #endif
