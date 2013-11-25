@@ -560,35 +560,33 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 		{
 			ag->offmeshElaspedTime += dt;
 
+			// Update velocity.
+			dtVset(ag->velocity, 0,0,0);
+			dtVset(ag->desiredVelocity, 0,0,0);
+
 			if (ag->offmeshElaspedTime > offmeshTotalTime)
 			{
-				// Prepare agent for walking.
+				// End of the offmesh connection reached
 				ag->state = DT_CROWDAGENT_STATE_WALKING;
-				m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position,
+				m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->offmeshEndPos,
 																 m_crowdQuery->getQueryExtents(),
 																 m_crowdQuery->getQueryFilter(),
 																 &ag->poly,
 																 ag->position);
 			}
+			else if (ag->offmeshElaspedTime < ag->offmeshInitToStartTime)
+			{
+				// Moving towards the offmesh connection start.
+				const float u = tween(ag->offmeshElaspedTime, 0.0, ag->offmeshInitToStartTime);
+				dtVlerp(ag->position, ag->offmeshInitPos, ag->offmeshStartPos, u);
+				ag->poly = 0;
+			}
 			else
 			{
-				// Update position
-				if (ag->offmeshElaspedTime < ag->offmeshInitToStartTime)
-				{
-					const float u = tween(ag->offmeshElaspedTime, 0.0, ag->offmeshInitToStartTime);
-					dtVlerp(ag->position, ag->offmeshInitPos, ag->offmeshStartPos, u);
-				}
-				else
-				{
-					const float u = tween(ag->offmeshElaspedTime, ag->offmeshInitToStartTime, offmeshTotalTime);
-					dtVlerp(ag->position, ag->offmeshStartPos, ag->offmeshEndPos, u);
-				}
-				
-				// Update navmesh location
+				// Moving towards the offmesh connection end.
+				const float u = tween(ag->offmeshElaspedTime, ag->offmeshInitToStartTime, offmeshTotalTime);
+				dtVlerp(ag->position, ag->offmeshStartPos, ag->offmeshEndPos, u);
 				ag->poly = 0;
-				// Update velocity.
-				dtVset(ag->velocity, 0,0,0);
-				dtVset(ag->desiredVelocity, 0,0,0);
 			}
 		}
 	}

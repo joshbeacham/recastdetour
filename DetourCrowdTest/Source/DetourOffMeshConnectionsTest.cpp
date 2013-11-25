@@ -69,9 +69,24 @@ SCENARIO("DetourCrowdTest/OffMeshConnections", "[offmesh] Check if the agents kn
 		}
 		WHEN("We ask the same to check for a radius of 1.1 around him")
 		{
+			dtOffMeshConnection* offmeshConnection = crowd.getCrowdQuery()->getOffMeshConnection(ag.id, 1.1f);
 			THEN("It detects the offMesh connection again")
 			{
-				CHECK(crowd.getCrowdQuery()->getOffMeshConnection(ag.id, 1.1f) != 0);
+				CHECK(offmeshConnection != 0);
+			}
+
+			THEN("The retrieved connection have the right 'start' position.")
+			{
+				CHECK(offmeshConnection->pos[0] == configuration.offmeshConnections[0].start[0]);
+				CHECK(offmeshConnection->pos[1] == configuration.offmeshConnections[0].start[1]);
+				CHECK(offmeshConnection->pos[2] == configuration.offmeshConnections[0].start[2]);
+			}
+
+			THEN("The retrieved connection have the right 'end' position.")
+			{
+				CHECK(offmeshConnection->pos[3] == configuration.offmeshConnections[0].end[0]);
+				CHECK(offmeshConnection->pos[4] == configuration.offmeshConnections[0].end[1]);
+				CHECK(offmeshConnection->pos[5] == configuration.offmeshConnections[0].end[2]);
 			}
 		}
 		WHEN("We try to detect an offMesh connection with wrong parameters")
