@@ -24,10 +24,10 @@
 /// @ingroup navmeshCreator
 struct dtNavmeshVoxelCfg
 {
-	// Default constructor
-	//
-	// - size = 0.3 wu
-	// - height = 0.2 wu
+	/// Default constructor
+	///
+	/// - size = 0.3 wu
+	/// - height = 0.2 wu
 	dtNavmeshVoxelCfg();
 
 	float size; ///< The size of the voxels along 'horizontal', ie x and z, axises (in world units).
@@ -39,11 +39,11 @@ struct dtNavmeshVoxelCfg
 /// @ingroup navmeshCreator
 struct dtNavmeshTilesCfg
 {
-	// Default constructor
-	//
-	// - xCount = 0
-	// - zCount = 0
-	// - size = 32 vx
+	/// Default constructor
+	///
+	/// - xCount = 0
+	/// - zCount = 0
+	/// - size = 32 vx
 	dtNavmeshTilesCfg();
 
 	unsigned xCount; ///< Number of tiles along the x axis, ie the number of tile colums.
@@ -56,12 +56,12 @@ struct dtNavmeshTilesCfg
 /// @ingroup navmeshCreator
 struct dtNavmeshNavigationCfg
 {
-	// Default constructor
-	//
-	// - minimumCeilingClearance = 2 wu
-	// - maximumStepHeight = 0.9 wu
-	// - minimumObstacleClearance = 0.3 wu
-	// - maximumSlope = 45 degrees
+	/// Default constructor
+	///
+	/// - minimumCeilingClearance = 2 wu
+	/// - maximumStepHeight = 0.9 wu
+	/// - minimumObstacleClearance = 0.3 wu
+	/// - maximumSlope = 45 degrees
 	dtNavmeshNavigationCfg();
 
 	float minimumCeilingClearance; ///< The minimum needed clearance to the ceiling (in world units).
@@ -75,11 +75,11 @@ struct dtNavmeshNavigationCfg
 /// @ingroup navmeshCreator
 struct dtNavmeshRegionCfg
 {
-	// Default constructor
-	//
-	// - monotonePartioning = false
-	// - minSize = 64
-	// - mergeSize = 400
+	/// Default constructor
+	///
+	/// - monotonePartioning = false
+	/// - minSize = 64
+	/// - mergeSize = 400
 	dtNavmeshRegionCfg();
 
 	bool monotonePartioning; //!< Use monotone partitionning.
@@ -92,13 +92,13 @@ struct dtNavmeshRegionCfg
 /// @ingroup navmeshCreator
 struct dtNavmeshPolymeshCfg
 {
-	// Default constructor
-	//
-	// - edgeMaxError = 1.3 wu
-	// - edgeMaxLength = 12 wu
-	// - polyMaxNbVertices = 6
-	// - sampleDist = 6 vx
-	// - sampleMaxError = 1 vx
+	/// Default constructor
+	///
+	/// - edgeMaxError = 1.3 wu
+	/// - edgeMaxLength = 12 wu
+	/// - polyMaxNbVertices = 6
+	/// - sampleDist = 6 vx
+	/// - sampleMaxError = 1 vx
 	dtNavmeshPolymeshCfg();
 
 	float edgeMaxError; ///< The maximum distance the contour should deviate from the raw border.
@@ -115,12 +115,12 @@ struct dtNavmeshPolymeshCfg
 /// @ingroup navmeshCreator
 struct dtNavmeshPolygonsCfg
 {
-	// Default constructor
-	//
-	// - walkableFlag = 1 << 1
-	// - nonWalkableFlag = 1 << 0
-	// - groundArea = 1
-	// - obstacleArea = 0
+	/// Default constructor
+	///
+	/// - walkableFlag = 1 << 1
+	/// - nonWalkableFlag = 1 << 0
+	/// - groundArea = 1
+	/// - obstacleArea = 0
 	dtNavmeshPolygonsCfg();
 
 	unsigned short walkableFlag; ///< Flag used for walkable polygons.
@@ -135,14 +135,14 @@ struct dtNavmeshPolygonsCfg
 /// @ingroup navmeshCreator
 struct dtOffmeshConnectionCfg
 {
-	// Default constructor
-	//
-	// - start = {0.f, 0.f, 0.f}
-	// - end = {0.f, 0.f, 0.f}
-	// - radius = 1.f
-	// - isBidirectionnal = false
-	// - areaType = 2
-	// - flags = 1 << 1 (matchs the default walkable flag)
+	/// Default constructor
+	///
+	/// - start = {0.f, 0.f, 0.f}
+	/// - end = {0.f, 0.f, 0.f}
+	/// - radius = 1.f
+	/// - isBidirectionnal = false
+	/// - areaType = 2
+	/// - flags = 1 << 1 (matchs the default walkable flag)
 	dtOffmeshConnectionCfg();
 
 	float start[3]; ///< Start position for the offmesh connection.
@@ -158,18 +158,18 @@ struct dtOffmeshConnectionCfg
 /// @ingroup navmeshCreator
 struct dtTiledNavmeshCfg
 {
-	// Default constructor
-	//
-	// - bmin = {0.f, 0.f, 0.f}
-	// - bmax = {0.f, 0.f, 0.f}
-	// - voxels = dtNavmeshVoxelCfg()
-	// - tiles = dtNavmeshTilesCfg()
-	// - navigation = dtNavmeshNavigationCfg()
-	// - regions = dtNavmeshRegionCfg()
-	// - polyMeshCfg = dtNavmeshPolymeshCfg()
-	// - polygons = dtNavmeshPolygonsCfg()
-	// - offmeshConnections = {}
-	// - offmeshConnectionsCount = 0
+	/// Default constructor
+	///
+	/// - bmin = {0.f, 0.f, 0.f}
+	/// - bmax = {0.f, 0.f, 0.f}
+	/// - voxels = dtNavmeshVoxelCfg()
+	/// - tiles = dtNavmeshTilesCfg()
+	/// - navigation = dtNavmeshNavigationCfg()
+	/// - regions = dtNavmeshRegionCfg()
+	/// - polyMeshCfg = dtNavmeshPolymeshCfg()
+	/// - polygons = dtNavmeshPolygonsCfg()
+	/// - offmeshConnections = {}
+	/// - offmeshConnectionsCount = 0
 	dtTiledNavmeshCfg();
 
 	/// Compute the needed count of tiles.

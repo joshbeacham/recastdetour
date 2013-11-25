@@ -610,6 +610,7 @@ INPUT                  = @DOXYGEN_INPUT_DIR@/../Detour \
                          @DOXYGEN_INPUT_DIR@/../DetourCrowd \
                          @DOXYGEN_INPUT_DIR@/../DetourTileCache \
                          @DOXYGEN_INPUT_DIR@/../Recast \
+                         @DOXYGEN_INPUT_DIR@/../DetourNavmeshCreator \
                          @DOXYGEN_INPUT_DIR@/coding_style.txt \
                          @DOXYGEN_INPUT_DIR@/mainpage.txt \
                          @DOXYGEN_INPUT_DIR@/recast_api.txt \

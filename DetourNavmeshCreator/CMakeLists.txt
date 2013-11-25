@@ -62,7 +62,7 @@ IF (BUILD_RECASTDETOUR_FAT_LIBRARIES)
 ENDIF()
 
 INSTALL(FILES ${DetourNavmeshCreator_HDRS}
-	DESTINATION include/DetourNavmeshCreator
+	DESTINATION include/detourNavmeshCreator
 )
 
 INSTALL(TARGETS DetourNavmeshCreator EXPORT "RecastDetourTargets-${PLATFORM_STR}"

@@ -32,6 +32,16 @@ struct rcHeightfield;
 struct rcPolyMesh;
 struct rcPolyMeshDetail;
 
+/** @defgroup navmeshCreator Navmesh Creator
+    @ingroup detour
+
+    This module is composed of helpers to create @ref Detour usable navigation meshes
+    with Recast.
+ */
+
+/// Intermediate results of the tiled mesh computation.
+///
+/// @ingroup navmeshCreator
 struct dtTiledNavmeshCreatorIntermediateResults
 {
 	dtTiledNavmeshCreatorIntermediateResults();
@@ -47,39 +57,65 @@ struct dtTiledNavmeshCreatorIntermediateResults
 	void reset();
 };
 
+/// Needed geometry data for navmesh computation.
+///
+/// @ingroup navmeshCreator
 struct dtNavmeshInputGeometry
 {
-	// Default constructor
-	//
-	// - mesh = dtMesh()
-	// - maximumFacesPerTreeNode = 256
-	// - bmin = {0.f, 0.f, 0.f}
-	// - bmax = {0.f, 0.f, 0.f}
-	// - tree = dtChunkyTriMesh()
+	/// Default constructor
+	///
+	/// - mesh = dtMesh()
+	/// - maximumFacesPerTreeNode = 256
+	/// - bmin = {0.f, 0.f, 0.f}
+	/// - bmax = {0.f, 0.f, 0.f}
+	/// - tree = dtChunkyTriMesh()
 	dtNavmeshInputGeometry();
 
+    /// Triangle mesh.
 	dtMesh mesh;
+
+    /// The maximum number of faces in generated @ref tree.
 	unsigned maximumFacesPerTreeNode;
 
+    /// Lower bound of the mesh's axis-aligned bounding box.
+    ///
+    /// Computed in @ref initialize().
 	float bmin[3];
+
+    /// Upper bound of the mesh's axis-aligned bounding box.
+    ///
+    /// Computed in @ref initialize().
 	float bmax[3];
+
+    /// Mesh's AABB Tree.
+    ///
+    /// Computed in @ref initialize().
 	dtChunkyTriMesh tree;
 
 	// Compute the bounding box and the tree from current mesh.
 	bool initialize();
 };
 
+/// Create a tiled navigation mesh from the given input and settings
+/// @ingroup navmeshCreator
 bool dtCreateTiledNavmesh(const dtNavmeshInputGeometry& geometry,
 						  const dtTiledNavmeshCfg& configuration,
 						  dtTiledNavmeshCreatorIntermediateResults& intermediateResults,
 						  dtNavMesh& navmesh,
 						  rcContext* context);
 
+/// Create a tiled navigation mesh from the given input and settings
+/// @note This version doesn't allow the retrieval of intermediate results.
+///
+/// @ingroup navmeshCreator
 bool dtCreateTiledNavmesh(const dtNavmeshInputGeometry& geometry,
 						  const dtTiledNavmeshCfg& configuration,
 						  dtNavMesh& navmesh,
 						  rcContext* context);
 
+/// Create a navigation mesh tile from the given input and settings
+///
+/// @ingroup navmeshCreator
 bool dtCreateTiledNavmeshTile(const dtNavmeshInputGeometry& geometry,
 							  const dtTiledNavmeshCfg& configuration,
 							  dtTiledNavmeshCreatorIntermediateResults& intermediateResults,
