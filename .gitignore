@@ -1,6 +1,10 @@
 #Cmake generation results
 build/*
 
+# Sublime text project
+!build/sublime
+build/sublime/RecastDetour.sublime-workspace
+
 # Bin content
 /*/Bin/*
 !/*/Bin/*.ttf
