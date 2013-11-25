@@ -20,6 +20,8 @@
 
 #include "Utils.h"
 
+#include <cstring>
+
 const dtNavmeshInputGeometry& getSquareMesh()
 {
 	static dtNavmeshInputGeometry square;
