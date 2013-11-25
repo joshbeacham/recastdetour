@@ -107,7 +107,7 @@ bool CrowdSample::loadScene(JSONValue& root, rcContext& context)
 		if (file && file->IsString())
 		{
 			char sceneFileName[maxStringLen + 1];
-			wcstombs(sceneFileName,file->AsString().c_str(), maxStringLen);
+			wcstombs(sceneFileName,file->AsString().c_str(), maxStringLen + 1);
 			m_mesh.clear();
 			if (!loadObjFile(sceneFileName, m_mesh))
 			{
@@ -180,7 +180,7 @@ bool CrowdSample::parseBehaviors(JSONValue& root, rcContext& context)
 		for (JSONObject::const_iterator it(behaviorsObject.begin()), end(behaviorsObject.end()) ; it != end ; ++it)
 		{
 			char behaviorName[maxStringLen + 1];
-			wcstombs(behaviorName,it->first.c_str(), maxStringLen);
+			wcstombs(behaviorName,it->first.c_str(), maxStringLen + 1);
 			JSONValue* behaviorPipeline = it->second;
 			BehaviorCfg behaviorCfg;
 			memset(&behaviorCfg, 0, sizeof(behaviorCfg));
@@ -363,7 +363,7 @@ bool CrowdSample::createAgents(JSONValue& root, rcContext& context)
 				if (behavior && behavior->IsString())
 				{
 					char behaviorName[maxStringLen + 1];
-					wcstombs(behaviorName,behavior->AsString().c_str(), maxStringLen);
+					wcstombs(behaviorName,behavior->AsString().c_str(), maxStringLen + 1);
 					std::map<std::string, BehaviorCfg>::iterator behaviorIt = m_behaviors.find(behaviorName);
 					if (behaviorIt == m_behaviors.end())
 					{
