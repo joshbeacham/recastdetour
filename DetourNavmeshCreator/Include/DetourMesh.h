@@ -61,10 +61,10 @@ public:
 
 	/// Set the content of the mesh from the given data.
 	///
-	/// @param vertices The vertices as a array of float of size 3*`verticesCount`.
+	/// @param vertices The vertices as an array of float of size 3*`verticesCount`.
 	/// @param verticesCount The number of vertices.
-	/// @param faces The faces as a array of unsigned of size 3*`facesCount`.
-	/// @param normals The face normals as a array of float of size 3*`facesCount` [opt].
+	/// @param faces The faces as an array of unsigned of size 3*`facesCount`.
+	/// @param normals The face normals as an array of float of size 3*`facesCount` [opt].
 	/// @param facesCount The number of faces.
 	void set(const float* vertices, unsigned verticesCount, const unsigned* faces, const float* normals, unsigned facesCount);
 
