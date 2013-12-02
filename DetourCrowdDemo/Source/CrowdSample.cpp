@@ -207,6 +207,7 @@ bool CrowdSample::parseBehaviors(JSONValue& root, rcContext& context)
 
 							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.collisionAvoidance;
 							behaviorCfg.activeBehaviorsCount++;
+							dtAssert(behaviorCfg.activeBehaviorsCount <= 2);
 						}
 						else if (type && type->IsString() && type->AsString() == L"pathFollowing")
 						{
@@ -223,6 +224,7 @@ bool CrowdSample::parseBehaviors(JSONValue& root, rcContext& context)
 
 							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.pathFollowing;
 							behaviorCfg.activeBehaviorsCount++;
+							dtAssert(behaviorCfg.activeBehaviorsCount <= 2);
 						}
 						else if (type && type->IsString())
 						{
