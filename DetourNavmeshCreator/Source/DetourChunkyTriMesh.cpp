@@ -223,7 +223,7 @@ bool dtChunkyTriMesh::build(const float* vertices,
 	
 	// Calc max tris per node.
 	m_maximumFacesPerNode = 0;
-	for (unsigned i = 0; i < m_facesCount; ++i)
+	for (unsigned i = 0; i < m_nodesCount; ++i)
 	{
 		Node& node = m_nodes[i];
 		if (!node.isLeaf()) continue;
