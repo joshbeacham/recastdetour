@@ -24,8 +24,14 @@
 #include <new>
 #include <limits>
 
+bool dtSkirtBehaviorParams::init(const float* position)
+{
+	dtVcopy(targetPos, position);
+	return true;
+}
+
 dtSkirtBehavior::dtSkirtBehavior(unsigned nbMaxAgents)
-	: dtSteeringBehavior<NoData>(nbMaxAgents)
+	: dtSteeringBehavior<dtSkirtBehaviorParams>(nbMaxAgents)
 	, distance(1.0f)
 	, maximumForce(2.0f)
 	//, m_obstacles(0)
@@ -60,7 +66,7 @@ void dtSkirtBehavior::free(dtSkirtBehavior* ptr)
 }
 
 void dtSkirtBehavior::computeForce(const dtCrowdQuery&, const dtCrowdAgent& ag, float* force,
-								   const NoData&, NoData&)
+								   const dtSkirtBehaviorParams&, dtSkirtBehaviorParams&)
 {
 	float currentToAgent[2];
 	currentToAgent[0] = m_agentObstacle.position[0];
@@ -115,22 +121,22 @@ void dtSkirtBehavior::computeForce(const dtCrowdQuery&, const dtCrowdAgent& ag, 
 }
 
 void dtSkirtBehavior::doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent,
-                               const NoData& currentParams, NoData& newParams, float dt)
+                               const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams& newParams, float dt)
 {
 	// only apply the behavior if the agent is trying to move
 	if (dt > EPSILON && dtVlen(oldAgent.desiredVelocity) > EPSILON)
 	{
 		currentDt = dt;
 		// check that we have obstacles
-		if (updateObtacles(oldAgent, query))
+		if (updateObtacles(oldAgent, query, currentParams.targetPos))
 		{
 			// only apply behavior if there is a reason to
-			dtSteeringBehavior<>::doUpdate(query, oldAgent, newAgent, currentParams, newParams, dt);
+			dtSteeringBehavior<dtSkirtBehaviorParams>::doUpdate(query, oldAgent, newAgent, currentParams, newParams, dt);
 		}
 	}
 }
 
-bool dtSkirtBehavior::updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery& query)
+bool dtSkirtBehavior::updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery& query, const float* targetPos)
 {
 	m_agentObstacleDistance = m_segmentObstacleDistance = std::numeric_limits<float>::max();
 	const dtCrowdAgentEnvironment* agEnv = query.getAgentEnvironment(ag.id);
@@ -139,7 +145,7 @@ bool dtSkirtBehavior::updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery&
 	for (unsigned j = 0; j < agEnv->nbNeighbors; ++j)
 	{
 		const dtCrowdAgent& neighbor = *query.getAgent(agEnv->neighbors[j].idx);
-		hasObstacles = addAgentObstacle(ag, neighbor) || hasObstacles;
+		hasObstacles = addAgentObstacle(ag, neighbor, targetPos) || hasObstacles;
 	}
 
 	if (m_agentObstacleDistance != std::numeric_limits<float>::max())
@@ -163,7 +169,7 @@ bool dtSkirtBehavior::updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery&
 	return hasObstacles;
 }
 
-bool dtSkirtBehavior::addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdAgent& obtacle)
+bool dtSkirtBehavior::addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdAgent& obtacle, const float* targetPos)
 {
 	float diff[3];
 	dtVsub(diff, obtacle.position, agent.position);
@@ -171,30 +177,36 @@ bool dtSkirtBehavior::addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdA
 
 	if (dist < agent.perceptionDistance && dist <= this->distance && dist <= m_agentObstacleDistance)
 	{
-		// check if the obtacle can be considered still compared to current agent
-		float obstacleVelocity = dtVlenSqr(obtacle.desiredVelocity);
-		if (obstacleVelocity < EPSILON || dtVlenSqr(agent.desiredVelocity) >= obstacleVelocity * 100) // |agent.dvelocity| >= |obstacle.dvelocity| * 10
+		float diffToTarget[3];
+		dtVsub(diffToTarget, targetPos, agent.position);
+		// do not avoid obstacles that are after the target pos
+		if (dist < dtVlen(diffToTarget) - agent.radius)
 		{
-			bool isInTheWay = true;
-			float normalizedDiff[3];
-			dtVcopy(normalizedDiff, diff);
-			normalizedDiff[1] = 0;
-			float normalizedDiffNorm = dtVlen(normalizedDiff);
-			if (normalizedDiffNorm > EPSILON)
+			// check if the obtacle can be considered still compared to current agent
+			float obstacleVelocity = dtVlenSqr(obtacle.desiredVelocity);
+			if (obstacleVelocity < EPSILON || dtVlenSqr(agent.desiredVelocity) >= obstacleVelocity * 100) // |agent.dvelocity| >= |obstacle.dvelocity| * 10
 			{
-				dtVscale(normalizedDiff, normalizedDiff, 1.f/dtVlen(normalizedDiff));
-				float normalizedVelocity[3];
-				dtVscale(normalizedVelocity, agent.desiredVelocity, 1.f/dtVlen(agent.desiredVelocity));
-				float cosAngle = dtVdot2D(normalizedDiff, normalizedVelocity);
-				isInTheWay = acos(cosAngle) <= 90.f/360.f*3.14159265f;
-			}
-			if (isInTheWay)
-			{
-				m_agentObstacleDistance = dist;
-				dtVcopy(m_agentObstacle.position, obtacle.position);
-				dtVcopy(m_agentObstacle.direction, normalizedDiff);
-				m_agentObstacle.radius = obtacle.radius;
-				return true;
+				bool isInTheWay = true;
+				float normalizedDiff[3];
+				dtVcopy(normalizedDiff, diff);
+				normalizedDiff[1] = 0;
+				float normalizedDiffNorm = dtVlen(normalizedDiff);
+				if (normalizedDiffNorm > EPSILON)
+				{
+					dtVscale(normalizedDiff, normalizedDiff, 1.f/dtVlen(normalizedDiff));
+					float normalizedVelocity[3];
+					dtVscale(normalizedVelocity, agent.desiredVelocity, 1.f/dtVlen(agent.desiredVelocity));
+					float cosAngle = dtVdot2D(normalizedDiff, normalizedVelocity);
+					isInTheWay = acos(cosAngle) <= 90.f/360.f*3.14159265f;
+				}
+				if (isInTheWay)
+				{
+					m_agentObstacleDistance = dist;
+					dtVcopy(m_agentObstacle.position, obtacle.position);
+					dtVcopy(m_agentObstacle.direction, normalizedDiff);
+					m_agentObstacle.radius = obtacle.radius;
+					return true;
+				}
 			}
 		}
 	}

@@ -427,6 +427,10 @@ bool CrowdSample::createAgents(JSONValue& root, rcContext& context)
 								dest[1] = (float)destination->Child(1)->AsNumber();
 								dest[2] = (float)destination->Child(2)->AsNumber();
 								behaviorIt->second.pathFollowing->getBehaviorParams(ag.id)->submitTarget(dest);
+								if (behaviorIt->second.skirtAvoidance)
+								{
+									behaviorIt->second.skirtAvoidance->getBehaviorParams(ag.id)->init(dest);
+								}
 							}
 						}
 					}

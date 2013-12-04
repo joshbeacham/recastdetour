@@ -36,11 +36,20 @@ struct dtSegmentObstacle
 	float closest[2];
 };
 
+/// Parameters for the skirting behavior
+/// @ingroup behavior
+struct dtSkirtBehaviorParams
+{
+	float targetPos[3];         ///< Target position
+	bool init(const float* position);
+};
+
+
 /// Defines the skirting behavior.
 ///
 /// An agent using this behavior will try to skirt around (circumvent) still targets.
 /// @ingroup behavior
-class dtSkirtBehavior : public dtSteeringBehavior<>
+class dtSkirtBehavior : public dtSteeringBehavior<dtSkirtBehaviorParams>
 {
 public:
 	/// Creates an instance of the behavior
@@ -65,19 +74,19 @@ public:
 	float maximumForce;         ///< The maximum repulsion force to be used when agents are near contact
 
 	virtual void computeForce(const dtCrowdQuery& query, const dtCrowdAgent& ag, float* force,
-							  const NoData& currentParams, NoData& newParams);
+							  const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams& newParams);
 
 public:
 	virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent,
-						  const NoData& currentParams, NoData& newParams, float dt);
+						  const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams& newParams, float dt);
 
 private:
-	bool updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery& query);
+	bool updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery& query, const float* targetPos);
 	/// Adds a agent obstacle to the obstacles list.
 	///
 	/// @param[in]		agent	The current agent.
 	/// @param[in]		obtacle	The agent to avoid.
-	bool addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdAgent& obtacle);
+	bool addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdAgent& obtacle, const float* targetPos);
 
 	/// Adds a segment to the obstacles list.
 	///
