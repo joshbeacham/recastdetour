@@ -15,6 +15,7 @@ SET(detourcrowd_SRCS
 	Source/DetourSeekBehavior.cpp
 	Source/DetourPipelineBehavior.cpp
 	Source/DetourBehavior.cpp
+	Source/DetourSkirtBehavior.cpp
 )
 
 SET(detourcrowd_HDRS
@@ -34,6 +35,7 @@ SET(detourcrowd_HDRS
 	Include/DetourBehavior.h
 	Include/DetourPipelineBehavior.h
 	Include/DetourParametrizedBehavior.h
+	Include/DetourSkirtBehavior.h
 )
 
 INCLUDE_DIRECTORIES(Include 
