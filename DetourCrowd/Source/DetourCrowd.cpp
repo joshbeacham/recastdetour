@@ -297,14 +297,14 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 	if (idx == -1)
 		return false;
 	
+	// copy the position to prevent from aliasing problems (with ag.position)
+	float initialPos[3];
+	dtVcopy(initialPos, pos);
+	
 	agent.init();
 	agent.id = idx;
 	
-	
-	agent.init();
-	agent.id = idx;
-	
-	dtStatus status = m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos,
+	dtStatus status = m_crowdQuery->getNavMeshQuery()->findNearestPoly(initialPos,
 																	   m_crowdQuery->getQueryExtents(),
 																	   m_crowdQuery->getQueryFilter(),
 																	   &agent.poly,
