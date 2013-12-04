@@ -33,6 +33,7 @@
 class dtCollisionAvoidance;
 class dtPipelineBehavior;
 class dtPathFollowing;
+class dtSkirtBehavior;
 
 class rcContext;
 
@@ -55,11 +56,12 @@ public:
 private:
 	struct BehaviorCfg
 	{
-		dtBehavior* activeBehaviors[2];
+		dtBehavior* activeBehaviors[3];
 		unsigned activeBehaviorsCount;
 		dtPipelineBehavior* pipeline;
 		dtCollisionAvoidance* collisionAvoidance;
 		dtPathFollowing* pathFollowing;
+		dtSkirtBehavior* skirtAvoidance;
 	};
 
 	bool loadJSONFile(const char* fileName, JSONValue** root, rcContext& context);
@@ -69,6 +71,7 @@ private:
 	bool parseBehaviors(JSONValue& root, rcContext& context);
 	bool parseCollisionAvoidance(JSONValue& behavior, dtCollisionAvoidance** collisionAvoidance, rcContext& context);
 	bool parsePathFollowing(JSONValue& behavior, dtPathFollowing** pathFollowing, rcContext& context);
+	bool parsePathSkirt(JSONValue& behavior, dtSkirtBehavior** skirt, rcContext& context);
 	bool createAgents(JSONValue& root, rcContext& context);
 
 	std::map<std::string, BehaviorCfg> m_behaviors;

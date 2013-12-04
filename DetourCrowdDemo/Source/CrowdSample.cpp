@@ -23,6 +23,7 @@
 #include <DetourCollisionAvoidance.h>
 #include <DetourPathFollowing.h>
 #include <DetourPipelineBehavior.h>
+#include <DetourSkirtBehavior.h>
 
 #include <DetourAssert.h>
 
@@ -207,7 +208,7 @@ bool CrowdSample::parseBehaviors(JSONValue& root, rcContext& context)
 
 							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.collisionAvoidance;
 							behaviorCfg.activeBehaviorsCount++;
-							dtAssert(behaviorCfg.activeBehaviorsCount <= 2);
+							dtAssert(behaviorCfg.activeBehaviorsCount <= 3);
 						}
 						else if (type && type->IsString() && type->AsString() == L"pathFollowing")
 						{
@@ -224,7 +225,24 @@ bool CrowdSample::parseBehaviors(JSONValue& root, rcContext& context)
 
 							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.pathFollowing;
 							behaviorCfg.activeBehaviorsCount++;
-							dtAssert(behaviorCfg.activeBehaviorsCount <= 2);
+							dtAssert(behaviorCfg.activeBehaviorsCount <= 3);
+						}
+						else if (type && type->IsString() && type->AsString() == L"skirtAvoidance")
+						{
+							if (behaviorCfg.skirtAvoidance)
+							{
+								context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', can't have duplicate skirt behavior.", behaviorName);
+								return false;
+							}
+							if (!parsePathSkirt(*behavior, &behaviorCfg.skirtAvoidance, context))
+							{
+								context.log(RC_LOG_ERROR, "Unable to parse the behavior '%s', error while parsing the skirt behavior.", behaviorName);
+								return false;
+							}
+
+							behaviorCfg.activeBehaviors[behaviorCfg.activeBehaviorsCount] = behaviorCfg.skirtAvoidance;
+							behaviorCfg.activeBehaviorsCount++;
+							dtAssert(behaviorCfg.activeBehaviorsCount <= 3);
 						}
 						else if (type && type->IsString())
 						{
@@ -307,6 +325,21 @@ bool CrowdSample::parsePathFollowing(JSONValue& behavior, dtPathFollowing** path
 	JSONValue* anticipateTurns = behavior.Child(L"anticipateTurns");
 	if (anticipateTurns && anticipateTurns->IsBool())
 		(*pathFollowing)->anticipateTurns = anticipateTurns->AsBool();
+
+	return true;
+}
+
+bool CrowdSample::parsePathSkirt(JSONValue& behavior, dtSkirtBehavior** skirt, rcContext& context)
+{
+	*skirt = dtSkirtBehavior::allocate(1);
+
+	JSONValue* distance = behavior.Child(L"distance");
+	if (distance && distance->IsNumber())
+		(*skirt)->distance = (float)distance->AsNumber();
+
+	JSONValue* maximumforce = behavior.Child(L"maximumForce");
+	if (maximumforce && maximumforce->IsNumber())
+		(*skirt)->maximumForce = (float)maximumforce->AsNumber();
 
 	return true;
 }
