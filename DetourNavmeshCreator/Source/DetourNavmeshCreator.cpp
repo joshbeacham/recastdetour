@@ -229,7 +229,7 @@ namespace
 		if (!rcBuildContours(context,
 							 *intermediateResults.compactHeightfield,
 							 configuration.polyMesh.edgeMaxError,
-							 configuration.polyMesh.edgeMaxLength / configuration.voxels.size,
+							 static_cast<int>(ceil(configuration.polyMesh.edgeMaxLength / configuration.voxels.size)),
 							 *intermediateResults.contourSet))
 		{
 			context->log(RC_LOG_ERROR, "Could not create contours.");

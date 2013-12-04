@@ -36,7 +36,7 @@ CrowdSample::CrowdSample()
 , m_navMesh()
 , m_crowd()
 , m_maxRadius(-1.f)
-, m_agentsCount(0.)
+, m_agentsCount(0)
 , m_behaviors()
 {
 	// NOTHING
@@ -270,15 +270,15 @@ bool CrowdSample::parseCollisionAvoidance(JSONValue& behavior, dtCollisionAvoida
 
 	JSONValue* sampleSectorsCount = behavior.Child(L"sampleSectorsCount");
 	if (sampleSectorsCount && sampleSectorsCount->IsNumber())
-		(*collisionAvoidance)->sampleSectorsCount = (float)sampleSectorsCount->AsNumber();
+		(*collisionAvoidance)->sampleSectorsCount = (unsigned char)sampleSectorsCount->AsNumber();
 
 	JSONValue* sampleRingsCount = behavior.Child(L"sampleRingsCount");
 	if (sampleRingsCount && sampleRingsCount->IsNumber())
-		(*collisionAvoidance)->sampleRingsCount = (float)sampleRingsCount->AsNumber();
+		(*collisionAvoidance)->sampleRingsCount = (unsigned char)sampleRingsCount->AsNumber();
 
 	JSONValue* sampleLevelsCount = behavior.Child(L"sampleLevelsCount");
 	if (sampleLevelsCount && sampleLevelsCount->IsNumber())
-		(*collisionAvoidance)->sampleLevelsCount = (float)sampleLevelsCount->AsNumber();
+		(*collisionAvoidance)->sampleLevelsCount = (unsigned char)sampleLevelsCount->AsNumber();
 
 	JSONValue* horizonTime = behavior.Child(L"horizonTime");
 	if (horizonTime && horizonTime->IsNumber())

@@ -70,8 +70,8 @@ dtNavmeshPolymeshCfg::dtNavmeshPolymeshCfg()
 : edgeMaxError(1.3f)
 , edgeMaxLength(12.f)
 , polyMaxNbVertices(6)
-, sampleDist(6.f)
-, sampleMaxError(1.f)
+, sampleDist(6)
+, sampleMaxError(1)
 {
 	// NOTHING
 }
