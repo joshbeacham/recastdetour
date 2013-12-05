@@ -21,8 +21,9 @@
 #include "DetourCrowd.h"
 #include "DetourCommon.h"
 
-#include <new>
 #include <limits>
+#include <new>
+#include <utility>
 
 bool dtSkirtBehaviorParams::init(const float* position)
 {
@@ -33,7 +34,6 @@ bool dtSkirtBehaviorParams::init(const float* position)
 dtSkirtBehavior::dtSkirtBehavior(unsigned nbMaxAgents)
 	: dtSteeringBehavior<dtSkirtBehaviorParams>(nbMaxAgents)
 	, distance(1.0f)
-	, maximumForce(2.0f)
 	//, m_obstacles(0)
 	//, m_obstaclesCount(0)
 	, m_agentObstacleDistance(std::numeric_limits<float>::max())
@@ -65,17 +65,87 @@ void dtSkirtBehavior::free(dtSkirtBehavior* ptr)
 	dtFree(ptr);
 }
 
-void dtSkirtBehavior::computeForce(const dtCrowdQuery&, const dtCrowdAgent& ag, float* force,
-								   const dtSkirtBehaviorParams&, dtSkirtBehaviorParams&)
+void dtSkirtBehavior::computeForce(const dtCrowdQuery&, const dtCrowdAgent&, float*, const dtSkirtBehaviorParams&, dtSkirtBehaviorParams&)
+{
+	// NOTHING
+}
+
+namespace
+{
+	// solve equation ax + by + c = 0
+	std::pair<float, float> solveQuadratic(float a, float b, float c)
+	{
+		// 
+		float p = b/a;
+		float q = c/a;
+		float squareRootPart = dtSqr(p/2) - q;
+		if (squareRootPart >= 0)
+		{
+			float solution1 = -p/2 + sqrt(squareRootPart);
+			float solution2 = -p/2 - sqrt(squareRootPart);
+			return std::make_pair(solution1, solution2);
+		}
+		return std::make_pair(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN());
+	}
+	bool computeCircleIntersectionPoints(float center1X, float center1Y, float radius1, float center2X, float center2Y, float radius2, float* intersection1, float* intersection2)
+	{
+		// consider that the first circle (center1, radius1) is at the origin to compute tangent point intersection then translate result back to the circle's origin
+		float newCenter[2];
+		newCenter[0] = center2X - center1X;
+		newCenter[1] = center2Y - center1Y;
+		float r1Square = radius1 * radius1;
+		float r2Square = radius2 * radius2;
+		if (fabs(newCenter[0]) > EPSILON)
+		{
+			// resolving both circle equations leads to x = ay + b with following a and b values
+			float a = -newCenter[1]/newCenter[0];
+			float b = (newCenter[0]*newCenter[0] + newCenter[1]*newCenter[1] - r2Square + r1Square) / (2*newCenter[0]);
+			// injecting x = ay + b into X^2 + Y^2 = radius1^2 leads to an equation aY^2+bY+c=0
+			std::pair<float, float> yResults = solveQuadratic(1+a*a, 2*a*b, b*b-r1Square);
+			// inject result back into x = ay + b
+			std::pair<float, float> xResults(
+				a*yResults.first+b,
+				a*yResults.second+b
+				);
+			// translate back into original frame
+			intersection1[0] = xResults.first + center1X;
+			intersection1[1] = yResults.first + center1Y;
+			intersection2[0] = xResults.second + center1X;
+			intersection2[1] = yResults.second + center1Y;
+			return true;
+		}
+		else if (fabs(newCenter[1]) > EPSILON)
+		{
+			// resolving both circle equations leads to y = ax + b with following a and b values
+			float a = -newCenter[0]/newCenter[1];
+			float b = (newCenter[0]*newCenter[0] + newCenter[1]*newCenter[1] - r2Square + r1Square) / (2*newCenter[1]);
+			// injecting y = ax + b into X^2 + Y^2 = radius1^2 leads to a quadratic equation aX^2+bX+c=0
+			std::pair<float, float> xResults = solveQuadratic(1+a*a, 2*a*b, b*b-r1Square);
+			std::pair<float, float> yResults(
+				a*xResults.first+b,
+				a*xResults.second+b
+				);
+			// translate back into original frame
+			intersection1[0] = xResults.first + center1X;
+			intersection1[1] = yResults.first + center1Y;
+			intersection2[0] = xResults.second + center1X;
+			intersection2[1] = yResults.second + center1Y;
+			return true;
+		}
+		// it means that both centers are at the same coordinates, either there is no intersection or they intersect perfectly
+		return false;
+	}
+}
+void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent)
 {
 	float currentToAgent[2];
 	currentToAgent[0] = m_agentObstacle.position[0];
 	currentToAgent[1] = m_agentObstacle.position[2];
-	currentToAgent[0] -= ag.position[0];
-	currentToAgent[1] -= ag.position[2];
+	currentToAgent[0] -= oldAgent.position[0];
+	currentToAgent[1] -= oldAgent.position[2];
 	float relativeSide = 0;
 	// check if there is an obstacle segment close to the agent obstacle that is close enough to make moves difficult
-	if (m_segmentObstacleDistance < ag.radius * 2 + m_agentObstacle.radius)
+	if (m_segmentObstacleDistance > EPSILON && m_segmentObstacleDistance < oldAgent.radius * 2 + m_agentObstacle.radius)
 	{
 		// choose to go at the opposite of the segment obstacle
 		float agentToSegment[2];
@@ -90,38 +160,58 @@ void dtSkirtBehavior::computeForce(const dtCrowdQuery&, const dtCrowdAgent& ag, 
 	{
 		// use the shorter path
 		// if positive, the angle from ag.desiredVelocity to currentToAgent is positive, currentToAgent is on the left side otherwise currentToAgent is on the right side.
-		relativeSide = ag.desiredVelocity[2]*currentToAgent[0] - ag.desiredVelocity[0]*currentToAgent[1];
+		relativeSide = oldAgent.desiredVelocity[2]*currentToAgent[0] - oldAgent.desiredVelocity[0]*currentToAgent[1];
 	}
-	if (relativeSide < 0)
+	float distanceToAgent = sqrt(currentToAgent[0]*currentToAgent[0] + currentToAgent[1]*currentToAgent[1]);
+	float sinToObstacleBorder = m_agentObstacle.radius / distanceToAgent;
+	float cosToObstacleBorder = sqrt(1 - sinToObstacleBorder*sinToObstacleBorder);
+	float distanceToTangent = cosToObstacleBorder * distanceToAgent;
+	// we now have the data for two circles, finding their intersection will give the tangent points from oldAgent.position to the m_agentObstacle circle
+	float tangent1[2], tangent2[2];
+	if (computeCircleIntersectionPoints(
+		m_agentObstacle.position[0], m_agentObstacle.position[2], m_agentObstacle.radius,
+		oldAgent.position[0], oldAgent.position[2], distanceToTangent,
+		tangent1, tangent2))
 	{
-		// perpendicular vector pointing to the right
-		force[0] = currentToAgent[1];
-		force[2] = -currentToAgent[0];
+		float agentToTangent1[2];
+		agentToTangent1[0] = tangent1[0];
+		agentToTangent1[1] = tangent1[1];
+		agentToTangent1[0] -= m_agentObstacle.position[0];
+		agentToTangent1[1] -= m_agentObstacle.position[2];
+		float tangentToUse[2];
+		// tangent1 relative side
+		float tangent1RelativeSide = currentToAgent[1]*agentToTangent1[0] - currentToAgent[0]*agentToTangent1[1];
+		if ((tangent1RelativeSide < 0 && relativeSide < 0) || (tangent1RelativeSide > 0 && relativeSide > 0))
+			dtVcopy(tangentToUse, tangent2); // use tangent2 if tangent1 points to the obstacle
+		else
+			dtVcopy(tangentToUse, tangent1); // otherwise use tangent1
+		// compute the direction vector
+		float obstacleCenterToTangent[2];
+		obstacleCenterToTangent[0] = tangentToUse[0] - m_agentObstacle.position[0];
+		obstacleCenterToTangent[1] = tangentToUse[1] - m_agentObstacle.position[2];
+		float obstacleCenterToTangentLength = m_agentObstacle.radius;//sqrt(obstacleCenterToTangent[0]*obstacleCenterToTangent[0] + obstacleCenterToTangent[1]*obstacleCenterToTangent[1]);
+		// make sure there is room for the agent to move through
+		obstacleCenterToTangent[0] *= (m_agentObstacle.radius+oldAgent.radius)/obstacleCenterToTangentLength;
+		obstacleCenterToTangent[1] *= (m_agentObstacle.radius+oldAgent.radius)/obstacleCenterToTangentLength;
+		float targetPoint[3];
+		dtVcopy(targetPoint, m_agentObstacle.position);
+		targetPoint[0] += obstacleCenterToTangent[0];
+		targetPoint[2] += obstacleCenterToTangent[1];
+		float previousVelocityLength = dtVlen(oldAgent.desiredVelocity);
+		dtVsub(newAgent.desiredVelocity, targetPoint, oldAgent.position);
+		float newVelocityLength = dtVlen(newAgent.desiredVelocity);
+		dtVscale(newAgent.desiredVelocity, newAgent.desiredVelocity, previousVelocityLength/newVelocityLength);
 	}
 	else
 	{
-		// perpendicular vector pointing to the left
-		force[0] = -currentToAgent[1];
-		force[2] = currentToAgent[0];
+		// should mean the two agents are one in the other, not much we can do...
+		dtVcopy(newAgent.desiredVelocity, oldAgent.desiredVelocity);
 	}
 
-	// force direction has been computed, now compute its strength based on the normalized distance from agent to obstacle
-	float desiredForce = (this->distance - m_agentObstacleDistance) / this->distance * this->maximumForce;
-	float currentForce = dtSqrt(dtSqr(force[0]) + dtSqr(force[2]));
-	// this can happen when the agent obstacle is precisely on the segment, in such case normal avoidance will be enough
-	if (currentForce > EPSILON)
-	{
-		force[0] *= desiredForce/currentForce;
-		force[2] *= desiredForce/currentForce;
-	}
-	float previousBehaviorForce[3];
-	dtVsub(previousBehaviorForce, ag.desiredVelocity, ag.velocity);
-	dtVscale(previousBehaviorForce, previousBehaviorForce, 1.f/currentDt);
-	dtVadd(force, force, previousBehaviorForce);
 }
 
 void dtSkirtBehavior::doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent,
-                               const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams& newParams, float dt)
+                               const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams&, float dt)
 {
 	// only apply the behavior if the agent is trying to move
 	if (dt > EPSILON && dtVlen(oldAgent.desiredVelocity) > EPSILON)
@@ -130,8 +220,7 @@ void dtSkirtBehavior::doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& ol
 		// check that we have obstacles
 		if (updateObtacles(oldAgent, query, currentParams.targetPos))
 		{
-			// only apply behavior if there is a reason to
-			dtSteeringBehavior<dtSkirtBehaviorParams>::doUpdate(query, oldAgent, newAgent, currentParams, newParams, dt);
+			computeVelocity(oldAgent, newAgent);
 		}
 	}
 }

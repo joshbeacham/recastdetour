@@ -71,10 +71,11 @@ public:
 	static void free(dtSkirtBehavior* ptr);
 
 	float distance;             ///< The distance in which other entities are considered
-	float maximumForce;         ///< The maximum repulsion force to be used when agents are near contact
 
-	virtual void computeForce(const dtCrowdQuery& query, const dtCrowdAgent& ag, float* force,
-							  const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams& newParams);
+	// should not be used
+	virtual void computeForce(const dtCrowdQuery& query, const dtCrowdAgent& ag, float* force, const dtSkirtBehaviorParams& currentParams, dtSkirtBehaviorParams& newParams);
+
+	void computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent);
 
 public:
 	virtual void doUpdate(const dtCrowdQuery& query, const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent,

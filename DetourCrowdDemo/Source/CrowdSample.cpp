@@ -337,10 +337,6 @@ bool CrowdSample::parsePathSkirt(JSONValue& behavior, dtSkirtBehavior** skirt, r
 	if (distance && distance->IsNumber())
 		(*skirt)->distance = (float)distance->AsNumber();
 
-	JSONValue* maximumforce = behavior.Child(L"maximumForce");
-	if (maximumforce && maximumforce->IsNumber())
-		(*skirt)->maximumForce = (float)maximumforce->AsNumber();
-
 	return true;
 }
 
