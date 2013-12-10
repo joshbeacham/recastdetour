@@ -30,7 +30,7 @@ DebugInfo::DebugInfo()
 , m_initialized(false)
 , m_lastStart()
 {	
-    memset(m_agentTrails, 0, sizeof(m_agentTrails));
+	memset(m_agentTrails, 0, sizeof(m_agentTrails));
 }
 
 DebugInfo::~DebugInfo()
@@ -39,61 +39,61 @@ DebugInfo::~DebugInfo()
 
 bool DebugInfo::initialize()
 {
-    m_initialized = m_crowd != 0;
-    
-    // Init trails
-    for (int i = 0, size(m_crowd->getAgentCount()); m_initialized && i < size; ++i)
-    {
-        const dtCrowdAgent* ag = m_crowd->getAgent(i);
-        if (ag->active)
-        {
-            AgentTrail* trail = &m_agentTrails[i];
-            for (int j(0); j < maxAgentTrailLen; ++j)
-                dtVcopy(&trail->trail[j*3], ag->position);
-            trail->htrail = 0;
-        }
-    }
-    
-    return m_initialized;
+	m_initialized = m_crowd != 0;
+	
+	// Init trails
+	for (int i = 0, size(m_crowd->getAgentCount()); m_initialized && i < size; ++i)
+	{
+		const dtCrowdAgent* ag = m_crowd->getAgent(i);
+		if (ag->active)
+		{
+			AgentTrail* trail = &m_agentTrails[i];
+			for (int j(0); j < maxAgentTrailLen; ++j)
+				dtVcopy(&trail->trail[j*3], ag->position);
+			trail->htrail = 0;
+		}
+	}
+	
+	return m_initialized;
 }
 
 bool DebugInfo::terminate()
 {
-    m_initialized = false;
-    return !m_initialized;
+	m_initialized = false;
+	return !m_initialized;
 }
 
 bool DebugInfo::startUpdate()
 {
-    m_lastStart = getPerfTime();
-    return true;
+	m_lastStart = getPerfTime();
+	return true;
 }
 
 bool DebugInfo::endUpdate(float dt)
 {
-    TimeVal end = getPerfTime();
-    
-    //m_crowdSampleCount.addSample((float)m_crowd->getVelocitySampleCount());
-    m_crowdTotalTime.addSample(getPerfDeltaTimeUsec(m_lastStart, end) / 1000.0f);
-    
-    // Update agent trails
-    for (int i = 0, size(m_crowd->getAgentCount()); i < size; ++i)
-    {
-        const dtCrowdAgent* ag = m_crowd->getAgent(i);
-        if (ag->active)
-        {
-            AgentTrail* trail = &m_agentTrails[i];
-            
-            // Update agent movement trail.
-            trail->htrail = (trail->htrail + 1) % maxAgentTrailLen;
-            dtVcopy(&trail->trail[trail->htrail*3], ag->position);
-        }
-    }
-    
-    return true;
+	TimeVal end = getPerfTime();
+	
+	//m_crowdSampleCount.addSample((float)m_crowd->getVelocitySampleCount());
+	m_crowdTotalTime.addSample(getPerfDeltaTimeUsec(m_lastStart, end) / 1000.0f);
+	
+	// Update agent trails
+	for (int i = 0, size(m_crowd->getAgentCount()); i < size; ++i)
+	{
+		const dtCrowdAgent* ag = m_crowd->getAgent(i);
+		if (ag->active)
+		{
+			AgentTrail* trail = &m_agentTrails[i];
+			
+			// Update agent movement trail.
+			trail->htrail = (trail->htrail + 1) % maxAgentTrailLen;
+			dtVcopy(&trail->trail[trail->htrail*3], ag->position);
+		}
+	}
+	
+	return true;
 }
 
 bool DebugInfo::isInitialized() const
 {
-    return m_initialized;
+	return m_initialized;
 }

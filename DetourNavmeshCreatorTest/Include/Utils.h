@@ -16,35 +16,28 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef SCENECREATOR_H
-#define SCENECREATOR_H
+#ifndef UTILS_H
+#define UTILS_H
 
-#include "CrowdSample.h"
-#include "InputGeom.h"
-#include "NavMeshCreator.h"
-#include "BuildContext.h"
+#include <Recast.h>
 
-#include <DetourCrowd.h>
-#include <DetourNavMeshQuery.h>
+#ifdef _MSC_VER
+#   pragma warning(push, 0)
+#   include <catch.hpp>
+#   pragma warning(pop)
+#else
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wall"
+#   include <catch.hpp>
+#   pragma GCC diagnostic pop
+#endif
 
-
-/// This class is used to create a complete scene (navigation mesh and agents) 
-/// from a file.
-class dtSceneCreator
+class TestBuildContext : public rcContext
 {
-public:
-    dtSceneCreator();
-    ~dtSceneCreator();
-    
-	/// Load informations from the given file.
-	bool createFromFile(const char* fileName);
-
-	/// Initialize the scene, the navigation mesh and the crowd.
-    bool initialize(InputGeom* scene, dtNavMesh* navMesh, dtCrowd* crowd);
-        
 private:
-	CrowdSample m_currentSample;
-	BuildContext m_context; /// rcContext concrete implementation
+	virtual void doLog(const rcLogCategory /*category*/, const char* msg, const int len)
+	{
+		INFO(std::string(msg,len));
+	}
 };
-
 #endif

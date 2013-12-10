@@ -197,7 +197,7 @@ void dtCrowd::purge()
 /// @par
 ///
 /// May be called more than once to purge and re-initialize the crowd.
-bool dtCrowd::init(const unsigned maxAgents, const float maxAgentRadius, dtNavMesh* nav)
+bool dtCrowd::init(const unsigned maxAgents, const float maxAgentRadius, const dtNavMesh* nav)
 {
 	purge();
 
@@ -297,10 +297,14 @@ bool dtCrowd::addAgent(dtCrowdAgent& agent, const float* pos)
 	if (idx == -1)
 		return false;
 	
+	// copy the position to prevent from aliasing problems (with ag.position)
+	float initialPos[3];
+	dtVcopy(initialPos, pos);
+	
 	agent.init();
 	agent.id = idx;
 	
-	dtStatus status = m_crowdQuery->getNavMeshQuery()->findNearestPoly(pos,
+	dtStatus status = m_crowdQuery->getNavMeshQuery()->findNearestPoly(initialPos,
 																	   m_crowdQuery->getQueryExtents(),
 																	   m_crowdQuery->getQueryFilter(),
 																	   &agent.poly,
@@ -556,35 +560,33 @@ void dtCrowd::updatePosition(const float dt, unsigned* agentsIdx, unsigned nbIdx
 		{
 			ag->offmeshElaspedTime += dt;
 
+			// Update velocity.
+			dtVset(ag->velocity, 0,0,0);
+			dtVset(ag->desiredVelocity, 0,0,0);
+
 			if (ag->offmeshElaspedTime > offmeshTotalTime)
 			{
-				// Prepare agent for walking.
+				// End of the offmesh connection reached
 				ag->state = DT_CROWDAGENT_STATE_WALKING;
-				m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position,
+				m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->offmeshEndPos,
 																 m_crowdQuery->getQueryExtents(),
 																 m_crowdQuery->getQueryFilter(),
 																 &ag->poly,
 																 ag->position);
 			}
+			else if (ag->offmeshElaspedTime < ag->offmeshInitToStartTime)
+			{
+				// Moving towards the offmesh connection start.
+				const float u = tween(ag->offmeshElaspedTime, 0.0, ag->offmeshInitToStartTime);
+				dtVlerp(ag->position, ag->offmeshInitPos, ag->offmeshStartPos, u);
+				ag->poly = 0;
+			}
 			else
 			{
-				// Update position
-				if (ag->offmeshElaspedTime < ag->offmeshInitToStartTime)
-				{
-					const float u = tween(ag->offmeshElaspedTime, 0.0, ag->offmeshInitToStartTime);
-					dtVlerp(ag->position, ag->offmeshInitPos, ag->offmeshStartPos, u);
-				}
-				else
-				{
-					const float u = tween(ag->offmeshElaspedTime, ag->offmeshInitToStartTime, offmeshTotalTime);
-					dtVlerp(ag->position, ag->offmeshStartPos, ag->offmeshEndPos, u);
-				}
-				
-				// Update navmesh location
+				// Moving towards the offmesh connection end.
+				const float u = tween(ag->offmeshElaspedTime, ag->offmeshInitToStartTime, offmeshTotalTime);
+				dtVlerp(ag->position, ag->offmeshStartPos, ag->offmeshEndPos, u);
 				ag->poly = 0;
-				// Update velocity.
-				dtVset(ag->velocity, 0,0,0);
-				dtVset(ag->desiredVelocity, 0,0,0);
 			}
 		}
 	}
@@ -689,6 +691,8 @@ bool dtCrowd::pushAgentPosition(unsigned id, const float* position)
 {
 	if (id >= m_maxAgents)
 		return false;
+		
+		
 	
 	dtCrowdAgent ag = m_agents[id];
 	dtVset(ag.desiredVelocity, 0, 0, 0);

@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "DetourCrowdTestUtils.h"
+#include "Utils.h"
 
 #include "DetourAlignmentBehavior.h"
 #include "DetourPathFollowing.h"
@@ -73,15 +73,15 @@ SCENARIO("DetourCrowdTest/DefaultCrowdAgent", "[detourCrowd]")
 
 SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 {
-	TestScene ts;
-	dtCrowd* crowd = ts.createSquareScene(20, 0.5f);
-	REQUIRE(crowd != 0);
+	const dtNavMesh& square = getSquareNavmesh();
+	dtCrowd crowd;
+	crowd.init(20, 0.5, &square);
 	
 	float initialPosition[] = {0, 0, 0};
 	dtCrowdAgent ag;
 	
 	// Adding the agent to the crowd
-	REQUIRE(crowd->addAgent(ag, initialPosition));
+	REQUIRE(crowd.addAgent(ag, initialPosition));
 	
 	WHEN("The agent has just been added")
 	{
@@ -103,30 +103,30 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 	WHEN("The position is updated to valid coordinates")
 	{
 		float correctPosition[] = {19, 0, 0};
-		CHECK(crowd->pushAgentPosition(ag.id, correctPosition));
+		CHECK(crowd.pushAgentPosition(ag.id, correctPosition));
 		
 		THEN("The fetched agent's position is updated")
 		{
-			crowd->fetchAgent(ag, ag.id);
+			crowd.fetchAgent(ag, ag.id);
 			CHECK(ag.position[0]==correctPosition[0]);
 			CHECK(ag.position[2]==correctPosition[2]);
 		}
 		
 		THEN("The directly accessed agent's position is updated")
 		{
-			CHECK(crowd->getAgent(ag.id)->position[0]==correctPosition[0]);
-			CHECK(crowd->getAgent(ag.id)->position[2]==correctPosition[2]);
+			CHECK(crowd.getAgent(ag.id)->position[0]==correctPosition[0]);
+			CHECK(crowd.getAgent(ag.id)->position[2]==correctPosition[2]);
 		}
 	}
 	
 	WHEN("The position is updated to invalid coordinates")
 	{
 		float wrongPosition[] = {100, 0, 10};
-		CHECK_FALSE(crowd->pushAgentPosition(ag.id, wrongPosition));
+		CHECK_FALSE(crowd.pushAgentPosition(ag.id, wrongPosition));
 		
 		THEN("The fetched agent's position is not updated")
 		{
-			crowd->fetchAgent(ag, ag.id);
+			crowd.fetchAgent(ag, ag.id);
 			CHECK(ag.position[0]==initialPosition[0]);
 			CHECK(ag.position[2]==initialPosition[2]);
 		}
@@ -138,7 +138,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 	{
 		fetched.maxAcceleration = 999;
 		
-		crowd->fetchAgent(fetched, UINT_MAX);
+		crowd.fetchAgent(fetched, UINT_MAX);
 		
 		THEN("The given agent data structure is left unchanged")
 		{
@@ -148,7 +148,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 	
 	WHEN("Fetching an agent with an existing agent id")
 	{
-		crowd->fetchAgent(fetched, ag.id);
+		crowd.fetchAgent(fetched, ag.id);
 		
 		THEN("The given agent data structure is updated")
 		{
@@ -165,11 +165,11 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 	{
 		toApply.id = UINT_MAX;
 		
-		CHECK_FALSE(crowd->pushAgent(toApply));
+		CHECK_FALSE(crowd.pushAgent(toApply));
 		
 		THEN("The existing agent's data structure is not updated")
 		{
-			CHECK(crowd->getAgent(ag.id)->radius == ag.radius);
+			CHECK(crowd.getAgent(ag.id)->radius == ag.radius);
 		}
 	}
 	
@@ -177,11 +177,11 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 	{
 		toApply.id = ag.id;
 		
-		CHECK(crowd->pushAgent(toApply));
+		CHECK(crowd.pushAgent(toApply));
 		
 		THEN("The existing agent's data structure is updated")
 		{
-			CHECK(crowd->getAgent(ag.id)->radius == toApply.radius);
+			CHECK(crowd.getAgent(ag.id)->radius == toApply.radius);
 		}
 	}
 }
@@ -203,79 +203,77 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 	GIVEN("A scene with 2 agents having path following behaviors")
 	{
 		// Creation of the simulation
-		TestScene ts;
-		dtCrowd* crowd = ts.createSquareScene(4, 0.5f);
-		REQUIRE(crowd != 0);
+		const dtNavMesh& square = getSquareNavmesh();
+		dtCrowd crowd;
+		crowd.init(4, 0.5, &square);
 		
 		// Adding the agents to the crowd
-		REQUIRE(crowd->addAgent(ag1, posAgt1));
-		REQUIRE(crowd->addAgent(ag2, posAgt2));
-		ts.defaultInitializeAgent(*crowd, ag1.id);
-		ts.defaultInitializeAgent(*crowd, ag2.id);
+		REQUIRE(crowd.addAgent(ag1, posAgt1));
+		REQUIRE(crowd.addAgent(ag2, posAgt2));
 		
 		dtPathFollowing* pf1 = dtPathFollowing::allocate(5);
 		
-		pf1->init(*crowd->getCrowdQuery());
+		pf1->init(*crowd.getCrowdQuery());
 		
-		crowd->pushAgentBehavior(ag1.id, pf1);
-		crowd->pushAgentBehavior(ag2.id, pf1);
+		crowd.pushAgentBehavior(ag1.id, pf1);
+		crowd.pushAgentBehavior(ag2.id, pf1);
 		
 		// Set the destination
 		dtPolyRef dest1, dest2;
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest1, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest2, 0);
+		crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest1, 0);
+		crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest2, 0);
 		
 		pf1->getBehaviorParams(ag1.id)->submitTarget(destAgt1, dest1);
 		pf1->getBehaviorParams(ag2.id)->submitTarget(destAgt2, dest2);
 		
 		WHEN("The given dt is nil")
 		{
-			crowd->update(0.f);
+			crowd.update(0.f);
 			
 			THEN("The agents have not moved")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] == posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] == posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] == posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] == posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] == posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] == posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] == posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] == posAgt2[2]);
 			}
 		}
 		
 		WHEN("Updating all agents")
 		{
-			crowd->update(1.0, 0);
+			crowd.update(1.0, 0);
 			
 			THEN("ag1 and ag2 have moved")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] != posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] != posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
 			}
 			
 			THEN("Their navmesh polygon is valid")
 			{
-				const dtNavMesh* nm = crowd->getCrowdQuery()->getNavMeshQuery()->getAttachedNavMesh();
-				crowd->fetchAgent(ag1, ag1.id);
+				const dtNavMesh* nm = crowd.getCrowdQuery()->getNavMeshQuery()->getAttachedNavMesh();
+				crowd.fetchAgent(ag1, ag1.id);
 				CHECK(nm->isValidPolyRef(ag1.poly));
 				
-				crowd->fetchAgent(ag2, ag2.id);
+				crowd.fetchAgent(ag2, ag2.id);
 				CHECK(nm->isValidPolyRef(ag2.poly));
-			}
+		}
 		}
 		
 		WHEN("Updating all agents specifically")
 		{
 			unsigned list[] = {ag2.id, ag1.id};
 			
-			crowd->update(1.0, list, 2);
+			crowd.update(1.0, list, 2);
 			
 			THEN("ag1 and ag2 have moved")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] != posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] != posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
 			}
 		}
 		
@@ -283,14 +281,14 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 		{
 			unsigned list[] = {15, ag2.id, ag1.id, 12};
 			
-			crowd->update(1.0, list, 4);
+			crowd.update(1.0, list, 4);
 			
 			THEN("ag1 and ag2 have moved")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] != posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] != posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
 			}
 		}
 		
@@ -298,40 +296,40 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 		{
 			unsigned list[] = {15, 12};
 			
-			crowd->update(1.0, list, 2);
+			crowd.update(1.0, list, 2);
 			
 			THEN("Neither ag1 or ag2 have moved")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] == posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] == posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] == posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] == posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] == posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] == posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] == posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] == posAgt2[2]);
 			}
 		}
 		
 		WHEN("Updating the first agent")
 		{
-			crowd->update(1.0, &ag1.id, 1);
+			crowd.update(1.0, &ag1.id, 1);
 			
 			THEN("ag1 have moved, ag2 haven't")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] == posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] == posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] != posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] != posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] == posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] == posAgt2[2]);
 			}
 		}
 		
 		WHEN("Updating the second agent")
 		{
-			crowd->update(1.0, &ag2.id, 1);
+			crowd.update(1.0, &ag2.id, 1);
 			
 			THEN("ag2 have moved, ag1 haven't")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] == posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] == posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] == posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] == posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
 			}
 		}
 		
@@ -339,118 +337,117 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 		{
 			for (unsigned i(0) ; i < 1000 ; ++i)
 			{
-				crowd->update(1.f / 1000.f);
+				crowd.update(1.f / 1000.f);
 			}
 			
 			THEN("ag1 and ag2 have moved")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] != posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] != posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
 			}
 		}
 		
 		float velAgt1[3], velAgt2[3];
-		dtVcopy(velAgt1, crowd->getAgent(ag1.id)->velocity);
-		dtVcopy(velAgt2, crowd->getAgent(ag2.id)->velocity);
+		dtVcopy(velAgt1, crowd.getAgent(ag1.id)->velocity);
+		dtVcopy(velAgt2, crowd.getAgent(ag2.id)->velocity);
 		
 		WHEN("Updating only the environment")
 		{
-			crowd->updateEnvironment();
+			crowd.updateEnvironment();
 			
 			THEN("Agents have not moved and their velocity has not been updated")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] == posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] == posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] == posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] == posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] == posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] == posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] == posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] == posAgt2[2]);
 				
-				CHECK(crowd->getAgent(ag1.id)->velocity[0] == velAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->velocity[2] == velAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->velocity[0] == velAgt1[0]);
-				CHECK(crowd->getAgent(ag2.id)->velocity[2] == velAgt1[2]);
+				CHECK(crowd.getAgent(ag1.id)->velocity[0] == velAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->velocity[2] == velAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->velocity[0] == velAgt1[0]);
+				CHECK(crowd.getAgent(ag2.id)->velocity[2] == velAgt1[2]);
 			}
 		}
 		
 		WHEN("Creating an agent near Agent 1")
 		{
 			float posAgt3[3] = {
-				crowd->getAgent(ag1.id)->position[0] + 1,
+				crowd.getAgent(ag1.id)->position[0] + 1,
 				0 ,
-				crowd->getAgent(ag1.id)->position[2] + 1};
+				crowd.getAgent(ag1.id)->position[2] + 1};
 			dtCrowdAgent ag3;
 			
-			REQUIRE(crowd->addAgent(ag3, posAgt3));
+			REQUIRE(crowd.addAgent(ag3, posAgt3));
 			
-			ts.defaultInitializeAgent(*crowd, ag3.id);
-			crowd->pushAgentBehavior(ag3.id, pf1);
+			crowd.pushAgentBehavior(ag3.id, pf1);
 			
 			THEN("The new agent can 'see' agent 1")
 			{
-				crowd->updateEnvironment(&ag3.id, 1);
+				crowd.updateEnvironment(&ag3.id, 1);
 				
-				CHECK(crowd->getAgentEnvironment(ag3.id)->nbNeighbors == 1);
-				CHECK(crowd->getAgentEnvironment(ag3.id)->neighbors[0].idx == ag1.id);
+				CHECK(crowd.getAgentEnvironment(ag3.id)->nbNeighbors == 1);
+				CHECK(crowd.getAgentEnvironment(ag3.id)->neighbors[0].idx == ag1.id);
 				
 				// The other agents on the other hand haven't updated its environment, and therefore should have no neighbors
-				CHECK(crowd->getAgentEnvironment(ag1.id)->nbNeighbors == 0);
+				CHECK(crowd.getAgentEnvironment(ag1.id)->nbNeighbors == 0);
 			}
 			
 			THEN("A nil perception blinds it")
 			{
-				crowd->fetchAgent(ag3, ag3.id);
+				crowd.fetchAgent(ag3, ag3.id);
 				ag3.perceptionDistance = 0.f;
-				crowd->pushAgent(ag3);
+				crowd.pushAgent(ag3);
 				
-				crowd->updateEnvironment(&ag3.id, 1);
+				crowd.updateEnvironment(&ag3.id, 1);
 				
-				CHECK(crowd->getAgentEnvironment(ag3.id)->nbNeighbors == 0);
+				CHECK(crowd.getAgentEnvironment(ag3.id)->nbNeighbors == 0);
 			}
 			
 			THEN("Updating the environment for all make them 'see' each others")
 			{
 				// Now we update everyone's environment, thus every agent has one neighbor
-				crowd->updateEnvironment();
-				CHECK(crowd->getAgentEnvironment(ag3.id)->nbNeighbors == 1);
-				CHECK(crowd->getAgentEnvironment(ag1.id)->nbNeighbors == 1);
+				crowd.updateEnvironment();
+				CHECK(crowd.getAgentEnvironment(ag3.id)->nbNeighbors == 1);
+				CHECK(crowd.getAgentEnvironment(ag1.id)->nbNeighbors == 1);
 			}
 		}
 		
 		WHEN("Updating only the velocity")
 		{
-			crowd->updateVelocity(0.2f);
+			crowd.updateVelocity(0.2f);
 			
 			THEN("Agents have not moved but their velocity has been updated")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] == posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] == posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] == posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] == posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] == posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] == posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] == posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] == posAgt2[2]);
 				
-				CHECK(crowd->getAgent(ag1.id)->velocity[0] != velAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->velocity[2] != velAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->velocity[0] != velAgt1[0]);
-				CHECK(crowd->getAgent(ag2.id)->velocity[2] != velAgt1[2]);
+				CHECK(crowd.getAgent(ag1.id)->velocity[0] != velAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->velocity[2] != velAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->velocity[0] != velAgt1[0]);
+				CHECK(crowd.getAgent(ag2.id)->velocity[2] != velAgt1[2]);
 			}
 		}
 		
 		WHEN("Updating velocity, then position")
 		{
-			crowd->updateVelocity(0.2f, 0);
-			crowd->updatePosition(0.2f, 0);
+			crowd.updateVelocity(0.2f, 0);
+			crowd.updatePosition(0.2f, 0);
 			
 			THEN("Agents have moved and their velocity have been updated")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] != posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] != posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] != posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] != posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
 				
-				CHECK(crowd->getAgent(ag1.id)->velocity[0] != velAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->velocity[2] != velAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->velocity[0] != velAgt1[0]);
-				CHECK(crowd->getAgent(ag2.id)->velocity[2] != velAgt1[2]);
+				CHECK(crowd.getAgent(ag1.id)->velocity[0] != velAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->velocity[2] != velAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->velocity[0] != velAgt1[0]);
+				CHECK(crowd.getAgent(ag2.id)->velocity[2] != velAgt1[2]);
 			}
 		}
 	}
@@ -458,35 +455,31 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 	GIVEN("A scene with 4 agents having path following behaviors")
 	{
 		// Creation of the simulation
-		TestScene ts;
-		dtCrowd* crowd = ts.createSquareScene(4, 0.5f);
-		REQUIRE(crowd != 0);
+		const dtNavMesh& square = getSquareNavmesh();
+		dtCrowd crowd;
+		crowd.init(4, 0.5, &square);
 		
 		// Adding the agents to the crowd
-		REQUIRE(crowd->addAgent(ag1, posAgt1));
-		ts.defaultInitializeAgent(*crowd, ag1.id);
-		REQUIRE(crowd->addAgent(ag2, posAgt2));
-		ts.defaultInitializeAgent(*crowd, ag2.id);
-		REQUIRE(crowd->addAgent(ag3, posAgt3));
-		ts.defaultInitializeAgent(*crowd, ag3.id);
-		REQUIRE(crowd->addAgent(ag4, posAgt4));
-		ts.defaultInitializeAgent(*crowd, ag4.id);
+		REQUIRE(crowd.addAgent(ag1, posAgt1));
+		REQUIRE(crowd.addAgent(ag2, posAgt2));
+		REQUIRE(crowd.addAgent(ag3, posAgt3));
+		REQUIRE(crowd.addAgent(ag4, posAgt4));
 		
 		dtPathFollowing* pf1 = dtPathFollowing::allocate(5);
 		
-		pf1->init(*crowd->getCrowdQuery());
+		pf1->init(*crowd.getCrowdQuery());
 		
-		crowd->pushAgentBehavior(ag1.id, pf1);
-		crowd->pushAgentBehavior(ag2.id, pf1);
-		crowd->pushAgentBehavior(ag3.id, pf1);
-		crowd->pushAgentBehavior(ag4.id, pf1);
+		crowd.pushAgentBehavior(ag1.id, pf1);
+		crowd.pushAgentBehavior(ag2.id, pf1);
+		crowd.pushAgentBehavior(ag3.id, pf1);
+		crowd.pushAgentBehavior(ag4.id, pf1);
 		
 		// Set the destination
 		dtPolyRef dest1, dest2, dest3, dest4;
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest1, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest2, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest3, 0);
-		crowd->getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd->getCrowdQuery()->getQueryExtents(), crowd->getCrowdQuery()->getQueryFilter(), &dest4, 0);
+		crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest1, 0);
+		crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest2, 0);
+		crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt1, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest3, 0);
+		crowd.getCrowdQuery()->getNavMeshQuery()->findNearestPoly(posAgt2, crowd.getCrowdQuery()->getQueryExtents(), crowd.getCrowdQuery()->getQueryFilter(), &dest4, 0);
 		
 		pf1->getBehaviorParams(ag1.id)->submitTarget(destAgt1, dest1);
 		pf1->getBehaviorParams(ag2.id)->submitTarget(destAgt2, dest2);
@@ -495,19 +488,19 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 		
 		WHEN("The first agent is removed and then the crowd updated")
 		{
-			crowd->removeAgent(ag1.id);
-			crowd->update(0.5);
+			crowd.removeAgent(ag1.id);
+			crowd.update(0.5);
 			
 			THEN("every agent has moved but the removed one")
 			{
-				CHECK(crowd->getAgent(ag1.id)->position[0] == posAgt1[0]);
-				CHECK(crowd->getAgent(ag1.id)->position[2] == posAgt1[2]);
-				CHECK(crowd->getAgent(ag2.id)->position[0] != posAgt2[0]);
-				CHECK(crowd->getAgent(ag2.id)->position[2] != posAgt2[2]);
-				CHECK(crowd->getAgent(ag3.id)->position[0] != posAgt3[0]);
-				CHECK(crowd->getAgent(ag3.id)->position[2] != posAgt3[2]);
-				CHECK(crowd->getAgent(ag4.id)->position[0] != posAgt4[0]);
-				CHECK(crowd->getAgent(ag4.id)->position[2] != posAgt4[2]);
+				CHECK(crowd.getAgent(ag1.id)->position[0] == posAgt1[0]);
+				CHECK(crowd.getAgent(ag1.id)->position[2] == posAgt1[2]);
+				CHECK(crowd.getAgent(ag2.id)->position[0] != posAgt2[0]);
+				CHECK(crowd.getAgent(ag2.id)->position[2] != posAgt2[2]);
+				CHECK(crowd.getAgent(ag3.id)->position[0] != posAgt3[0]);
+				CHECK(crowd.getAgent(ag3.id)->position[2] != posAgt3[2]);
+				CHECK(crowd.getAgent(ag4.id)->position[0] != posAgt4[0]);
+				CHECK(crowd.getAgent(ag4.id)->position[2] != posAgt4[2]);
 			}
 		}
 	}

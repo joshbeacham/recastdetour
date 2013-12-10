@@ -17,33 +17,34 @@
 //
 
 #include "Application.h"
-#include "DetourSceneCreator.h"
 
 Application::Application()
-:  m_context()
+: m_context()
+, m_sample()
+, m_scene()
+, m_navMesh()
+, m_crowd()
+, m_visu()
+, m_debug()
 {
+	// NOTHING
 }
 
 Application::~Application()
 {
-    
+	// NOTHING
 }
 
 bool Application::init(const char* fileName)
 {
-	dtSceneCreator sc;
-
-	if (!sc.createFromFile(fileName))
+	if (!m_sample.loadFromFile(fileName, m_context))
 		return false;
 
-	if (!sc.initialize(&m_scene, &m_navMesh, &m_crowd))
-		return false;
-
-	m_debug.m_crowd = &m_crowd;
+	m_debug.m_crowd = &m_sample.m_crowd;
 	
-	m_visu.m_scene = &m_scene;
-	m_visu.m_crowd = &m_crowd;
-	m_visu.m_navmesh = &m_navMesh;
+	m_visu.m_scene = &m_sample.m_mesh;
+	m_visu.m_crowd = &m_sample.m_crowd;
+	m_visu.m_navmesh = &m_sample.m_navMesh;
 	m_visu.m_debugInfo = &m_debug;
 
 	//Run the simulation
@@ -55,18 +56,18 @@ bool Application::init(const char* fileName)
 
 bool Application::run()
 {
-    while (!m_visu.m_stopRequested)
-    {
-        if (!m_visu.update())
-        {
-            return false;
-        }
-    }
-    
-    if (!m_visu.terminate())
-    {
-        return false;
-    }
-    
-    return false;
+	while (!m_visu.m_stopRequested)
+	{
+		if (!m_visu.update())
+		{
+			return false;
+		}
+	}
+	
+	if (!m_visu.terminate())
+	{
+		return false;
+	}
+	
+	return false;
 }

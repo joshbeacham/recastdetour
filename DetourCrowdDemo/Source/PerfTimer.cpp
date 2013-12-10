@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
+// Copyright (c) 2013 MASA Group recastdetour@masagroup.net
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
 
 #include "PerfTimer.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 
 // Win32
 #include <windows.h>

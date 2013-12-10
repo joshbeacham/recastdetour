@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013 MASA Group recastdetour@masagroup.net
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -16,13 +16,36 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef STATICCONFIGURATION_H
-#define STATICCONFIGURATION_H
+#ifndef BUILDCONTEXT_H
+#define BUILDCONTEXT_H
 
-#include <cstring>
+#include "Recast.h"
+#include "PerfTimer.h"
 
-const size_t maxAgentCount = 200;
-const size_t maxPathLen = 260;
-const size_t maxAgentTrailLen = 64;
+#include <cstdio>
 
-#endif
+// These are example implementations of various interfaces used in Recast and Detour.
+
+/// Recast build context.
+class BuildContext : public rcContext
+{
+public:
+	BuildContext();
+	virtual ~BuildContext();
+	
+protected:	
+	/// Virtual functions for custom implementations.
+	///@{
+	virtual void doLog(const rcLogCategory category, const char* msg, const int len);
+	virtual void doResetTimers();
+	virtual void doStartTimer(const rcTimerLabel /*label*/);
+	virtual void doStopTimer(const rcTimerLabel /*label*/);
+	virtual int doGetAccumulatedTime(const rcTimerLabel /*label*/) const;
+	///@}
+
+	TimeVal m_startTime[RC_MAX_TIMERS];
+	int m_accTime[RC_MAX_TIMERS];
+};
+
+#endif // BUILDCONTEXT_H
+

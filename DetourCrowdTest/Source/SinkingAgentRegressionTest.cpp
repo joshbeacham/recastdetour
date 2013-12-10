@@ -16,12 +16,14 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "DetourCrowdTestUtils.h"
+#include "Utils.h"
 
 #include <DetourCollisionAvoidance.h>
 #include <DetourCrowd.h>
 #include <DetourPathFollowing.h>
 #include <DetourPipelineBehavior.h>
+
+#include <cstring>
 
 SCENARIO("Regression/SinkingAgent", "[regression]")
 {

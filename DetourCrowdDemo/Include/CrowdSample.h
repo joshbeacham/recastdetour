@@ -19,45 +19,59 @@
 #ifndef CROWDSAMPLE_H
 #define CROWDSAMPLE_H
 
-#include "Visualization.h"
+
+#include "StaticConfiguration.h"
+
+#include <DetourNavmeshCreator.h>
 
 #include <DetourCrowd.h>
 
-class rcContext;
-class InputGeom;
+#include <map>
+#include <vector>
+#include <string>
 
-struct AgentConfiguration
-{
-    int index;
-    float position[3];
-    float destination[3];
-    dtPolyRef destinationPoly;
-    dtCrowdAgentParams parameters;
-};
+class dtCollisionAvoidance;
+class dtPipelineBehavior;
+class dtPathFollowing;
+
+class rcContext;
+
+class JSONValue;
 
 class CrowdSample
 {
 public:
-    CrowdSample();
-    ~CrowdSample();
-    
-    bool loadFromBuffer(const char* data);
-    bool loadFromFile(const char* fileName);
+	CrowdSample();
+	~CrowdSample();
 
-    bool initialize(InputGeom* scene, dtCrowd* crowd, dtNavMesh* navMesh);
-    
-    char m_sceneFileName[maxPathLen];
-    AgentConfiguration m_agentCfgs[maxAgentCount];
-    int m_agentCount;
-    rcContext* m_context;
-    
+	bool loadFromFile(const char* fileName, rcContext& context);
+
+	dtMesh m_mesh;
+	dtNavMesh m_navMesh;
+	dtCrowd m_crowd;
+	float m_maxRadius;
+	unsigned m_agentsCount;
+	
 private:
-    void computeMaximumRadius();
-    bool initializeScene(InputGeom* scene);
-    bool initializeNavmesh(const InputGeom& scene, dtNavMesh* navMesh);
-    bool initializeCrowd(dtNavMesh& navmesh, dtCrowd* crowd);
-    
-    float m_maxRadius;
+	struct BehaviorCfg
+	{
+		dtBehavior* activeBehaviors[2];
+		unsigned activeBehaviorsCount;
+		dtPipelineBehavior* pipeline;
+		dtCollisionAvoidance* collisionAvoidance;
+		dtPathFollowing* pathFollowing;
+	};
+
+	bool loadJSONFile(const char* fileName, JSONValue** root, rcContext& context);
+	bool loadScene(JSONValue& root, rcContext& context);
+	bool retrieveAgentsInfo(JSONValue& root, rcContext& context);
+	bool computeNavmesh(rcContext& context);
+	bool parseBehaviors(JSONValue& root, rcContext& context);
+	bool parseCollisionAvoidance(JSONValue& behavior, dtCollisionAvoidance** collisionAvoidance, rcContext& context);
+	bool parsePathFollowing(JSONValue& behavior, dtPathFollowing** pathFollowing, rcContext& context);
+	bool createAgents(JSONValue& root, rcContext& context);
+
+	std::map<std::string, BehaviorCfg> m_behaviors;
 };
 
 #endif

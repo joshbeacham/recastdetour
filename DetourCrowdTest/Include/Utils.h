@@ -16,37 +16,50 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
-
-#include "Visualization.h"
-#include "BuildContext.h"
-#include "CrowdSample.h"
-#include "DebugInfo.h"
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <DetourCrowd.h>
 
 #include <DetourMesh.h>
+#include <DetourNavmeshCreator.h>
 
-#include <DetourNavMeshQuery.h>
+#include <DetourNavMesh.h>
 
-class Application
+#include <Recast.h>
+
+#include <string>
+
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#include <catch.hpp>
+#pragma warning(pop)
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wall"
+#include <catch.hpp>
+#pragma GCC diagnostic pop
+#endif
+
+class TestBuildContext : public rcContext
 {
-public:
-	Application();
-	~Application();
-	
-	bool init(const char* fileName);
-	bool run();
-		
 private:
-	BuildContext m_context;
-	CrowdSample m_sample;
-	dtMesh m_scene;
-	dtNavMesh m_navMesh;
-	dtCrowd m_crowd;
-	Visualization m_visu;
-	DebugInfo m_debug;
+	virtual void doLog(const rcLogCategory /*category*/, const char* msg, const int len)
+	{
+		WARN(std::string(msg,len));
+	}
 };
+
+/// Retrieve a square mesh
+const dtNavmeshInputGeometry& getSquareMesh();
+
+/// Square navmesh
+const dtNavMesh& getSquareNavmesh();
+
+/// Creates a tiled navigation mesh from the contents of a file.
+/// @note DT_TILE_FREE_DATA is used as an option to the initialization process.
+bool loadTiledNavMesh(dtNavMesh* navmesh, const char* path);
+
+bool saveTileNavmesh(const char* path, const dtNavMesh* navmesh, unsigned* tileIndices, unsigned tileCount);
 
 #endif
