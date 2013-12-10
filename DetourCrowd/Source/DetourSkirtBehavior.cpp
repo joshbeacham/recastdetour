@@ -239,15 +239,13 @@ bool dtSkirtBehavior::updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery&
 
 	if (m_agentObstacleDistance != std::numeric_limits<float>::max())
 	{
+		// get the environment based on the agent obstacle to avoid
+		agEnv = query.getAgentEnvironment(m_agentObstacle.id);
 		// Append neighbour segments as obstacles.
 		for (int j = 0; j < agEnv->boundary.getSegmentCount(); ++j)
 		{
 			const float* s = agEnv->boundary.getSegment(j);
 
-			// check that the segment is from an outer bound
-			// allows to cross this segment if the current position is inside the obstacle
-			if (dtTriArea2D(ag.position, s, s+3) < 0.f)
-				continue;
 			// do not consider segments that the agent obstacle is within
 			if (dtTriArea2D(m_agentObstacle.position, s, s+3) < 0.f)
 				continue;
@@ -294,6 +292,7 @@ bool dtSkirtBehavior::addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdA
 					dtVcopy(m_agentObstacle.position, obtacle.position);
 					dtVcopy(m_agentObstacle.direction, normalizedDiff);
 					m_agentObstacle.radius = obtacle.radius;
+					m_agentObstacle.id = obtacle.id;
 					return true;
 				}
 			}

@@ -29,6 +29,7 @@ struct dtAgentObstacle
 	float position[3];
 	float direction[3];         ///< Normalized vector from the obstacle to the agent
 	float radius;
+	unsigned int id;
 };
 /// Navmesh sgment represented as an obstacle
 struct dtSegmentObstacle
