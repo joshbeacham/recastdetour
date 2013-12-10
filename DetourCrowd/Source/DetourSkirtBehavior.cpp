@@ -135,6 +135,10 @@ namespace
 		// it means that both centers are at the same coordinates, either there is no intersection or they intersect perfectly
 		return false;
 	}
+	float computeDistanceBetweenPointsSquare(const float* point1, const float* point2)
+	{
+		return dtSqr(point2[0]-point1[0]) + dtSqr(point2[1]-point1[1]);
+	}
 }
 void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent& newAgent)
 {
@@ -143,25 +147,6 @@ void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent
 	currentToAgent[1] = m_agentObstacle.position[2];
 	currentToAgent[0] -= oldAgent.position[0];
 	currentToAgent[1] -= oldAgent.position[2];
-	float relativeSide = 0;
-	// check if there is an obstacle segment close to the agent obstacle that is close enough to make moves difficult
-	if (m_segmentObstacleDistance > EPSILON && m_segmentObstacleDistance < oldAgent.radius * 2 + m_agentObstacle.radius)
-	{
-		// choose to go at the opposite of the segment obstacle
-		float agentToSegment[2];
-		agentToSegment[0] = m_segmentObstacle.closest[0];
-		agentToSegment[1] = m_segmentObstacle.closest[1];
-		agentToSegment[0] -= m_agentObstacle.position[0];
-		agentToSegment[1] -= m_agentObstacle.position[2];
-		// if positive, the angle from currentToAgent to agentToSegment is positive, agentToSegment is on the left side otherwise agentToSegment is on the right side.
-		relativeSide = currentToAgent[1]*agentToSegment[0] - currentToAgent[0]*agentToSegment[1];
-	}
-	else
-	{
-		// use the shorter path
-		// if positive, the angle from ag.desiredVelocity to currentToAgent is positive, currentToAgent is on the left side otherwise currentToAgent is on the right side.
-		relativeSide = oldAgent.desiredVelocity[2]*currentToAgent[0] - oldAgent.desiredVelocity[0]*currentToAgent[1];
-	}
 	float distanceToAgent = sqrt(currentToAgent[0]*currentToAgent[0] + currentToAgent[1]*currentToAgent[1]);
 	float sinToObstacleBorder = m_agentObstacle.radius / distanceToAgent;
 	float cosToObstacleBorder = sqrt(1 - sinToObstacleBorder*sinToObstacleBorder);
@@ -173,18 +158,60 @@ void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent
 		oldAgent.position[0], oldAgent.position[2], distanceToTangent,
 		tangent1, tangent2))
 	{
-		float agentToTangent1[2];
-		agentToTangent1[0] = tangent1[0];
-		agentToTangent1[1] = tangent1[1];
-		agentToTangent1[0] -= m_agentObstacle.position[0];
-		agentToTangent1[1] -= m_agentObstacle.position[2];
 		float tangentToUse[2];
-		// tangent1 relative side
-		float tangent1RelativeSide = currentToAgent[1]*agentToTangent1[0] - currentToAgent[0]*agentToTangent1[1];
-		if ((tangent1RelativeSide < 0 && relativeSide < 0) || (tangent1RelativeSide > 0 && relativeSide > 0))
-			dtVcopy(tangentToUse, tangent2); // use tangent2 if tangent1 points to the obstacle
+		// check if there is an obstacle segment close to the agent obstacle that is close enough to make moves difficult
+		if (m_segmentObstacleDistance != std::numeric_limits<float>::max() && m_segmentObstacleDistance < oldAgent.radius * 2 + m_agentObstacle.radius)
+		{
+			float distanceFromTangent1 = computeDistanceBetweenPointsSquare(tangent1, m_segmentObstacle.closest);
+			float distanceFromTangent2 = computeDistanceBetweenPointsSquare(tangent2, m_segmentObstacle.closest);
+			float segmentToAgent[2];
+			segmentToAgent[0] = m_segmentObstacle.closest[0];
+			segmentToAgent[1] = m_segmentObstacle.closest[1];
+			segmentToAgent[0] -= m_agentObstacle.position[0];
+			segmentToAgent[1] -= m_agentObstacle.position[2];
+			float currentToSegment[2];
+			currentToSegment[0] = m_segmentObstacle.closest[0];
+			currentToSegment[1] = m_segmentObstacle.closest[1];
+			currentToSegment[0] -= oldAgent.position[0];
+			currentToSegment[1] -= oldAgent.position[2];
+			// if positive, the angle from segmentToAgent to currentToSegment is positive, currentToSegment is on the left side otherwise currentToSegment is on the right side.
+			float currentPositionRelativeSide = segmentToAgent[1]*currentToSegment[0] - segmentToAgent[0]*currentToSegment[1];
+			// if positive, the angle from segmentToAgent to segmentToCurrent is positive, segmentToCurrent is on the left side otherwise segmentToCurrent is on the right side.
+			float currentVelocityRelativeSide = segmentToAgent[1]*oldAgent.desiredVelocity[0] - segmentToAgent[0]*oldAgent.desiredVelocity[2];
+			// check if the agent is tyring to pass by the agent obstacle or is going away from it
+			if ((currentPositionRelativeSide < 0 && currentVelocityRelativeSide < 0) || (currentPositionRelativeSide > 0 && currentVelocityRelativeSide > 0))
+			{
+				// trying to pass by the agent obstacle: select tangent that is further from obstacle
+				if (distanceFromTangent1 > distanceFromTangent2)
+					dtVcopy(tangentToUse, tangent1);
+				else
+					dtVcopy(tangentToUse, tangent2);
+			}
+			else
+			{
+				// tyring to go away from the agent obtacle: select tangent that is closer to obstacle
+				if (distanceFromTangent1 > distanceFromTangent2)
+					dtVcopy(tangentToUse, tangent2);
+				else
+					dtVcopy(tangentToUse, tangent1);
+			}
+		}
 		else
-			dtVcopy(tangentToUse, tangent1); // otherwise use tangent1
+		{
+			// use the path with less deviation
+			float currentToTangent[2];
+			currentToTangent[0] = tangent1[0];
+			currentToTangent[1] = tangent1[1];
+			currentToTangent[0] -= m_agentObstacle.position[0];
+			currentToTangent[1] -= m_agentObstacle.position[2];
+			float deviationTangent1FromVelocity = currentToTangent[1]*oldAgent.desiredVelocity[0] - currentToTangent[0]*oldAgent.desiredVelocity[2];
+			currentToTangent[0] = tangent2[0];
+			currentToTangent[1] = tangent2[1];
+			currentToTangent[0] -= m_agentObstacle.position[0];
+			currentToTangent[1] -= m_agentObstacle.position[2];
+			float deviationTangent2FromVelocity = currentToTangent[1]*oldAgent.desiredVelocity[0] - currentToTangent[0]*oldAgent.desiredVelocity[2];
+			dtVcopy(tangentToUse, fabs(deviationTangent1FromVelocity) > fabs(deviationTangent2FromVelocity) ? tangent1 : tangent2);
+		}
 		// compute the direction vector
 		float obstacleCenterToTangent[2];
 		obstacleCenterToTangent[0] = tangentToUse[0] - m_agentObstacle.position[0];
@@ -201,6 +228,18 @@ void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent
 		dtVsub(newAgent.desiredVelocity, targetPoint, oldAgent.position);
 		float newVelocityLength = dtVlen(newAgent.desiredVelocity);
 		dtVscale(newAgent.desiredVelocity, newAgent.desiredVelocity, previousVelocityLength/newVelocityLength);
+		{
+			float currentToSegment[2];
+			currentToSegment[0] = m_segmentObstacle.closest[0];
+			currentToSegment[1] = m_segmentObstacle.closest[1];
+			currentToSegment[0] -= oldAgent.position[0];
+			currentToSegment[1] -= oldAgent.position[2];
+			float approximateAngleBetweenOldVelocityAndOBstacle = currentToSegment[1]*oldAgent.desiredVelocity[0] - currentToSegment[0]*oldAgent.desiredVelocity[2];
+			float approximateAngleBetweenNewVelocityAndOBstacle = currentToSegment[1]*newAgent.desiredVelocity[0] - currentToSegment[0]*newAgent.desiredVelocity[2];
+			// if applying the new velocity makes the current agent go closer to the obstacle use the old one
+			if(fabs(approximateAngleBetweenNewVelocityAndOBstacle) < fabs(approximateAngleBetweenOldVelocityAndOBstacle))
+				dtVcopy(newAgent.desiredVelocity, oldAgent.desiredVelocity);
+		}
 	}
 	else
 	{
@@ -236,7 +275,6 @@ bool dtSkirtBehavior::updateObtacles(const dtCrowdAgent& ag, const dtCrowdQuery&
 		const dtCrowdAgent& neighbor = *query.getAgent(agEnv->neighbors[j].idx);
 		hasObstacles = addAgentObstacle(ag, neighbor, targetPos) || hasObstacles;
 	}
-
 	if (m_agentObstacleDistance != std::numeric_limits<float>::max())
 	{
 		// get the environment based on the agent obstacle to avoid
@@ -303,13 +341,13 @@ bool dtSkirtBehavior::addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdA
 
 bool dtSkirtBehavior::addSegment(const float* p, const float* q)
 {
-	float projectionFator;
-	float distanceToSegment = dtDistancePtSegSqr2D(m_agentObstacle.position, p, q, projectionFator);
+	float projectionFactor;
+	float distanceToSegment = dtDistancePtSegSqr2D(m_agentObstacle.position, p, q, projectionFactor);
 	if (distanceToSegment < m_segmentObstacleDistance)
 	{
 		m_segmentObstacleDistance = distanceToSegment;
-		m_segmentObstacle.closest[0] = p[0] + (q[0] - p[0]) * projectionFator;
-		m_segmentObstacle.closest[1] = p[2] + (q[2] - p[2]) * projectionFator;
+		m_segmentObstacle.closest[0] = p[0] + (q[0] - p[0]) * projectionFactor;
+		m_segmentObstacle.closest[1] = p[2] + (q[2] - p[2]) * projectionFactor;
 		return true;
 	}
 	return false;
