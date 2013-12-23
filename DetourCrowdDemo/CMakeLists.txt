@@ -97,7 +97,9 @@ IF(BUILD_DETOURCROWD_DEMO)
 		Contrib
 	)
 
-	IF(MSVC)
+	IF(APPLE)
+		ADD_EXECUTABLE(DetourCrowdDemo Source/SDLMain.m Include/SDLMain.h ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS} ${SimpleJSON_SRCS})
+	ELSEIF(MSVC)
 		ADD_EXECUTABLE(DetourCrowdDemo WIN32 ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${fastlz_SRCS} ${SimpleJSON_SRCS})
 	ELSE()
 		ADD_EXECUTABLE(DetourCrowdDemo ${detourcrowddemo_SRCS} ${detourcrowddemo_HDRS} ${SimpleJSON_SRCS})

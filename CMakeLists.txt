@@ -41,7 +41,7 @@ IF(MSVC)
 	ADD_DEFINITIONS(/D _SCL_SECURE_NO_WARNINGS)
 	ADD_DEFINITIONS(/wd4345 /wd4351) # Removing meaningless warning on POD and array constructors.
 	ADD_DEFINITIONS(/wd4018 /wd4389) # Signed/Unsigned comparisons, should be fixed.
-ENDIF(MSVC)
+ENDIF()
 
 INSTALL(
 	FILES recastdetour.LICENSE.txt
