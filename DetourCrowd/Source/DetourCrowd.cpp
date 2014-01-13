@@ -32,7 +32,7 @@
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
 
-void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float maxSpeed, float perceptionDistance)
+void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float maxSpeed, float detectionRange)
 {
 	memset(this, 0, sizeof(dtCrowdAgent));
 	this->id = UINT_MAX;
@@ -40,7 +40,7 @@ void dtCrowdAgent::init(float radius, float height, float maxAcceleration, float
 	this->height = height;
 	this->maxAcceleration = maxAcceleration;
 	this->maxSpeed = maxSpeed;
-	this->perceptionDistance = perceptionDistance;
+	this->detectionRange = detectionRange;
 	dtVset(this->desiredVelocity, 0.f, 0.f, 0.f);
 	dtVset(this->velocity, 0.f, 0.f, 0.f);
 }
@@ -620,7 +620,7 @@ void dtCrowd::updateEnvironment(unsigned* agentsIdx, unsigned nbIdx)
 
 		// Update the collision boundary after certain distance has been passed or
 		// if it has become invalid.
-		const float updateThr = ag->perceptionDistance * 0.25f;
+		const float updateThr = ag->detectionRange * 0.25f;
 		if (dtVdist2DSqr(ag->position, m_agentsEnv[ag->id].boundary.getCenter()) > dtSqr(updateThr) ||
 			!m_agentsEnv[ag->id].boundary.isValid(m_crowdQuery->getNavMeshQuery(), m_crowdQuery->getQueryFilter()))
 		{
@@ -628,7 +628,7 @@ void dtCrowd::updateEnvironment(unsigned* agentsIdx, unsigned nbIdx)
 			float nearest[3];
 			m_crowdQuery->getNavMeshQuery()->findNearestPoly(ag->position, m_crowdQuery->getQueryExtents(), m_crowdQuery->getQueryFilter(), &ref, nearest);
 
-			m_agentsEnv[ag->id].boundary.update(ref, ag->position, ag->perceptionDistance, 
+			m_agentsEnv[ag->id].boundary.update(ref, ag->position, ag->detectionRange, 
 				m_crowdQuery->getNavMeshQuery(), m_crowdQuery->getQueryFilter());
 		}
 		// Query neighbour agents
@@ -731,7 +731,7 @@ unsigned dtCrowd::computeNeighbors(unsigned id)
 		diff[1] = 0;
 		const float dist2D = dtVlenSqr(diff);
 
-		if (dist2D > dtSqr(agent->perceptionDistance))
+		if (dist2D > dtSqr(agent->detectionRange))
 			continue;
 
 		n = addNeighbour(target->id, dist2D, m_agentsEnv[agent->id].neighbors, n, DT_CROWDAGENT_MAX_NEIGHBOURS);

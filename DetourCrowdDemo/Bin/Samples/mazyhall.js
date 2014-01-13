@@ -32,7 +32,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -48,7 +48,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -64,7 +64,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -80,7 +80,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -96,7 +96,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -112,7 +112,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -128,7 +128,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -144,7 +144,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -160,7 +160,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -176,7 +176,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {

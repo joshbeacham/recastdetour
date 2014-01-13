@@ -357,9 +357,9 @@ bool CrowdSample::createAgents(JSONValue& root, rcContext& context)
 				if (height && height->IsNumber())
 					ag.height = (float)height->AsNumber();
 
-				JSONValue* perceptionDistance = agent->Child(L"perceptionDistance");
-				if (perceptionDistance && perceptionDistance->IsNumber())
-					ag.perceptionDistance = (float)perceptionDistance->AsNumber();
+				JSONValue* detectionRange = agent->Child(L"detectionRange");
+				if (detectionRange && detectionRange->IsNumber())
+					ag.detectionRange = (float)detectionRange->AsNumber();
 
 				JSONValue* behavior = agent->Child(L"behavior");
 				if (behavior && behavior->IsString())

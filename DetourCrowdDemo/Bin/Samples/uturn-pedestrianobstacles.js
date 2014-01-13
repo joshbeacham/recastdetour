@@ -32,7 +32,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0,
+            "detectionRange": 4.0,
             "behavior" : "default",
             "behaviorParams":
             {
@@ -48,7 +48,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0
+            "detectionRange": 4.0
         },
         {
             "position": [4, 0, -3.5],
@@ -56,7 +56,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0
+            "detectionRange": 4.0
         },
         {
             "position": [0, 0, -5.3],
@@ -64,7 +64,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0
+            "detectionRange": 4.0
         },
         {
             "position": [0.2, 0, -6.3],
@@ -72,7 +72,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0
+            "detectionRange": 4.0
         }
         ,
         {
@@ -81,7 +81,7 @@
             "maxAcceleration": 10,
             "radius": 0.2,
             "height": 1.7,
-            "perceptionDistance": 4.0
+            "detectionRange": 4.0
         }
     ]
 }

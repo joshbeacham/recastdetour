@@ -70,7 +70,7 @@ bool defaultInitializeAgent(dtCrowd& crowd, int index)
 	ag.maxSpeed = 2.0;
 	ag.maxAcceleration = 10.0;
 	ag.behavior = 0;
-	ag.perceptionDistance = 4.f;
+	ag.detectionRange = 4.f;
 
 	crowd.pushAgent(ag);
 

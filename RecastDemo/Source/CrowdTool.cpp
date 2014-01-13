@@ -292,7 +292,7 @@ void CrowdToolState::handleRender()
 		{
 			const float* center = m_crowd->getAgentEnvironment(ag->id)->boundary.getCenter();
 			duDebugDrawCross(&dd, center[0],center[1]+radius,center[2], 0.2f, duRGBA(192,0,128,255), 2.0f);
-			duDebugDrawCircle(&dd, center[0],center[1]+radius,center[2], ag->perceptionDistance,
+			duDebugDrawCircle(&dd, center[0],center[1]+radius,center[2], ag->detectionRange,
 							  duRGBA(192,0,128,128), 2.0f);
 			
 			dd.begin(DU_DRAW_LINES, 3.0f);
@@ -310,7 +310,7 @@ void CrowdToolState::handleRender()
 		
 		if (m_toolParams.m_showNeis)
 		{
-			duDebugDrawCircle(&dd, pos[0],pos[1]+radius,pos[2], ag->perceptionDistance,
+			duDebugDrawCircle(&dd, pos[0],pos[1]+radius,pos[2], ag->detectionRange,
 							  duRGBA(0,192,128,128), 2.0f);
 			
 			dd.begin(DU_DRAW_LINES, 2.0f);

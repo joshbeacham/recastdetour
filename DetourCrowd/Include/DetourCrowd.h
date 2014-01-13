@@ -88,7 +88,7 @@ struct dtCrowdAgent
 	float height;                   ///< Agent height. [Limit: > 0]
 	float maxAcceleration;          ///< Maximum allowed acceleration. [Limit: >= 0]
 	float maxSpeed;                 ///< Maximum allowed speed. [Limit: >= 0]
-	float perceptionDistance;       ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
+	float detectionRange;           ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
 
 	float offmeshInitPos[3];
 	float offmeshStartPos[3];
@@ -104,7 +104,7 @@ struct dtCrowdAgent
 	/// Set all the attributes to valid 'nil' values except the given ones.
 	///
 	/// @remark No memory allocation is performed.
-	void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float perceptionDistance = 4.f);
+	void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float detectionRange = 4.f);
 };
 
 /// Utility class used to get access to some useful elements of the crowd
@@ -390,11 +390,11 @@ int nbMaxAgents = 1000;
 // The maximum radius for an agent
 float maxRadius = 10.f;
 // How close should an element be before being considered as an obstacle?
-float collisionRange = 4.f;
+float detectionRange = 4.f;
 
 // Note: the navigation mesh must already be initialized
 // The navigation mesh will be used by the agents for navigation
-crowd.init(nbMaxAgents, mawRadius, navigationMesh, collisionRange);
+crowd.init(nbMaxAgents, maxRadius, navigationMesh, detectionRange);
 @endcode
 
 You now have a crowd ready to work, but empty...

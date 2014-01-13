@@ -61,7 +61,7 @@ SCENARIO("DetourCrowdTest/DefaultCrowdAgent", "[detourCrowd]")
 		}
 		THEN("Perception distance is 4")
 		{
-			CHECK(ag.perceptionDistance == 4.f);
+			CHECK(ag.detectionRange == 4.f);
 		}
 		
 		THEN("ID is invalid")
@@ -91,7 +91,7 @@ SCENARIO("DetourCrowdTest/FetchingAndUpdatingAgents", "[detourCrowd]")
 			CHECK(ag.height == 1.7f);
 			CHECK(ag.maxAcceleration == 10.f);
 			CHECK(ag.maxSpeed == 2.f);
-			CHECK(ag.perceptionDistance == 4.f);
+			CHECK(ag.detectionRange == 4.f);
 		}
 		
 		THEN("It has a valid ID")
@@ -397,7 +397,7 @@ SCENARIO("DetourCrowdTest/UpdateCrowd", "[detourCrowd] Test the different ways t
 			THEN("A nil perception blinds it")
 			{
 				crowd.fetchAgent(ag3, ag3.id);
-				ag3.perceptionDistance = 0.f;
+				ag3.detectionRange = 0.f;
 				crowd.pushAgent(ag3);
 				
 				crowd.updateEnvironment(&ag3.id, 1);
