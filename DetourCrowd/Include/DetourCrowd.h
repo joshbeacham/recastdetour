@@ -54,7 +54,7 @@ enum CrowdAgentState
 
 /// The environment of an agent
 ///
-/// The environment of an agent contains information about 
+/// The environment of an agent contains information about
 /// its neighborhood and the close obstacles.
 ///
 /// @ingroup crowd
@@ -82,18 +82,18 @@ struct dtCrowdAgent
 	float desiredVelocity[3];		///< The desired velocity of the agent, reset to (0, 0, 0) at the beginning of each velocity update. [(x, y, z)]
 	float velocity[3];				///< The actual velocity of the agent. [(x, y, z)]
 			
-	dtBehavior* behavior;			///< The behavior used by the agent
+	dtBehavior* behavior;			///< The behavior used by the agent.
 
 	float radius;                   ///< Agent radius. [Limit: >= 0]
 	float height;                   ///< Agent height. [Limit: > 0]
 	float maxAcceleration;          ///< Maximum allowed acceleration. [Limit: >= 0]
 	float maxSpeed;                 ///< Maximum allowed speed. [Limit: >= 0]
-	float detectionRange;           ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0)
+	float detectionRange;           ///< 2D distance defining how close a collision element must be before it is considered as an obstacle (Must be greater than 0).
 
 	float offmeshInitPos[3];
 	float offmeshStartPos[3];
-	float offmeshEndPos[3];			///< initial, starting and ending position of the animation
-	float offmeshElaspedTime;		///< Elapsed time of the animation
+	float offmeshEndPos[3];			///< initial, starting and ending position of the animation.
+	float offmeshElaspedTime;		///< Elapsed time of the animation.
 	float offmeshInitToStartTime;	///< How to join the start of the connection?
 	float offmeshStartToEndTime;	///< How long to cross the connection?
 
@@ -107,7 +107,7 @@ struct dtCrowdAgent
 	void init(float radius = 0.2f, float height = 1.7f, float maxAcceleration = 10.f, float maxSpeed = 2.f, float detectionRange = 4.f);
 };
 
-/// Utility class used to get access to some useful elements of the crowd
+/// Utility class used to get access to some useful elements of the crowd.
 /// @ingroup crowd
 class dtCrowdQuery
 {
@@ -138,16 +138,16 @@ public:
 	const dtCrowdAgent* getAgent(const unsigned id) const;
 
 	/// Gets the specified agent from the pool.
-	/// The required agent's data are copied into the given dtCrowdAgent object
+	/// The required agent's data are copied into the given dtCrowdAgent object.
 	///	 @param[in]		ag	The dtCrowdAgent object into which the data will be copied.
 	///	 @param[in]		id	The agent id.
 	void fetchAgent(dtCrowdAgent& ag, unsigned id) const;
 
-	/// Gets the agents matching the given ids
-	/// @param[in]	ids			The list of ids
-	/// @param[in]	size		The size of the list of indices (must match the size of the agents list)
-	/// @param[out]	agents		The list of agents where the results will be stored
-	/// @return Returns the number of agents found and put into the array
+	/// Gets the agents matching the given ids.
+	/// @param[in]	ids			The list of ids.
+	/// @param[in]	size		The size of the list of indices (must match the size of the agents list).
+	/// @param[out]	agents		The list of agents where the results will be stored.
+	/// @return Returns the number of agents found and put into the array.
 	unsigned getAgents(const unsigned* ids, unsigned size, const dtCrowdAgent** agents) const;
 
 	/// Gets the environment of the given agent
@@ -156,11 +156,11 @@ public:
 	const dtCrowdAgentEnvironment* getAgentEnvironment(unsigned id) const;
 
 	/// Get the offMesh connection the agent is on or close to.
-	/// The user can specify an additional distance if he wants to know if an offMesh connection
+	/// The user can specify an additional distance if he wants to know if an offMesh connection.
 	/// is located at a certain distance of the agent.
-	/// @param[in]	id		The id of the agent
-	/// @param[in]	dist	The additional distance
-	/// @return 0 if no offMesh connection have been detected. Otherwise returns the offMesh connection
+	/// @param[in]	id		The id of the agent.
+	/// @param[in]	dist	The additional distance.
+	/// @return 0 if no offMesh connection have been detected. Otherwise returns the offMesh connection.
 	dtOffMeshConnection* getOffMeshConnection(unsigned id, float dist = 0.f) const;
 	/// @}
 
@@ -173,9 +173,9 @@ private:
 	float m_ext[3];								///< The query filters used for navigation queries.
 	dtNavMeshQuery* m_navMeshQuery;				///< Used to perform queries on the navigation mesh.
 	dtQueryFilter m_filter;						///< Defines polygon filtering and traversal costs for navigation mesh query operations.
-	const dtCrowdAgent* m_agents;				///< The agents of the crowd
-	unsigned m_maxAgents;						///< Max number of agents in the crowd
-	const dtCrowdAgentEnvironment* m_agentsEnv;	///< The environments of the agents
+	const dtCrowdAgent* m_agents;				///< The agents of the crowd.
+	unsigned m_maxAgents;						///< Max number of agents in the crowd.
+	const dtCrowdAgentEnvironment* m_agentsEnv;	///< The environments of the agents.
 };
 
 /// Class containing and handling the agents of the simulation.
@@ -185,38 +185,38 @@ private:
 /// @ingroup crowd
 class dtCrowd
 {
-	dtCrowdQuery* m_crowdQuery;				///< CrowdQuery object for accessing data
-	dtCrowdAgentEnvironment* m_agentsEnv;	///< The environments of the agents
+	dtCrowdQuery* m_crowdQuery;				///< CrowdQuery object for accessing data.
+	dtCrowdAgentEnvironment* m_agentsEnv;	///< The environments of the agents.
 
-	unsigned m_maxAgents;					///< The maximum number of agents contained by the crowd
-	unsigned m_nbActiveAgents;				///< The number of active agents
-	dtCrowdAgent* m_agents;					///< The agents of the crowd
-	dtCrowdAgent** m_activeAgents;			///< the actives agents of the crowd
-	unsigned* m_agentsToUpdate;				///< indexes of all agents
+	unsigned m_maxAgents;					///< The maximum number of agents contained by the crowd.
+	unsigned m_nbActiveAgents;				///< The number of active agents.
+	dtCrowdAgent* m_agents;					///< The agents of the crowd.
+	dtCrowdAgent** m_activeAgents;			///< the actives agents of the crowd.
+	unsigned* m_agentsToUpdate;				///< indexes of all agents.
 		
-	float m_maxAgentRadius;					///< Maximal radius for an agent
-	unsigned m_maxCommonNodes;				///< Maximal number of search nodes for the navigation mesh
+	float m_maxAgentRadius;					///< Maximal radius for an agent.
+	unsigned m_maxCommonNodes;				///< Maximal number of search nodes for the navigation mesh.
 
-	float** m_disp;							///< Used to prevent agents from bumping into each other
+	float** m_disp;							///< Used to prevent agents from bumping into each other.
 	
-	/// Returns the index of the given agent
+	/// Returns the index of the given agent.
 	inline unsigned getAgentIndex(const dtCrowdAgent* agent) const { return static_cast<unsigned>(agent - m_agents); }
 
 	/// Fetch the agent of the given id if he is active.
 	/// param[out]	ag	The agent corresponding to the given id
-	/// param[in]	id	the id of the agent we want to fetch
-	/// @return	False if the agent is not active or if the id is out of bound. True otherwise
+	/// param[in]	id	the id of the agent we want to fetch.
+	/// @return	False if the agent is not active or if the id is out of bound. True otherwise.
 	bool getActiveAgent(dtCrowdAgent** ag, unsigned id);
 
 	/// Gets the neighbors of  the given agent.
 	/// Uses the field of view of the agent for that.
-	/// The neighbors will be stored in the agent environment
+	/// The neighbors will be stored in the agent environment.
 	///
-	/// @param[in]	id	ID of the agent
-	/// @return	The number of neighbors found
+	/// @param[in]	id	ID of the agent.
+	/// @return	The number of neighbors found.
 	unsigned computeNeighbors(unsigned id);
 
-	/// Cleans the crowd so it can be used for a fresh start
+	/// Cleans the crowd so it can be used for a fresh start.
 	void purge();
 	
 public:
@@ -239,21 +239,21 @@ public:
 	const dtCrowdAgent* getAgent(const unsigned id) const;
 
 	/// Gets the specified agent from the pool.
-	/// The required agent's data are copied into the given dtCrowdAgent object
+	/// The required agent's data are copied into the given dtCrowdAgent object.
 	///	 @param[out]	ag	The dtCrowdAgent object into which the data will be copied.
 	///	 @param[in]		id	The agent id.
 	void fetchAgent(dtCrowdAgent& ag, unsigned id) const;
 	
 	/// Gets the agents matching the given ids
-	/// @param[in]	ids			The list of ids
-	/// @param[in]	size		The size of the list of indices (must match the size of the agents list)
-	/// @param[out]	agents		The list of agents where the results will be stored
-	/// @return Returns the number of agents found and put into the array
+	/// @param[in]	ids			The list of ids.
+	/// @param[in]	size		The size of the list of indices (must match the size of the agents list).
+	/// @param[out]	agents		The list of agents where the results will be stored.
+	/// @return Returns the number of agents found and put into the array.
 	unsigned getAgents(const unsigned* ids, unsigned size, const dtCrowdAgent** agents) const;
 
-	/// Gets the environment of the given agent
-	/// @param[in]	id	The id of the agent
-	/// @return Returns the environment of the given agent
+	/// Gets the environment of the given agent.
+	/// @param[in]	id	The id of the agent.
+	/// @return Returns the environment of the given agent.
 	const dtCrowdAgentEnvironment* getAgentEnvironment(unsigned id) const;
 
 	/// Gets the active agents int the agent pool.
@@ -275,7 +275,7 @@ public:
 	///
 	/// @param[out]	agent Where the created agent data will be copied, if the addition is successful.
 	/// @param[in] pos The desired position for the agent. [(x, y, z)]
-	/// @return True if the addition is succesful, it might fail if the crowd is full (i.e. if the current agent count is equal to the given maximum).
+	/// @return True if the addition is successful, it might fail if the crowd is full (i.e. if the current agent count is equal to the given maximum).
 	bool addAgent(dtCrowdAgent& agent, const float* pos);
 
 	/// Removes the agent of the given id from the crowd.
@@ -284,7 +284,7 @@ public:
 
 	/// Copies the data of the given agent into its equivalent in the crowd.
 	///
-	/// In order to know which agent must receive the data, we refer to the id of the given agent
+	/// In order to know which agent must receive the data, we refer to the id of the given agent.
 	/// @return False if the id of the agent could not be matched or if there are some inconsistencies
 	/// with the data of the given agent. False otherwise.
 	bool pushAgent(const dtCrowdAgent& ag);
@@ -327,7 +327,7 @@ public:
 	///  @param[in]		nbIdx		Size of the list of indices. [Opt]
 	void updatePosition(const float dt, unsigned* agentsIdx = 0, unsigned nbIdx = 0);
 
-	/// Updates the environment of the given agents. 
+	/// Updates the environment of the given agents.
 	/// Updates the proximity grid and registers every agent's neighbor.
 	/// If no indices are given, then the method updates every agent.
 	///  @param[in]		agentsIdx	The list of the indices of the agents we want to update. [Opt]
@@ -342,7 +342,7 @@ public:
 dtCrowd* dtAllocCrowd();
 
 /// Frees the specified crowd object using the Detour allocator.
-///  @param[in]		ptr		A crowd object allocated using #dtAllocCrowd
+///  @param[in]		ptr		A crowd object allocated using #dtAllocCrowd.
 ///  @ingroup crowd
 void dtFreeCrowd(dtCrowd* ptr);
 
