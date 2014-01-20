@@ -61,6 +61,13 @@ IF (BUILD_RECASTDETOUR_FAT_LIBRARIES)
 	SET_TARGET_PROPERTIES(DetourNavmeshCreator PROPERTIES OSX_ARCHITECTURES "i386;x86_64")
 ENDIF()
 
+# To fix compilation problem: relocation R_X86_64_32 against `a local symbol' can not be
+# used when making a shared object; recompile with -fPIC
+# See http://www.cmake.org/pipermail/cmake/2007-May/014350.html
+IF( UNIX )
+	SET_TARGET_PROPERTIES(DetourNavmeshCreator PROPERTIES COMPILE_FLAGS "-fPIC")
+ENDIF()
+
 INSTALL(FILES ${DetourNavmeshCreator_HDRS}
 	DESTINATION include/detourNavmeshCreator
 )
