@@ -47,7 +47,7 @@ public:
 	///
 	/// @param[in]	nbMaxAgents		Estimation of the maximum number of agents using this behavior
 	dtCohesionBehavior(unsigned nbMaxAgents);
-	~dtCohesionBehavior();
+	virtual ~dtCohesionBehavior();
 
 	/// Creates an instance of the behavior
 	///

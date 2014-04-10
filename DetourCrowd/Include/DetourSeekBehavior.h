@@ -49,7 +49,7 @@ public:
 	///
 	/// @param[in]	maxAgents	Estimation of the maximum number of agents using this behavior
 	dtSeekBehavior(unsigned maxAgents);
-	~dtSeekBehavior();
+	virtual ~dtSeekBehavior();
 
 	/// Creates an instance of the behavior
 	///

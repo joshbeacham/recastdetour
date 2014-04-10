@@ -45,7 +45,7 @@ class dtFlockingBehavior : public dtSteeringBehavior<dtFlockingBehaviorParams>
 {
 public:
 	dtFlockingBehavior(unsigned nbMaxAgents, float separationWeight, float cohesionWeight, float alignmentWeight, float separationDistance);
-	~dtFlockingBehavior();
+	virtual ~dtFlockingBehavior();
 
 	/// Creates an instance of the behavior
 	///

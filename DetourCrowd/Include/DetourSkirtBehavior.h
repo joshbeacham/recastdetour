@@ -57,7 +57,7 @@ public:
 	///
 	/// @param[in]	nbMaxAgents		Estimation of the maximum number of agents using this behavior
 	dtSkirtBehavior(unsigned nbMaxAgents);
-	~dtSkirtBehavior();
+	virtual ~dtSkirtBehavior();
 
 	/// Creates an instance of the behavior
 	///
