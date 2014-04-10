@@ -19,7 +19,6 @@
 #ifndef CROWDSAMPLE_H
 #define CROWDSAMPLE_H
 
-
 #include "StaticConfiguration.h"
 
 #include <DetourNavmeshCreator.h>
@@ -39,6 +38,8 @@ class rcContext;
 
 class JSONValue;
 
+#define CROWDSAMPLE_MAXIMUM_BEHAVIORS_COUNT 3
+
 class CrowdSample
 {
 public:
@@ -56,7 +57,7 @@ public:
 private:
 	struct BehaviorCfg
 	{
-		dtBehavior* activeBehaviors[3];
+		dtBehavior* activeBehaviors[CROWDSAMPLE_MAXIMUM_BEHAVIORS_COUNT];
 		unsigned activeBehaviorsCount;
 		dtPipelineBehavior* pipeline;
 		dtCollisionAvoidance* collisionAvoidance;
