@@ -21,6 +21,7 @@
 #include "DetourCrowd.h"
 #include "DetourCommon.h"
 
+#include <cmath>
 #include <limits>
 #include <new>
 #include <utility>
@@ -81,8 +82,8 @@ namespace
 		float squareRootPart = dtSqr(p/2) - q;
 		if (squareRootPart >= 0)
 		{
-			float solution1 = -p/2 + sqrt(squareRootPart);
-			float solution2 = -p/2 - sqrt(squareRootPart);
+			float solution1 = -p/2 + dtSqrt(squareRootPart);
+			float solution2 = -p/2 - dtSqrt(squareRootPart);
 			return std::make_pair(solution1, solution2);
 		}
 		return std::make_pair(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN());
@@ -95,7 +96,7 @@ namespace
 		newCenter[1] = center2Y - center1Y;
 		float r1Square = radius1 * radius1;
 		float r2Square = radius2 * radius2;
-		if (fabs(newCenter[0]) > EPSILON)
+		if (dtAbs(newCenter[0]) > EPSILON)
 		{
 			// resolving both circle equations leads to x = ay + b with following a and b values
 			float a = -newCenter[1]/newCenter[0];
@@ -114,7 +115,7 @@ namespace
 			intersection2[1] = yResults.second + center1Y;
 			return true;
 		}
-		else if (fabs(newCenter[1]) > EPSILON)
+		else if (dtAbs(newCenter[1]) > EPSILON)
 		{
 			// resolving both circle equations leads to y = ax + b with following a and b values
 			float a = -newCenter[0]/newCenter[1];
@@ -147,9 +148,9 @@ void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent
 	currentToAgent[1] = m_agentObstacle.position[2];
 	currentToAgent[0] -= oldAgent.position[0];
 	currentToAgent[1] -= oldAgent.position[2];
-	float distanceToAgent = sqrt(currentToAgent[0]*currentToAgent[0] + currentToAgent[1]*currentToAgent[1]);
+	float distanceToAgent = dtSqrt(currentToAgent[0]*currentToAgent[0] + currentToAgent[1]*currentToAgent[1]);
 	float sinToObstacleBorder = m_agentObstacle.radius / distanceToAgent;
-	float cosToObstacleBorder = sqrt(1 - sinToObstacleBorder*sinToObstacleBorder);
+	float cosToObstacleBorder = dtSqrt(1 - sinToObstacleBorder*sinToObstacleBorder);
 	float distanceToTangent = cosToObstacleBorder * distanceToAgent;
 	// we now have the data for two circles, finding their intersection will give the tangent points from oldAgent.position to the m_agentObstacle circle
 	float tangent1[2], tangent2[2];
@@ -210,7 +211,7 @@ void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent
 			currentToTangent[0] -= m_agentObstacle.position[0];
 			currentToTangent[1] -= m_agentObstacle.position[2];
 			float deviationTangent2FromVelocity = currentToTangent[1]*oldAgent.desiredVelocity[0] - currentToTangent[0]*oldAgent.desiredVelocity[2];
-			dtVcopy(tangentToUse, fabs(deviationTangent1FromVelocity) > fabs(deviationTangent2FromVelocity) ? tangent1 : tangent2);
+			dtVcopy(tangentToUse, dtAbs(deviationTangent1FromVelocity) > dtAbs(deviationTangent2FromVelocity) ? tangent1 : tangent2);
 		}
 		// compute the direction vector
 		float obstacleCenterToTangent[2];
@@ -237,7 +238,7 @@ void dtSkirtBehavior::computeVelocity(const dtCrowdAgent& oldAgent, dtCrowdAgent
 			float approximateAngleBetweenOldVelocityAndOBstacle = currentToSegment[1]*oldAgent.desiredVelocity[0] - currentToSegment[0]*oldAgent.desiredVelocity[2];
 			float approximateAngleBetweenNewVelocityAndOBstacle = currentToSegment[1]*newAgent.desiredVelocity[0] - currentToSegment[0]*newAgent.desiredVelocity[2];
 			// if applying the new velocity makes the current agent go closer to the obstacle use the old one
-			if(fabs(approximateAngleBetweenNewVelocityAndOBstacle) < fabs(approximateAngleBetweenOldVelocityAndOBstacle))
+			if(dtAbs(approximateAngleBetweenNewVelocityAndOBstacle) < dtAbs(approximateAngleBetweenOldVelocityAndOBstacle))
 				dtVcopy(newAgent.desiredVelocity, oldAgent.desiredVelocity);
 		}
 	}
@@ -300,7 +301,7 @@ bool dtSkirtBehavior::addAgentObstacle(const dtCrowdAgent& agent, const dtCrowdA
 	dtVsub(diff, obtacle.position, agent.position);
 	float dist = dtVlen(diff) - agent.radius - obtacle.radius;
 
-	if (dist < agent.perceptionDistance && dist <= this->distance && dist <= m_agentObstacleDistance)
+	if (dist < agent.detectionRange && dist <= this->distance && dist <= m_agentObstacleDistance)
 	{
 		float diffToTarget[3];
 		dtVsub(diffToTarget, targetPos, agent.position);
