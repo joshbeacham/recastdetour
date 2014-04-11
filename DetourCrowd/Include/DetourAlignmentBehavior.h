@@ -43,7 +43,7 @@ public:
 	///
 	/// @param[in]	nbMaxAgents		Estimation of the maximum number of agents using this behavior
 	dtAlignmentBehavior(unsigned nbMaxAgents);
-	~dtAlignmentBehavior();
+	virtual ~dtAlignmentBehavior();
 
 	/// Creates an instance of the behavior
 	///

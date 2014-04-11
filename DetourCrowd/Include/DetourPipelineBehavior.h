@@ -34,7 +34,7 @@ class dtPipelineBehavior : public dtBehavior
 {
 public:
 	dtPipelineBehavior();
-	~dtPipelineBehavior();
+	virtual ~dtPipelineBehavior();
 
 	/// Creates an instance of the behavior
 	/// @return		A pointer on a newly allocated behavior

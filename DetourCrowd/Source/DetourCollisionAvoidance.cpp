@@ -147,6 +147,8 @@ void dtCollisionAvoidance::addObtacles(const dtCrowdAgent& ag, const dtCrowdQuer
 	{
 		const float* s = agEnv->boundary.getSegment(j);
 
+		// check that the segment is from an outer bound
+		// allows to cross this segment if the current position is inside the obstacle
 		if (dtTriArea2D(ag.position, s, s+3) < 0.f)
 			continue;
 

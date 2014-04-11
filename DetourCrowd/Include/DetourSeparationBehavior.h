@@ -48,7 +48,7 @@ public:
 	///
 	/// @param[in]	nbMaxAgents		Estimation of the maximum number of agents using this behavior
 	dtSeparationBehavior(unsigned nbMaxAgents);
-	~dtSeparationBehavior();
+	virtual ~dtSeparationBehavior();
 
 	/// Creates an instance of the behavior
 	///

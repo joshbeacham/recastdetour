@@ -40,7 +40,7 @@ class dtArriveBehavior : public dtSteeringBehavior<dtArriveBehaviorParams>
 {
 public:
 	dtArriveBehavior(unsigned nbMaxAgents);
-	~dtArriveBehavior();
+	virtual ~dtArriveBehavior();
 
 	/// Creates an instance of the behavior
 	///
