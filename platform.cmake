@@ -30,6 +30,10 @@ macro(compute_platform_str varname)
                 set(${varname} ${${varname}}${compiler_version_major}${compiler_version_minor})
             endif()
         endif()
+        if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+            # pointers are 8 bits -> 64 bits platform
+            set(${varname} ${${varname}}_x64)
+        endif()
     endif()
 endmacro()
 
